@@ -477,12 +477,16 @@
 
       <div>
         <label class="block text-xs text-gray-400 mb-1">URL</label>
-        <input id="jobUrl" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500" placeholder="https://...">
+        <div class="flex gap-2">
+          <input id="jobUrl" class="flex-1 bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500" placeholder="https://...">
+          <button onclick="fetchJobFromUrl()" class="px-4 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white rounded font-bold text-sm transition whitespace-nowrap">🔗 URL 자동</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">URL 입력 후 "URL 자동" 클릭 → 회사·포지션·본문 자동 채움 (AI)</p>
       </div>
 
       <div>
         <label class="block text-xs text-gray-400 mb-1">공고 본문 (붙여넣기) — AI 분석용 *</label>
-        <textarea id="jobJD" rows="8" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 font-mono text-sm" placeholder="채용공고 페이지에서 회사 소개·주요 업무·자격 요건·우대사항·채용 절차 등 전체 텍스트 복사해서 붙여넣기"></textarea>
+        <textarea id="jobJD" rows="8" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 font-mono text-sm" placeholder="URL 자동 클릭 또는 직접 붙여넣기. 회사 소개·주요 업무·자격 요건·우대사항·채용 절차"></textarea>
       </div>
     </div>
 
@@ -899,7 +903,19 @@ async function updateAllFiles() {
       let html = await res.text();
       const original = html;
 
+      // 이름 분리 디자인 보존 (첫 글자 흰색 + 나머지 오렌지)
+      // 예: "김OO" → "홍길동" 입력 시 "홍" + "<span class='accent'>길동</span>"
+      const formatName = (name) => {
+        if (!name || name.length <= 1) return `<span class="accent">${name || ''}</span>`;
+        return `${name[0]}<span class="accent">${name.slice(1)}</span>`;
+      };
+      const formattedName = formatName(profile.name);
+
       html = html
+        // 디자인 분리 패턴 (첫 글자 + accent span — 메인 사이트·이력서 헤더 등)
+        .replaceAll('김<span class="accent">OO</span>', formattedName)
+        .replaceAll('김<span>OO</span>', formattedName)
+        // 단순 패턴
         .replaceAll('김OO', profile.name)
         .replaceAll('your@email.com', profile.email)
         .replaceAll('010-XXXX-XXXX', profile.phone);
@@ -1028,6 +1044,46 @@ function openAddJob() {
 
 function closeAddJob() {
   document.getElementById('addJobModal').classList.add('hidden');
+}
+
+async function fetchJobFromUrl() {
+  const url = document.getElementById('jobUrl').value.trim();
+  if (!url) return alert('URL 입력');
+  if (!url.startsWith('http')) return alert('http(s):// 로 시작해야 합니다');
+
+  showLoading('URL에서 공고 정보 추출 중...');
+  try {
+    const apiKey = localStorage.getItem('claudeApiKey');
+    if (!apiKey) throw new Error('Claude API 키가 없습니다');
+
+    const res = await fetch('/api/fetch-job', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+      body: JSON.stringify({ url })
+    });
+
+    // 응답이 JSON인지 먼저 체크
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error('API 응답 오류 (배포 안 됨?): ' + text.slice(0, 100));
+    }
+
+    if (!res.ok) throw new Error(data.error || 'fetch 실패');
+
+    if (data.company) document.getElementById('jobCompany').value = data.company;
+    if (data.position) document.getElementById('jobPosition').value = data.position;
+    if (data.jdText) document.getElementById('jobJD').value = data.jdText;
+    if (data.deadline) document.getElementById('jobDeadline').value = data.deadline;
+
+    hideLoading();
+    alert('✅ 자동 추출 완료. 검토 후 "저장 + AI 분석" 클릭');
+  } catch (err) {
+    hideLoading();
+    alert('❌ URL 자동 추출 실패: ' + err.message + '\n\n💡 수동으로 본문 붙여넣기로 진행하세요');
+  }
 }
 
 async function addJob() {
