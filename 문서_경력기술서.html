@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경력기술서 — 김OO | 디지털 광고 × 브랜드 마케팅 시니어 (16년)</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 1.3cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    color: #111;
+    background: #f3f4f6;
+    line-height: 1.55;
+    font-size: 9.8pt;
+  }
+  .page {
+    background: white;
+    max-width: 210mm;
+    margin: 20px auto;
+    padding: 14mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; padding: 0; }
+    .no-print { display: none !important; }
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    section { page-break-inside: avoid; }
+    h2 { page-break-after: avoid; }
+  }
+
+  .accent { color: #FF6B35; }
+  .accent-bg { background-color: #FF6B35; }
+
+  .print-guide {
+    background: #FFF7ED;
+    border: 1px solid #FFD4A8;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 0 auto 20px;
+    max-width: 210mm;
+    font-size: 10pt;
+    color: #9A3412;
+  }
+
+  /* Header */
+  .header { padding-bottom: 16px; border-bottom: 3px solid #FF6B35; margin-bottom: 18px; }
+  .header .name { font-size: 24pt; font-weight: 700; }
+  .header .name span { color: #FF6B35; }
+  .header .tagline { font-size: 11pt; color: #374151; font-weight: 500; margin-top: 4px; }
+  .header .meta { font-size: 9pt; color: #6b7280; margin-top: 8px; }
+
+  /* Section */
+  section { margin-top: 18px; }
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #FF6B35;
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  h3 { font-size: 10.5pt; font-weight: 700; color: #111; margin-bottom: 6px; }
+
+  /* Highlights bullet */
+  .highlights { padding-left: 0; list-style: none; }
+  .highlights li {
+    padding: 5px 0 5px 16px;
+    position: relative;
+    font-size: 9.5pt;
+    line-height: 1.55;
+  }
+  .highlights li::before { content: '▸'; position: absolute; left: 0; color: #FF6B35; font-weight: bold; }
+  .highlights li strong { color: #111; }
+
+  /* Timeline table */
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 8px; }
+  .timeline-table th { background: #f9fafb; padding: 6px 8px; text-align: left; font-size: 8.5pt; color: #6b7280; font-weight: 700; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb; }
+  .timeline-table td { padding: 6px 8px; border-bottom: 1px solid #f3f4f6; }
+  .timeline-table .row-core { background: #FFF7ED; }
+  .timeline-table .row-core td { font-weight: 600; }
+
+  /* Before/After */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .ba-card { border-left: 3px solid #FF6B35; padding: 8px 12px; background: #fafafa; border-radius: 0 4px 4px 0; }
+  .ba-card .ba-title { font-size: 9pt; font-weight: 700; margin-bottom: 4px; }
+  .ba-card .ba-meta { font-size: 8pt; color: #9ca3af; margin-bottom: 4px; }
+  .ba-card .ba-row { display: flex; align-items: baseline; gap: 8px; font-size: 9.5pt; }
+  .ba-card .ba-before { color: #6b7280; }
+  .ba-card .ba-arrow { color: #d1d5db; }
+  .ba-card .ba-after { color: #FF6B35; font-weight: 700; }
+  .ba-card .ba-multiplier { margin-left: auto; font-weight: 700; color: #FF6B35; font-size: 11pt; }
+
+  /* Operating scale */
+  .scale-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
+  .scale-item { border-top: 2px solid #FF6B35; padding-top: 8px; }
+  .scale-item .scale-value { font-size: 16pt; font-weight: 700; color: #FF6B35; line-height: 1.1; }
+  .scale-item .scale-label { font-size: 8pt; color: #6b7280; margin-top: 4px; line-height: 1.3; }
+
+  /* Career card */
+  .career-block { margin-bottom: 14px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 6px; page-break-inside: avoid; }
+  .career-block.core { border: 2px solid #FF6B35; background: #FFF7ED; }
+  .career-block .career-meta { font-size: 8.5pt; color: #6b7280; margin-bottom: 4px; letter-spacing: 0.05em; }
+  .career-block .career-meta.core { color: #FF6B35; font-weight: 700; }
+  .career-block .career-name { font-size: 11pt; font-weight: 700; }
+  .career-block .career-role { font-size: 9pt; color: #6b7280; font-weight: 400; margin-left: 4px; }
+  .career-block .career-summary { font-size: 9pt; color: #374151; margin: 4px 0 8px; }
+  .career-block .career-rr { font-size: 8.5pt; color: #FF6B35; font-weight: 700; margin: 6px 0 3px; letter-spacing: 0.1em; }
+  .career-block .career-content { font-size: 9pt; color: #1f2937; }
+  .career-block .career-content ul { padding-left: 16px; }
+  .career-block .career-content li { padding: 2px 0; }
+  .career-block .career-exit { font-size: 8.5pt; color: #9ca3af; font-style: italic; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e5e7eb; }
+
+  /* Skills grid */
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .skill-row { font-size: 9pt; line-height: 1.55; }
+  .skill-row .label {
+    display: inline-block;
+    width: 90px;
+    color: #FF6B35;
+    font-weight: 700;
+    font-size: 8.5pt;
+    letter-spacing: 0.05em;
+  }
+  .ai-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    background: #FFF1E8;
+    color: #C2410C;
+    border-radius: 3px;
+    font-size: 8pt;
+    font-weight: 600;
+    margin: 1px 1px;
+  }
+
+  /* Education */
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .edu-item { font-size: 9pt; }
+  .edu-item .edu-label { font-size: 8pt; color: #FF6B35; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 3px; }
+  .edu-item .edu-name { font-weight: 600; color: #111; }
+  .edu-item .edu-detail { color: #6b7280; font-size: 8.5pt; }
+
+  /* Track legend */
+  .track-legend { display: flex; gap: 12px; font-size: 8.5pt; color: #6b7280; margin-top: 6px; }
+  .track-legend span { display: flex; align-items: center; gap: 4px; }
+  .track-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+</style>
+</head>
+<body>
+
+<style>
+  .doc-nav { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 1000; background: white; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .doc-nav a, .doc-nav button { padding: 8px 14px; background: white; color: #111; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 9.5pt; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: inherit; }
+  .doc-nav a:hover, .doc-nav button:hover { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home:hover { background: #C2410C; }
+  @media print { .doc-nav { display: none !important; } }
+</style>
+
+<nav class="doc-nav no-print">
+  <a href="사이트_메인_v2.html" class="nav-home">← 메인</a>
+  <button onclick="window.print()">🖨️ 인쇄</button>
+  <button onclick="window.print()">💾 PDF 저장</button>
+</nav>
+
+<div class="print-guide no-print">
+  💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택 → 저장
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="name">경력기술서 — 김<span>OO</span></div>
+    <div class="tagline">디지털 광고와 브랜드 마케팅을 양립한 16년차 시니어 마케터</div>
+    <div class="meta">광고대행사 광고주 영업·매체 운영 10년 × 자체 브랜드 D2C·IMC·런칭 5년+ — 매출과 브랜드 둘 다 책임지는 본부장 트랙</div>
+  </div>
+
+  <!-- KEY ACHIEVEMENTS -->
+  <section>
+    <h2>⭐ KEY ACHIEVEMENTS</h2>
+    <ul class="highlights">
+      <li><strong>NHN커머스 7년 광고주 신규 수주 50+개, 월 영업매출 1.5-2억</strong> (최대 3억) — 자사 솔루션 사용업체 300+ 컨택 → 50+ 광고주화</li>
+      <li><strong>VT코스메틱 매출 1억 → 20억</strong> (2.5년 / 20배 성장 견인) — 미디어 협찬 + 온라인 통합 컨설팅 영업</li>
+      <li><strong>닥터미라클 런칭 → 3개월차 매출 7.7억</strong> (목표 5억 초과 140%) — 메타 Advantage+ + 머신러닝 영상 최적화</li>
+      <li><strong>월 5억 예산 통합 매체 운영</strong> (메타 2.5억 + 포털DA 2.5억) — 광고매체 20+, 광고대행사 4사 협업</li>
+      <li><strong>시즈노프 런칭 IMC — 7개 채널 동시 운영</strong> (700+ 매장 + 무신사·29CM + 운동크루 + 메타 + 라이브)</li>
+      <li><strong>푸드케어 광고비 50% 절감</strong> (월 3,000만→1,500만) — 메타 Advantage+ 직접운영 전환 수수료 15% 추가 절감</li>
+      <li><strong>NHN커머스 9명 팀 5년+ 리딩, 팀 월매출 4.8억 → 6.5억</strong> (1.7억 상승) — 매년 2-3명 매출 상승 도우미</li>
+    </ul>
+  </section>
+
+  <!-- TIMELINE -->
+  <section>
+    <h2>📅 CAREER TIMELINE — 16년, 세 가지 트랙</h2>
+    <table class="timeline-table">
+      <tr><th>시기</th><th>영역</th><th>회사</th><th>직책</th></tr>
+      <tr><td>2010.05–2011.06</td><td>🟦 광고대행</td><td>바론미디어</td><td>대리</td></tr>
+      <tr><td>2011.06–2012.08</td><td>🟦 광고대행</td><td>오리지널마케팅그룹</td><td>팀장</td></tr>
+      <tr class="row-core"><td>⭐ 2012.11–2019.11 (7년)</td><td>🟦 광고대행·솔루션 통합</td><td>NHN커머스</td><td>팀장</td></tr>
+      <tr><td>2019.12–2021.03</td><td>🟧 자체 브랜드 D2C</td><td>더에이블랩</td><td>팀장</td></tr>
+      <tr><td>2021.07–2022.07</td><td>🟧 자체 브랜드 D2C</td><td>오라팜</td><td>팀장(부장)</td></tr>
+      <tr><td>2022.07–2023.10</td><td>🟧 자체 브랜드 D2C</td><td>라이프앤바이오</td><td>실장</td></tr>
+      <tr><td>2023.11–2024.03</td><td>🟧 자체 브랜드 D2C</td><td>아이디플라코스메틱</td><td>차장(파트장)</td></tr>
+      <tr><td>2024.08–2024.11</td><td>🟩 SaaS 영업</td><td>루나소프트</td><td>팀장</td></tr>
+      <tr><td>2024.12–2025.12</td><td>🟩 광고서비스 CMO</td><td>에스오씨</td><td>CMO</td></tr>
+    </table>
+    <div class="track-legend">
+      <span><span class="track-dot" style="background:#1e3a8a;"></span>광고대행·솔루션 (9년 5개월)</span>
+      <span><span class="track-dot" style="background:#9a3412;"></span>자체 브랜드 D2C (5년)</span>
+      <span><span class="track-dot" style="background:#14532d;"></span>신규 도메인 (1.5년)</span>
+    </div>
+  </section>
+
+  <!-- BEFORE/AFTER -->
+  <section>
+    <h2>📊 SIGNATURE IMPACT — Before / After</h2>
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div class="ba-title">VT코스메틱 매출 견인</div>
+        <div class="ba-meta">NHN커머스 / 2.5년</div>
+        <div class="ba-row"><span class="ba-before">월 1억</span><span class="ba-arrow">→</span><span class="ba-after">월 20억</span><span class="ba-multiplier">20×</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">닥터미라클 런칭 매출</div>
+        <div class="ba-meta">더에이블랩 / 3개월</div>
+        <div class="ba-row"><span class="ba-before">목표 5억</span><span class="ba-arrow">→</span><span class="ba-after">월 7.7억</span><span class="ba-multiplier">140%</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">올더라이프 월매출</div>
+        <div class="ba-meta">더에이블랩 / 운영</div>
+        <div class="ba-row"><span class="ba-before">신규</span><span class="ba-arrow">→</span><span class="ba-after">월 12억</span><span class="ba-multiplier">2.5억 광고비</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">푸드케어 네이버 광고비 절감</div>
+        <div class="ba-meta">라이프앤바이오</div>
+        <div class="ba-row"><span class="ba-before">월 3,000만</span><span class="ba-arrow">→</span><span class="ba-after">월 1,500만</span><span class="ba-multiplier">-50%</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">푸드케어 메타 운영 전환</div>
+        <div class="ba-meta">라이프앤바이오</div>
+        <div class="ba-row"><span class="ba-before">대행 수수료</span><span class="ba-arrow">→</span><span class="ba-after">직접운영</span><span class="ba-multiplier">-15%</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">푸드케어 블로그 방문자</div>
+        <div class="ba-meta">라이프앤바이오</div>
+        <div class="ba-row"><span class="ba-before">1일 100명</span><span class="ba-arrow">→</span><span class="ba-after">1일 2,000명</span><span class="ba-multiplier">20×</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">로우티 부진재고 소진</div>
+        <div class="ba-meta">라이프앤바이오</div>
+        <div class="ba-row"><span class="ba-before">5,000개 적체</span><span class="ba-arrow">→</span><span class="ba-after">전량 소진</span><span class="ba-multiplier">100%</span></div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-title">NHN커머스 팀 월매출</div>
+        <div class="ba-meta">NHN커머스 / 5년+</div>
+        <div class="ba-row"><span class="ba-before">4.8억</span><span class="ba-arrow">→</span><span class="ba-after">6.5억</span><span class="ba-multiplier">+1.7억</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPERATING SCALE -->
+  <section>
+    <h2>📈 OPERATING SCALE</h2>
+    <div class="scale-grid">
+      <div class="scale-item"><div class="scale-value">5억</div><div class="scale-label">월 광고예산 합산<br>(메타 2.5 + DA 2.5)</div></div>
+      <div class="scale-item"><div class="scale-value">12억</div><div class="scale-label">월매출 운영<br>(올더라이프)</div></div>
+      <div class="scale-item"><div class="scale-value">20+</div><div class="scale-label">광고매체<br>동시 운영</div></div>
+      <div class="scale-item"><div class="scale-value">4사</div><div class="scale-label">광고대행사 협업<br>(DMC·메조·메이크샵·NHN)</div></div>
+      <div class="scale-item"><div class="scale-value">3건</div><div class="scale-label">자체 브랜드 런칭<br>더레브·닥터미라클·시즈노프</div></div>
+      <div class="scale-item"><div class="scale-value">50+</div><div class="scale-label">신규 광고주 수주<br>NHN 7년 누적</div></div>
+      <div class="scale-item"><div class="scale-value">9명</div><div class="scale-label">NHN 팀<br>5년+ 리딩</div></div>
+      <div class="scale-item"><div class="scale-value">700+</div><div class="scale-label">전국 매장 디스플레이<br>(시즈노프 런칭)</div></div>
+    </div>
+  </section>
+
+  <!-- AI STACK + COMPETENCIES -->
+  <section>
+    <h2>🛠️ COMPETENCIES &amp; AI STACK</h2>
+    <div class="skills-grid">
+      <div class="skill-row"><span class="label">광고 AI</span><span class="ai-tag">메타 Advantage+</span><span class="ai-tag">구글 PMax</span><span class="ai-tag">네이버 자동입찰·AI</span></div>
+      <div class="skill-row"><span class="label">생성형 AI</span><span class="ai-tag">ChatGPT</span><span class="ai-tag">Claude</span><span class="ai-tag">Gemini</span></div>
+      <div class="skill-row"><span class="label">분석 AI</span><span class="ai-tag">GA4 AI 인사이트</span></div>
+      <div class="skill-row"><span class="label">분석 도구</span><span style="font-size:9pt;">에이스카운터·로거·로그·애널리언스</span></div>
+      <div class="skill-row"><span class="label">광고 매체</span><span style="font-size:9pt;">메타·구글·네이버·카카오·유튜브·ZUM·네이트·디스패치·쿠팡·네트워크DA</span></div>
+      <div class="skill-row"><span class="label">D2C 채널</span><span style="font-size:9pt;">자사몰·스마트스토어·쿠팡(로켓)·올영·이마트·무신사·29CM·와디즈·CJ·GS·라이브·공동구매</span></div>
+      <div class="skill-row"><span class="label">카테고리</span><span style="font-size:9pt;">화장품·건기식·이너뷰티·구강유산균·이유식·디바이스·SaaS·솔루션·키오스크</span></div>
+      <div class="skill-row"><span class="label">리더십</span><span style="font-size:9pt;">팀장 13년+ (4-9명) · NHN 9명 5년+ · 매출 상승 동행 코칭 · 합병 후 영업 통합 · IMC 7채널</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ Page 2 ============ -->
+<div class="page">
+
+  <!-- WORK EXPERIENCE -->
+  <section>
+    <h2>📋 WORK EXPERIENCE — 시간 역순</h2>
+
+    <div class="career-block">
+      <div class="career-meta">2024.12 — 2025.12 · 1년</div>
+      <div class="career-name">㈜에스오씨 <span class="career-role">· 마케팅사업부 · CMO (7명 회사)</span></div>
+      <div class="career-summary">셀픽 사진인화 키오스크(산부인과·산후조리원) + DB·DA 광고</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">셀픽 광고서비스·DB 영업·운영 총괄 + 광고대행 영업·운영 총괄</div>
+      <div class="career-rr">성과</div>
+      <div class="career-content"><ul>
+        <li>광고: 에르코스 루솔 이유식 / 네슬레 일루맘클럽 / 퓨어락 분유 영업·운영</li>
+        <li>DB파트너: 디허브랩(태아보험) / 신한카드 국민행복 / 웅진씽크빅 책다른 / 베이비스튜디오 영업·관리</li>
+      </ul></div>
+      <div class="career-exit">이직 사유: 회사 재무 상황 악화로 이직 결정</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2024.08 — 2024.11 · 4개월</div>
+      <div class="career-name">㈜루나소프트 <span class="career-role">· 영업팀 · 팀장 (8명)</span></div>
+      <div class="career-summary">메시지 SaaS / 엠비아이솔루션 합병 후 통합 영업팀</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">양사 합병 후 영업 통합 팀장 (루나톡·해피톡 SaaS B2B 세일즈) / 사업계획·연간/월간 영업·마케팅 운영 전략 / 외부 제휴 영업(스냅컴퍼니) / 임원회의 보고</div>
+      <div class="career-exit">이직 사유: 마케팅 본업 지속을 위한 재이직</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2023.11 — 2024.03 · 4개월</div>
+      <div class="career-name">㈜아이디플라코스메틱 <span class="career-role">· 마케팅세일즈파트 · 차장(파트장, 9명)</span></div>
+      <div class="career-summary">아이디병원 자회사 코스메틱</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">디지털 마케팅(대행사 관리) + 퍼포·바이럴·콘텐츠 통합 / 네이버스토어·자사몰·쿠팡·와디즈·홈쇼핑 총괄 / 공동구매 벤더 영업·관리 / 신제품 상세기획·홈쇼핑 커뮤니케이션</div>
+      <div class="career-rr">성과</div>
+      <div class="career-content">9명 파트 총괄 (영업·홈쇼핑MD·온라인MD·콘텐츠BM·채널BM·퍼포·마케팅지원) / 병원·홈쇼핑 90% 의존 구조에서 D2C 채널 확장 시도</div>
+      <div class="career-exit">이직 사유: D2C 채널 확장 미션을 더 깊게 책임질 수 있는 환경 추구</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2022.07 — 2023.10 · 1년 4개월</div>
+      <div class="career-name">㈜라이프앤바이오 <span class="career-role">· 기획커뮤니케이션·커머스 · 실장 (5명)</span></div>
+      <div class="career-summary">건기식 제조·판매 + 푸드케어(이유식) 계열사 / 모건스탠리 인수(2022-04)</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">푸드케어(이유식) 23년 매출목표 250억 마케팅 책임 / 시즈노프(2023-03 런칭) IMC / 로우티 리듀스앤드 신제품 런칭 / 판매처 확대</div>
+      <div class="career-rr">성과</div>
+      <div class="career-content"><ul>
+        <li><strong>푸드케어</strong>: 메타 <span class="ai-tag">Advantage+</span> 직접운영 전환 수수료 15% 절감 + 네이버 <span class="ai-tag">자동입찰·AI</span> 효율 재정렬 광고비 50% 절감 (월 3,000만→1,500만) / <span class="ai-tag">GA4 AI 인사이트</span> 키워드 재정렬 / 블로그 방문 100→2,000명 (20배)</li>
+        <li><strong>시즈노프</strong>: 런칭 IMC 7채널 — 700+ 매장 + 무신사·29CM + 운동크루 + 메타 / <span class="ai-tag">ChatGPT</span> 메시지 일관성 점검·콘텐츠 카피 자동화</li>
+        <li><strong>로우티</strong>: 부진재고 5,000개 프로모션 소진 / 신제품 리듀스앤드 — 유튜버 6명 협업(6,000만) + 메타 월 500만</li>
+      </ul></div>
+      <div class="career-exit">이직 사유: 사모펀드 인수 직후 조직 방향성 재정립 시기, 장기 근속 환경 추구</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2021.07 — 2022.07 · 1년</div>
+      <div class="career-name">㈜오라팜 <span class="career-role">· B2C사업부 · 팀장(부장, 5명)</span></div>
+      <div class="career-summary">구강유산균 R&amp;D 제조·판매 / 매출 20억</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">B2C사업 총괄 — 자사몰·입점몰·라이브커머스·공동구매·OEM/ODM</div>
+      <div class="career-rr">성과</div>
+      <div class="career-content">월 매출 목표 2억 / 쿠팡 로켓배송 입점 / 공동구매 벤더 3사 (제이진·뷰티앤케이·트리즈커머스) / 마미앱·현대H몰 신규 / 키즈제품 라인업 확장 / <strong>오리온 닥터유 껌 협업 / 휴럼 OEM</strong></div>
+      <div class="career-exit">이직 사유: 건기식·D2C 본격 운영을 위한 스카우트 제안 수락</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2019.12 — 2021.03 · 1년 4개월</div>
+      <div class="career-name">㈜더에이블랩 <span class="career-role">· 마케팅팀 · 팀장 (4명)</span></div>
+      <div class="career-summary">6개 쇼핑몰 운영 / 매출 200억</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">월 5억 예산 디지털 마케팅 (메타 2.5억·네이버DA 1.5억·네이티브 0.5억·쇼핑박스 0.5억) / 닥터미라클 런칭 TFT / 광고매체 20+ / 광고대행사 4사 협업 (DMC·메조·메이크샵·NHN커머스)</div>
+      <div class="career-rr">성과</div>
+      <div class="career-content"><ul>
+        <li>닥터미라클 2020-05 런칭 → 6월 6.4억 / 7월 <strong>7.7억</strong> (목표 5억 초과) — 메타 <span class="ai-tag">Advantage+</span> + 머신러닝 영상 최적화</li>
+        <li>FB 영상 캠페인 140% 달성 (좋아요 500+, 댓글 200+, 공유 300+)</li>
+        <li>올더라이프 월 매출 12억 (월 마케팅 2.5-3억) / 자사상품 일 판매 50-100건+</li>
+        <li>까탈릭 신세계 명동점 입점 / 하이버·쇼피·티몬 입점·프로모션</li>
+      </ul></div>
+      <div class="career-exit">이직 사유: 건강 회복 및 가족 사유로 단기 휴식</div>
+    </div>
+
+    <div class="career-block core">
+      <div class="career-meta core">⭐ 2012.11 — 2019.11 · 7년 (CORE TRACK)</div>
+      <div class="career-name">㈜NHN커머스 <span class="career-role">· 마케팅1팀 · 팀장 (250명 회사 / 9명 팀)</span></div>
+      <div class="career-summary">쇼핑몰 창업 솔루션·호스팅·마케팅·부가서비스 (자사 솔루션 = 메이크샵·카페24와 동일 자사몰 솔루션 카테고리)</div>
+      <div class="career-rr">R&amp;R</div>
+      <div class="career-content">자사 솔루션 사용 업체 중 월 5천만 이상 매출 업체 광고주화 미션 / 마케팅·솔루션·외주디자인·CS 부서 통합 컨설팅 영업 / 마케팅1팀 팀장 (2018.11~) + 5년 이상 사실상 팀 리더</div>
+      <div class="career-rr">성과 — 영업·수주</div>
+      <div class="career-content"><ul>
+        <li>약 300+ 업체 컨택 → <strong>50+ 광고주 수주</strong></li>
+        <li>월 평균 영업매출 1.5-2억 (최대 3억) / 매출이익 0.3억 (최대 0.45억)</li>
+        <li>팀 월매출 4.8억 → 6.5억 (1.7억 상승) — 매년 2-3명 매출 상승 도우미</li>
+      </ul></div>
+      <div class="career-rr">성과 — 시그니처 광고주</div>
+      <div class="career-content"><ul>
+        <li><strong>VT코스메틱</strong> (2.5년) — 첫 미팅 1억 → 20억 매출 (20배) / 반트365·팔로우미·겟잇뷰티 미디어 협찬</li>
+        <li><strong>이지함화장품</strong> (2.5년) — 월 0.3-0.5억 / 네이버 콘텐츠DA 패션뷰티판 초기 집행</li>
+        <li><strong>더에이블랩</strong> (2.5년) — 4개 몰 최대 월 30억 매출 기여</li>
+      </ul></div>
+      <div class="career-rr">성과 — 매체 신규 발굴</div>
+      <div class="career-content">ZUM 쇼핑박스 공식대행 신설 / 네이버 실급검 5건 / 모바일 메인배너 신규 / 네이티브DA 영역 신설 (네이버·카카오·줌·네이트·디스패치·위키트리)</div>
+      <div class="career-exit">이직 사유: 7년 근무 후, 자사 브랜드를 직접 책임지는 경험으로 커리어 확장</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2011.06 — 2012.08 · 1년 2개월</div>
+      <div class="career-name">㈜오리지널마케팅그룹 <span class="career-role">· 마케팅1팀 · 팀장</span></div>
+      <div class="career-summary">미채움한의원 네트워크 + 마케팅대행사 / 12명</div>
+      <div class="career-content">미채움 고급 한방화장품 <strong>미채움오리지널 런칭</strong> / 한국관광공사 연계 일·중 관광객 판매 계획 / 침톡스 한의원 네트워크 온라인 프로모션 / 아이비클럽·그래놀라 등 바이럴 광고 대행</div>
+      <div class="career-exit">이직 사유: 마케팅 범위 확장과 솔루션·호스팅 카테고리 경험을 위한 이직</div>
+    </div>
+
+    <div class="career-block">
+      <div class="career-meta">2010.05 — 2011.06 · 1년 1개월 (첫 직장)</div>
+      <div class="career-name">㈜바론미디어 <span class="career-role">· 마케팅1팀 · 대리</span></div>
+      <div class="career-summary">마케팅대행사 / 48명</div>
+      <div class="career-content">광고주 영업·제안·운영 / 롯데ID껌(브랜드 블로그·이벤트·바이럴) / 아이비클럽 키워드·블로그·바이럴 / 하나은행 SNS / 옴니텔(천하쟁패) / 위니아에어워셔</div>
+      <div class="career-exit">이직 사유: 前 직장 팀장 스카우트 제안 수락</div>
+    </div>
+
+  </section>
+
+  <!-- EDUCATION -->
+  <section>
+    <h2>🎓 EDUCATION &amp; CERTIFICATION</h2>
+    <div class="edu-grid">
+      <div class="edu-item">
+        <div class="edu-label">학력</div>
+        <div class="edu-name">남서울대학교 경영학부 (유통학과)</div>
+        <div class="edu-detail">2002.03 — 2009.02 · 학점 3.0/4.5</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-label">자격</div>
+        <div class="edu-name">쇼핑몰운영전문가 (NHN커머스)</div>
+        <div class="edu-detail">2016.10</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-label">병역</div>
+        <div class="edu-name">공익근무 (군필)</div>
+        <div class="edu-detail">2003.03 — 2005.06</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

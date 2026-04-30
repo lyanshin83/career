@@ -1,0 +1,10 @@
+{
+  "name": "career-dashboard",
+  "version": "1.0.0",
+  "description": "마케팅 시니어 본부장 취준 자동화 대시보드 — Claude API + Vercel",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

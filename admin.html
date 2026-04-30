@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔒 취준 관리자 대시보드 — 김OO</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+<style>
+  body { font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; }
+  .accent { color: #FF6B35; }
+  .accent-bg { background-color: #FF6B35; }
+  .accent-border { border-color: #FF6B35; }
+  .gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #FFA559 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tab-btn {
+    padding: 14px 18px;
+    border-bottom: 2px solid transparent;
+    color: #9ca3af;
+    font-weight: 600;
+    cursor: pointer;
+    background: none;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: white; }
+  .tab-btn.active { color: #FF6B35; border-bottom-color: #FF6B35; }
+  .modal { backdrop-filter: blur(8px); }
+  .markdown { line-height: 1.7; }
+  .markdown h1, .markdown h2, .markdown h3 { font-weight: 700; margin: 16px 0 8px; }
+  .markdown h2 { font-size: 1.2em; color: #FF6B35; }
+  .markdown h3 { font-size: 1.05em; }
+  .markdown p { margin-bottom: 10px; }
+  .markdown ul, .markdown ol { margin: 8px 0 8px 20px; }
+  .markdown li { margin-bottom: 4px; }
+  .markdown table { border-collapse: collapse; margin: 12px 0; width: 100%; font-size: 0.9em; }
+  .markdown th, .markdown td { border: 1px solid #374151; padding: 6px 10px; text-align: left; }
+  .markdown th { background: #1f2937; color: #FF6B35; }
+  .markdown strong { color: #FF6B35; }
+  .markdown code { background: #1f2937; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+</style>
+</head>
+<body class="bg-black text-white antialiased">
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="loginGate" class="fixed inset-0 bg-black z-50 flex items-center justify-center px-4">
+  <div class="max-w-md w-full">
+    <p class="text-xs tracking-[0.3em] text-gray-500 mb-4">CAREER OPS · MARKETING SENIOR</p>
+    <h1 class="text-4xl font-bold mb-2">🔒 <span class="gradient">관리자 대시보드</span></h1>
+    <p class="text-gray-400 mb-8">취준 관리 + AI 자동 분석 + 면접 트래킹</p>
+
+    <!-- 첫 셋업 -->
+    <div id="firstSetup" class="hidden">
+      <h2 class="text-xl font-bold mb-4">첫 방문 — 셋업 (1분)</h2>
+
+      <label class="block text-sm text-gray-400 mb-2">PIN (4자리)</label>
+      <input id="pinSet" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
+        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-4 text-white focus:border-orange-500 outline-none">
+
+      <label class="block text-sm text-gray-400 mb-2">Claude API Key</label>
+      <input id="apiKeySet" type="password" placeholder="sk-ant-..."
+        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
+      <p class="text-xs text-gray-500 mb-6">
+        💡 <a href="https://console.anthropic.com" target="_blank" class="accent underline">console.anthropic.com</a>에서 발급 (5분, 본인 계정)
+      </p>
+
+      <button onclick="setupComplete()" class="w-full accent-bg text-white font-bold py-3 rounded hover:opacity-90 transition">시작 →</button>
+    </div>
+
+    <!-- 로그인 -->
+    <div id="loginForm" class="hidden">
+      <label class="block text-sm text-gray-400 mb-2">PIN</label>
+      <input id="pinLogin" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
+        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-4 text-white focus:border-orange-500 outline-none"
+        onkeypress="if(event.key==='Enter') login()">
+      <button onclick="login()" class="w-full accent-bg text-white font-bold py-3 rounded hover:opacity-90 transition">로그인</button>
+      <p id="loginError" class="text-red-400 text-sm mt-2 hidden">PIN이 일치하지 않습니다</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard" class="hidden">
+
+  <!-- HEADER -->
+  <header class="border-b border-gray-800 px-6 py-4 flex flex-wrap justify-between items-center gap-3">
+    <div>
+      <h1 class="text-xl font-bold">취준 관리자 <span class="accent">·</span> Dashboard</h1>
+      <p class="text-xs text-gray-500">디지털 광고 × 브랜드 마케팅 시니어 (16년)</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="사이트_메인_v2.html" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-orange-500 transition">← 메인 사이트</a>
+      <button onclick="logout()" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-orange-500 transition">🔒 로그아웃</button>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="border-b border-gray-800 px-6 flex gap-1 overflow-x-auto">
+    <button class="tab-btn active" data-tab="jobs">📋 채용공고</button>
+    <button class="tab-btn" data-tab="interviews">🎤 면접 관리</button>
+    <button class="tab-btn" data-tab="profile">👤 프로필</button>
+    <button class="tab-btn" data-tab="docs">📄 자료 다운로드</button>
+    <button class="tab-btn" data-tab="settings">⚙️ 설정</button>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="p-6 max-w-7xl mx-auto">
+
+    <!-- ===== TAB: 채용공고 ===== -->
+    <section id="tab-jobs" class="tab-content">
+      <!-- Stats -->
+      <div id="jobStats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"></div>
+
+      <!-- Header -->
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">채용공고</h2>
+          <p class="text-xs text-gray-500 mt-1">URL 또는 공고 본문 붙여넣기 → AI 자동 분석</p>
+        </div>
+        <button onclick="openAddJob()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">+ 공고 추가</button>
+      </div>
+
+      <!-- Filter -->
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button class="filter-btn active" data-filter="all">전체</button>
+        <button class="filter-btn" data-filter="◎">매칭 ◎</button>
+        <button class="filter-btn" data-filter="○">매칭 ○</button>
+        <button class="filter-btn" data-filter="검토중">검토중</button>
+        <button class="filter-btn" data-filter="지원완료">지원완료</button>
+      </div>
+
+      <div id="jobList" class="space-y-3"></div>
+    </section>
+
+    <!-- ===== TAB: 면접 관리 ===== -->
+    <section id="tab-interviews" class="tab-content hidden">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">면접 관리</h2>
+          <p class="text-xs text-gray-500 mt-1">일정 트래킹 + AI 답변풀 자동 생성</p>
+        </div>
+        <button onclick="openAddInterview()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">+ 면접 추가</button>
+      </div>
+      <div id="interviewList" class="space-y-3"></div>
+    </section>
+
+    <!-- ===== TAB: 프로필 ===== -->
+    <section id="tab-profile" class="tab-content hidden">
+      <h2 class="text-2xl font-bold mb-2">👤 프로필 정보 일괄 수정</h2>
+      <p class="text-xs text-gray-500 mb-6">한 번 입력 → 5개 HTML 파일 자동 교체 → ZIP 다운로드 → Vercel 재배포</p>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-6">
+        <h3 class="font-bold accent mb-4">📝 본인 정보</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">이름 *</label>
+            <input id="profileName" placeholder="홍길동 (또는 김OO 그대로)" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
+            <p class="text-xs text-gray-600 mt-1">현재 placeholder: <code class="text-orange-400">김OO</code></p>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">이메일 *</label>
+            <input id="profileEmail" type="email" placeholder="hong@example.com" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
+            <p class="text-xs text-gray-600 mt-1">현재: <code class="text-orange-400">your@email.com</code></p>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">전화번호 *</label>
+            <input id="profilePhone" placeholder="010-1234-5678" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
+            <p class="text-xs text-gray-600 mt-1">현재: <code class="text-orange-400">010-XXXX-XXXX</code></p>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">LinkedIn URL</label>
+            <input id="profileLinkedin" placeholder="linkedin.com/in/hong-marketer" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
+            <p class="text-xs text-gray-600 mt-1">현재: <code class="text-orange-400">linkedin.com/in/yourid</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-6">
+        <h3 class="font-bold accent mb-4">🔄 적용할 파일 (5개)</h3>
+        <ul class="text-sm text-gray-300 space-y-2">
+          <li>✅ <code>사이트_메인_v2.html</code> — Hero·Contact·Footer</li>
+          <li>✅ <code>문서_이력서.html</code> — 이력서 헤더 + 자소서 헤더</li>
+          <li>✅ <code>문서_경력기술서.html</code> — 헤더</li>
+          <li>✅ <code>문서_자소서.html</code> — 헤더</li>
+          <li>✅ <code>문서_포트폴리오.html</code> — Hero·Footer</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button onclick="saveProfileOnly()" class="px-6 py-3 border border-gray-700 rounded font-bold hover:border-orange-500 transition">💾 정보만 저장 (브라우저)</button>
+        <button onclick="updateAllFiles()" class="px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 5개 파일 일괄 적용 + ZIP 다운로드</button>
+      </div>
+
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-6">
+        <h3 class="font-bold accent mb-3">📋 적용 후 다음 단계</h3>
+        <ol class="text-sm text-gray-300 space-y-2 list-decimal list-inside">
+          <li>다운로드 받은 ZIP 파일 압축 해제</li>
+          <li>5개 HTML 파일을 본인 폴더에 덮어쓰기</li>
+          <li>Vercel 재배포 (드래그 앤 드롭 또는 <code>vercel deploy --prod</code>)</li>
+          <li>완료 — 사이트·문서 모두 본인 정보로 자동 표시</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== TAB: 자료 다운로드 ===== -->
+    <section id="tab-docs" class="tab-content hidden">
+      <h2 class="text-2xl font-bold mb-2">📄 자료 다운로드</h2>
+      <p class="text-xs text-gray-500 mb-6">표준 자료 — 회사별 변형은 공고 상세에서 "AI 자료 변형"</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="문서_이력서.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <div class="text-3xl mb-3">📄</div>
+          <h3 class="font-bold mb-1">이력서·자소서 통합</h3>
+          <p class="text-xs text-gray-500">A4 3장 + 사진 + AI 도구 강조</p>
+        </a>
+        <a href="문서_경력기술서.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <div class="text-3xl mb-3">📋</div>
+          <h3 class="font-bold mb-1">경력기술서</h3>
+          <p class="text-xs text-gray-500">A4 2장 + 시각화 풀</p>
+        </a>
+        <a href="문서_포트폴리오.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <div class="text-3xl mb-3">🎨</div>
+          <h3 class="font-bold mb-1">포트폴리오</h3>
+          <p class="text-xs text-gray-500">A4 4장 + 케이스 스터디</p>
+        </a>
+        <a href="사이트_메인_v2.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <div class="text-3xl mb-3">🌐</div>
+          <h3 class="font-bold mb-1">메인 사이트</h3>
+          <p class="text-xs text-gray-500">인터랙티브 + 애니메이션</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== TAB: 설정 ===== -->
+    <section id="tab-settings" class="tab-content hidden">
+      <h2 class="text-2xl font-bold mb-6">⚙️ 설정</h2>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold mb-3 accent">Claude API 키</h3>
+        <input id="apiKeyEdit" type="password" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
+        <button onclick="saveApiKey()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
+      </div>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold mb-3 accent">PIN 변경</h3>
+        <input id="pinEdit" type="password" maxlength="4" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
+        <button onclick="savePin()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
+      </div>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold mb-3 accent">데이터 백업·복원</h3>
+        <p class="text-xs text-gray-500 mb-3">localStorage 사용 — 다른 PC에서 사용하려면 export/import</p>
+        <button onclick="exportData()" class="bg-gray-700 text-white px-4 py-2 rounded mr-2">📤 Export JSON</button>
+        <input id="importFile" type="file" accept=".json" onchange="importData()" class="hidden">
+        <button onclick="document.getElementById('importFile').click()" class="bg-gray-700 text-white px-4 py-2 rounded">📥 Import JSON</button>
+      </div>
+
+      <div class="border border-red-900 rounded-lg p-6">
+        <h3 class="font-bold mb-3 text-red-400">⚠️ 데이터 전체 삭제</h3>
+        <button onclick="resetAll()" class="bg-red-700 text-white px-4 py-2 rounded">전체 초기화</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- Add Job Modal -->
+<div id="addJobModal" class="modal fixed inset-0 bg-black/70 z-40 hidden flex items-center justify-center px-4">
+  <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">+ 공고 추가</h2>
+      <button onclick="closeAddJob()" class="text-gray-400 hover:text-white text-2xl">×</button>
+    </div>
+
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">회사명 *</label>
+          <input id="jobCompany" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500" placeholder="어센드미디어">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">포지션 *</label>
+          <input id="jobPosition" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500" placeholder="퍼포먼스 마케터 (팀장/본부장)">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">출처</label>
+          <select id="jobSource" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+            <option>리멤버</option>
+            <option>사람인</option>
+            <option>잡코리아</option>
+            <option>원티드</option>
+            <option>링크드인</option>
+            <option>헤드헌터</option>
+            <option>직접 발견</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">마감일</label>
+          <input id="jobDeadline" type="date" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">URL</label>
+        <input id="jobUrl" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500" placeholder="https://...">
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">공고 본문 (붙여넣기) — AI 분석용 *</label>
+        <textarea id="jobJD" rows="8" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 font-mono text-sm" placeholder="채용공고 페이지에서 회사 소개·주요 업무·자격 요건·우대사항·채용 절차 등 전체 텍스트 복사해서 붙여넣기"></textarea>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="addJob()" class="accent-bg text-white px-6 py-3 rounded font-bold flex-1 hover:opacity-90 transition">저장 + AI 분석</button>
+      <button onclick="closeAddJob()" class="border border-gray-700 px-6 py-3 rounded">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- Job Detail Modal -->
+<div id="jobDetailModal" class="modal fixed inset-0 bg-black/70 z-40 hidden">
+  <div class="h-full flex items-center justify-center p-4">
+    <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div id="jobDetailContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Interview Modal -->
+<div id="addInterviewModal" class="modal fixed inset-0 bg-black/70 z-40 hidden flex items-center justify-center px-4">
+  <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-2xl w-full p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">+ 면접 추가</h2>
+      <button onclick="closeAddInterview()" class="text-gray-400 hover:text-white text-2xl">×</button>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">관련 공고</label>
+        <select id="interviewJobId" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">면접 단계</label>
+          <select id="interviewStage" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+            <option>1차 - 서류전형</option>
+            <option>2차 - 실무자 인터뷰</option>
+            <option>3차 - 임원 인터뷰</option>
+            <option>4차 - 대표 인터뷰</option>
+            <option>최종</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">날짜·시간</label>
+          <input id="interviewDate" type="datetime-local" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">면접관·메모</label>
+        <textarea id="interviewMemo" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500"></textarea>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="addInterview()" class="accent-bg text-white px-6 py-3 rounded font-bold flex-1">저장 + AI 답변풀 생성</button>
+      <button onclick="closeAddInterview()" class="border border-gray-700 px-6 py-3 rounded">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="modal fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center">
+  <div class="text-center">
+    <div class="inline-block w-12 h-12 border-4 border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+    <p id="loadingText" class="text-gray-400">AI 분석 중...</p>
+  </div>
+</div>
+
+<style>
+  .filter-btn {
+    padding: 6px 14px;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    font-size: 12px;
+    background: transparent;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: #FF6B35; color: white; }
+  .filter-btn.active { background: #FF6B35; color: white; border-color: #FF6B35; }
+</style>
+
+<script>
+// ============ STATE ============
+let state = {
+  jobs: [],
+  interviews: [],
+  filter: 'all'
+};
+
+// ============ INIT ============
+function init() {
+  loadFromStorage();
+  if (!localStorage.getItem('pin')) {
+    showFirstSetup();
+  } else {
+    showLogin();
+  }
+}
+
+function loadFromStorage() {
+  state.jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+  state.interviews = JSON.parse(localStorage.getItem('interviews') || '[]');
+}
+
+function saveToStorage() {
+  localStorage.setItem('jobs', JSON.stringify(state.jobs));
+  localStorage.setItem('interviews', JSON.stringify(state.interviews));
+}
+
+// ============ LOGIN ============
+function showFirstSetup() {
+  document.getElementById('firstSetup').classList.remove('hidden');
+  document.getElementById('loginForm').classList.add('hidden');
+}
+
+function showLogin() {
+  document.getElementById('firstSetup').classList.add('hidden');
+  document.getElementById('loginForm').classList.remove('hidden');
+}
+
+function setupComplete() {
+  const pin = document.getElementById('pinSet').value;
+  const apiKey = document.getElementById('apiKeySet').value;
+  if (pin.length !== 4) return alert('PIN 4자리 입력');
+  if (!apiKey.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다');
+  localStorage.setItem('pin', pin);
+  localStorage.setItem('claudeApiKey', apiKey);
+  enterDashboard();
+}
+
+function login() {
+  const pin = document.getElementById('pinLogin').value;
+  if (pin === localStorage.getItem('pin')) {
+    document.getElementById('loginError').classList.add('hidden');
+    enterDashboard();
+  } else {
+    document.getElementById('loginError').classList.remove('hidden');
+    document.getElementById('pinLogin').value = '';
+  }
+}
+
+function enterDashboard() {
+  document.getElementById('loginGate').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  renderAll();
+  document.getElementById('apiKeyEdit').value = localStorage.getItem('claudeApiKey') || '';
+  loadProfile();
+}
+
+// ============ PROFILE ============
+function loadProfile() {
+  const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  if (p.name) document.getElementById('profileName').value = p.name;
+  if (p.email) document.getElementById('profileEmail').value = p.email;
+  if (p.phone) document.getElementById('profilePhone').value = p.phone;
+  if (p.linkedin) document.getElementById('profileLinkedin').value = p.linkedin;
+}
+
+function getProfileFromForm() {
+  return {
+    name: document.getElementById('profileName').value.trim(),
+    email: document.getElementById('profileEmail').value.trim(),
+    phone: document.getElementById('profilePhone').value.trim(),
+    linkedin: document.getElementById('profileLinkedin').value.trim()
+  };
+}
+
+function saveProfileOnly() {
+  const profile = getProfileFromForm();
+  if (!profile.name || !profile.email || !profile.phone) {
+    return alert('이름·이메일·전화는 필수입니다');
+  }
+  localStorage.setItem('userProfile', JSON.stringify(profile));
+  alert('브라우저에 저장됐습니다.\n\n5개 파일에 적용하려면 "📦 일괄 적용 + ZIP 다운로드" 버튼을 눌러주세요.');
+}
+
+async function updateAllFiles() {
+  const profile = getProfileFromForm();
+  if (!profile.name || !profile.email || !profile.phone) {
+    return alert('이름·이메일·전화는 필수입니다');
+  }
+
+  // 저장 먼저
+  localStorage.setItem('userProfile', JSON.stringify(profile));
+
+  showLoading('5개 파일 처리 중...');
+
+  const files = [
+    '사이트_메인_v2.html',
+    '문서_이력서.html',
+    '문서_경력기술서.html',
+    '문서_자소서.html',
+    '문서_포트폴리오.html'
+  ];
+
+  try {
+    const zip = new JSZip();
+
+    for (const file of files) {
+      showLoading(`${file} 처리 중...`);
+      const res = await fetch(file);
+      if (!res.ok) {
+        console.warn(`${file} 가져오기 실패 (배포 전이거나 파일 없음)`);
+        continue;
+      }
+      let html = await res.text();
+
+      // 일괄 교체
+      html = html
+        .replaceAll('김OO', profile.name)
+        .replaceAll('your@email.com', profile.email)
+        .replaceAll('010-XXXX-XXXX', profile.phone);
+
+      if (profile.linkedin) {
+        // LinkedIn URL 정규화 (https:// 자동 추가)
+        let linkedinUrl = profile.linkedin;
+        if (!linkedinUrl.startsWith('http')) {
+          linkedinUrl = linkedinUrl.replace(/^linkedin\.com/, 'https://linkedin.com');
+          if (!linkedinUrl.startsWith('http')) linkedinUrl = 'https://' + linkedinUrl;
+        }
+        const display = linkedinUrl.replace(/^https?:\/\//, '');
+        html = html
+          .replaceAll('linkedin.com/in/yourid', display)
+          .replaceAll('https://linkedin.com/in/yourid', linkedinUrl);
+      }
+
+      zip.file(file, html);
+    }
+
+    showLoading('ZIP 생성 중...');
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `프로필적용_${new Date().toISOString().split('T')[0]}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    hideLoading();
+    alert('✅ ZIP 다운로드 완료!\n\n다음 단계:\n1. ZIP 압축 해제\n2. 5개 HTML 파일을 본인 폴더에 덮어쓰기\n3. Vercel 재배포 (드래그 앤 드롭)');
+  } catch (err) {
+    hideLoading();
+    alert('실패: ' + err.message + '\n\n💡 로컬 파일에서 직접 열고 있다면 작동 안 합니다. Vercel 배포 후 사이트에서 시도해주세요.');
+  }
+}
+
+function logout() {
+  document.getElementById('loginGate').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('pinLogin').value = '';
+  showLogin();
+}
+
+// ============ TABS ============
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+  };
+});
+
+// ============ FILTERS ============
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.filter = btn.dataset.filter;
+    renderJobs();
+  };
+});
+
+// ============ CLAUDE API ============
+async function callClaude(prompt, maxTokens = 4096) {
+  showLoading('AI 분석 중...');
+  try {
+    const apiKey = localStorage.getItem('claudeApiKey');
+    if (!apiKey) throw new Error('API 키가 없습니다. 설정 탭에서 입력하세요');
+
+    const response = await fetch('/api/claude', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: maxTokens,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || 'API 호출 실패');
+    return data.content[0].text;
+  } finally {
+    hideLoading();
+  }
+}
+
+function showLoading(text) {
+  document.getElementById('loadingText').textContent = text;
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// ============ JOBS ============
+function openAddJob() {
+  document.getElementById('addJobModal').classList.remove('hidden');
+  document.getElementById('jobCompany').value = '';
+  document.getElementById('jobPosition').value = '';
+  document.getElementById('jobUrl').value = '';
+  document.getElementById('jobJD').value = '';
+}
+
+function closeAddJob() {
+  document.getElementById('addJobModal').classList.add('hidden');
+}
+
+async function addJob() {
+  const company = document.getElementById('jobCompany').value.trim();
+  const position = document.getElementById('jobPosition').value.trim();
+  const url = document.getElementById('jobUrl').value.trim();
+  const jdText = document.getElementById('jobJD').value.trim();
+  const source = document.getElementById('jobSource').value;
+  const deadline = document.getElementById('jobDeadline').value;
+
+  if (!company || !position) return alert('회사·포지션 필수');
+  if (!jdText) return alert('공고 본문 필수 (AI 분석용)');
+
+  const job = {
+    id: Date.now().toString(),
+    company, position, url, jdText, source, deadline,
+    status: '검토중',
+    matchScore: '분석중',
+    createdAt: new Date().toISOString(),
+    analysis: null
+  };
+
+  state.jobs.unshift(job);
+  saveToStorage();
+  closeAddJob();
+  renderAll();
+
+  // Auto AI analysis
+  try {
+    const prompt = buildJobAnalysisPrompt(job);
+    job.analysis = await callClaude(prompt);
+    job.matchScore = extractScore(job.analysis);
+    saveToStorage();
+    renderAll();
+  } catch (err) {
+    alert('AI 분석 실패: ' + err.message);
+    job.matchScore = '실패';
+    saveToStorage();
+    renderAll();
+  }
+}
+
+function buildJobAnalysisPrompt(job) {
+  return `다음 채용공고를 마케팅 시니어 본부장(16년 경력) 기준으로 분석해줘.
+
+[지원자 프로필]
+- 광고대행사 광고주 영업·운영 10년 + 자체 브랜드 D2C 5년+ (16년 시니어)
+- NHN커머스 7년 광고주 50+ 신규 수주, 월 영업매출 1.5-2억
+- VT코스메틱 1억→20억 (20배), 닥터미라클 런칭 7.7억
+- 시즈노프 IMC 7채널, 푸드케어 광고비 50% 절감
+- 메타 Advantage+·구글 PMax·네이버 자동입찰·ChatGPT·Claude·GA4 AI 직접 운영
+- 6사 팀장 누적 13년+ (4-9명), C레벨 다이렉트 미팅 다수
+
+[공고 정보]
+회사: ${job.company}
+포지션: ${job.position}
+URL: ${job.url || '미상'}
+공고 본문:
+${job.jdText}
+
+[분석 요청 — 6렌즈 + 4축]
+
+## 1. 6렌즈 분석
+1) **시장 렌즈**: 산업·이 직군 수요·연봉 밴드
+2) **회사 렌즈**: 단계·재무·컬쳐·채용 빈도
+3) **포지션 렌즈**: 왜 지금 비었나·풀 문제·R&R
+4) **사람 렌즈**: 리포팅 라인·팀 구성·면접관 추정
+5) **나(지원자) 렌즈**: 매칭 강도·성장 가능성
+6) **리스크 렌즈**: 레드플래그·기회비용
+
+## 2. 4축 분석
+1) **필수 자격** (한 개라도 0이면 광탈): 매칭 점수 X/Y
+2) **우대 자격** (차별화): 매칭 점수 X/Y
+3) **숨은 함정**: 5인 일량·모호 R&R·반복 채용 등
+4) **팀 구조 신호**: 솔로/팀·리포팅 라인
+
+## 3. KPI 추론 (입사 90일 증명할 수치 3개)
+
+## 4. 키워드 3분류
+- 반드시 박을 단어 (자소서·이력서)
+- 자연스럽게 녹일 단어
+- 피할 단어
+
+## 5. 면접관 체크박스 5개 (자소서가 답해야 할 질문)
+
+## 6. 종합 결론
+- **매칭 강도**: ◎ / ○ / △ / ✗ 중 하나 (반드시 명시)
+- **지원 권장도**: 강력 추천 / 조건부 / 비추 (반드시 명시)
+- 한 줄 요약 이유
+
+마크다운 형식으로 정리해줘.`;
+}
+
+function extractScore(analysis) {
+  // 매칭 강도 ◎ ○ △ ✗ 추출
+  const scoreMatch = analysis.match(/매칭\s*강도[:\s]*\*?\*?([◎○△✗])/);
+  if (scoreMatch) return scoreMatch[1];
+  // 본문에서 첫 번째 등장한 기호
+  if (analysis.includes('◎')) return '◎';
+  if (analysis.includes('○')) return '○';
+  if (analysis.includes('△')) return '△';
+  if (analysis.includes('✗')) return '✗';
+  return '?';
+}
+
+function renderJobs() {
+  const list = document.getElementById('jobList');
+  let filtered = state.jobs;
+  if (state.filter !== 'all') {
+    filtered = state.jobs.filter(j =>
+      j.matchScore === state.filter || j.status === state.filter
+    );
+  }
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="text-center py-16 border border-dashed border-gray-800 rounded-lg">
+      <p class="text-gray-500 mb-2">아직 등록된 공고가 없습니다.</p>
+      <p class="text-xs text-gray-600">"+ 공고 추가" 버튼으로 시작</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(job => {
+    const scoreColor = job.matchScore === '◎' ? 'text-orange-500' :
+                       job.matchScore === '○' ? 'text-yellow-400' :
+                       job.matchScore === '△' ? 'text-gray-400' : 'text-gray-600';
+    const statusColor = job.status === '지원완료' ? 'bg-green-900 text-green-300' :
+                        job.status === '면접' ? 'bg-blue-900 text-blue-300' :
+                        job.status === '합격' ? 'bg-orange-900 text-orange-300' : 'bg-gray-800 text-gray-400';
+    return `
+    <div class="border border-gray-800 rounded-lg p-4 hover:border-orange-500 cursor-pointer transition" onclick="openJobDetail('${job.id}')">
+      <div class="flex justify-between items-start gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <h3 class="text-lg font-bold truncate">${escapeHtml(job.company)}</h3>
+            <span class="text-xs text-gray-500">·</span>
+            <span class="text-sm text-gray-400 truncate">${escapeHtml(job.position)}</span>
+          </div>
+          <div class="flex flex-wrap gap-3 text-xs text-gray-500">
+            <span>📍 ${job.source}</span>
+            ${job.deadline ? `<span>⏰ ~${job.deadline}</span>` : ''}
+            <span>🕒 ${new Date(job.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="text-3xl font-bold ${scoreColor}">${job.matchScore}</div>
+          <span class="px-3 py-1 rounded text-xs ${statusColor}">${job.status}</span>
+        </div>
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+function openJobDetail(id) {
+  const job = state.jobs.find(j => j.id === id);
+  if (!job) return;
+  const html = `
+    <div class="flex justify-between items-start mb-4">
+      <div>
+        <p class="text-xs text-gray-500 mb-1">${job.source} · ${new Date(job.createdAt).toLocaleString()}</p>
+        <h2 class="text-2xl font-bold">${escapeHtml(job.company)}</h2>
+        <p class="text-gray-400">${escapeHtml(job.position)}</p>
+      </div>
+      <button onclick="closeJobDetail()" class="text-gray-400 hover:text-white text-2xl">×</button>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-4">
+      <div class="border border-gray-800 rounded p-3">
+        <div class="text-xs text-gray-500 mb-1">매칭 강도</div>
+        <div class="text-3xl font-bold accent">${job.matchScore}</div>
+      </div>
+      <div class="border border-gray-800 rounded p-3">
+        <div class="text-xs text-gray-500 mb-1">상태</div>
+        <select onchange="updateJobStatus('${job.id}', this.value)" class="w-full bg-transparent text-lg font-bold mt-1 outline-none">
+          ${['검토중','지원완료','서류통과','면접','합격','불합격','보류'].map(s =>
+            `<option ${s===job.status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="border border-gray-800 rounded p-3">
+        <div class="text-xs text-gray-500 mb-1">마감</div>
+        <div class="font-bold">${job.deadline || '-'}</div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-6">
+      ${job.url ? `<a href="${job.url}" target="_blank" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🔗 공고 보기</a>` : ''}
+      <button onclick="reanalyzeJob('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🔄 AI 재분석</button>
+      <button onclick="generateCoverLetter('${job.id}')" class="px-3 py-2 accent-bg text-white rounded text-sm font-bold">✍️ 자소서 변형</button>
+      <button onclick="generateInterviewQA('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🎤 면접 답변풀</button>
+      <button onclick="deleteJob('${job.id}')" class="px-3 py-2 border border-red-900 text-red-400 rounded text-sm hover:bg-red-900/30">🗑️ 삭제</button>
+    </div>
+
+    ${job.analysis ? `
+      <div class="border border-gray-800 rounded-lg p-4 mb-4">
+        <h3 class="font-bold accent mb-3">📊 AI 분석 결과</h3>
+        <div class="markdown text-sm">${renderMarkdown(job.analysis)}</div>
+      </div>` : '<p class="text-gray-500 text-sm">AI 분석 대기중</p>'}
+
+    ${job.coverLetter ? `
+      <div class="border border-orange-900 rounded-lg p-4 mb-4 bg-orange-950/10">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold accent">✍️ 자소서 (회사 맞춤 변형)</h3>
+          <button onclick="downloadText('${job.id}', 'coverLetter', '자소서_${job.company}.txt')" class="px-3 py-1 accent-bg text-white text-xs rounded">다운로드</button>
+        </div>
+        <div class="markdown text-sm">${renderMarkdown(job.coverLetter)}</div>
+      </div>` : ''}
+
+    ${job.interviewQA ? `
+      <div class="border border-gray-800 rounded-lg p-4 mb-4">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold accent">🎤 면접 답변풀</h3>
+          <button onclick="downloadText('${job.id}', 'interviewQA', '면접답변_${job.company}.txt')" class="px-3 py-1 accent-bg text-white text-xs rounded">다운로드</button>
+        </div>
+        <div class="markdown text-sm">${renderMarkdown(job.interviewQA)}</div>
+      </div>` : ''}
+
+    <details class="border border-gray-800 rounded-lg p-4">
+      <summary class="cursor-pointer font-bold text-gray-400">📄 공고 본문 보기</summary>
+      <pre class="text-xs text-gray-400 whitespace-pre-wrap mt-3 font-mono">${escapeHtml(job.jdText)}</pre>
+    </details>
+  `;
+  document.getElementById('jobDetailContent').innerHTML = html;
+  document.getElementById('jobDetailModal').classList.remove('hidden');
+}
+
+function closeJobDetail() {
+  document.getElementById('jobDetailModal').classList.add('hidden');
+}
+
+function updateJobStatus(id, status) {
+  const job = state.jobs.find(j => j.id === id);
+  if (job) {
+    job.status = status;
+    saveToStorage();
+    renderJobs();
+    renderStats();
+  }
+}
+
+async function reanalyzeJob(id) {
+  const job = state.jobs.find(j => j.id === id);
+  if (!job) return;
+  try {
+    const prompt = buildJobAnalysisPrompt(job);
+    job.analysis = await callClaude(prompt);
+    job.matchScore = extractScore(job.analysis);
+    saveToStorage();
+    openJobDetail(id);
+    renderJobs();
+  } catch (err) {
+    alert('실패: ' + err.message);
+  }
+}
+
+async function generateCoverLetter(id) {
+  const job = state.jobs.find(j => j.id === id);
+  if (!job) return;
+  if (!job.analysis) return alert('먼저 AI 분석부터 실행하세요');
+
+  const prompt = `다음 채용공고에 맞춰서 자소서를 작성해줘. 마케팅 시니어 본부장 표준 양식 (3섹션).
+
+[지원자 프로필 — 16년 시니어 마케터]
+- NHN커머스 7년 광고주 50+ 수주, 월 영업매출 1.5-2억
+- VT코스메틱 1억→20억 견인, 이지함 ROI 250배
+- 더에이블랩 닥터미라클 런칭 7.7억 (목표 5억 초과 / 메타 Advantage+ + 머신러닝)
+- 라이프앤바이오 시즈노프 IMC 7채널 / 푸드케어 광고비 50% 절감
+- 6사 팀장 누적 13년+ / NHN 9명 팀 5년+
+- 메타 Advantage+ / 구글 PMax / 네이버 자동입찰 / ChatGPT·Claude / GA4 AI 직접 운영
+
+[지원 회사·공고]
+${job.company} · ${job.position}
+공고 본문:
+${job.jdText}
+
+[AI 분석 결과 — 참고용]
+${job.analysis}
+
+[자소서 양식 — 3섹션]
+
+## 1. 업무경험
+- 16년 경력 정체성 한 줄
+- 4-5단락: 회사별 시기 강조 (NHN 7년 = 핵심 / 자체 브랜드 4사 = 다양성)
+- 시그니처 임팩트 수치 명확히
+- 정체성 마무리 한 줄
+
+## 2. 성장과정 및 성격
+- 16명 다가족 → 다양성·관점 양립 능력
+- 털털 + 꼼꼼·세심 → 광고주 50개 + 매체 20개 동시 운영
+- 어머님 "착하게 살아다오" → 원칙·신뢰 행동 기준
+
+## 3. 지원동기 및 입사 후 포부
+- 회사 진단 (이 공고에 맞춰 새로)
+- 본인 핏 (NHN + 자체브랜드 양립)
+- 솔직 인정 (미경험 영역 짚기 + 회복 전략)
+- 안정성 단락 (NHN 7년 + 자체 4사 = 의도적 다양화)
+- **90일 플랜** (D1-30 / D31-60 / D61-90 — 회사 KPI 직결)
+- AI 비전 단락 (회사 AI 정책에 맞춤)
+- 1년 후 / 3년 후 비전
+- 마무리 한 줄 (회사 핵심 메시지 매칭)
+
+마크다운 형식, 한국어 시니어 본부장 톤.`;
+
+  try {
+    job.coverLetter = await callClaude(prompt, 8192);
+    saveToStorage();
+    openJobDetail(id);
+  } catch (err) {
+    alert('자소서 생성 실패: ' + err.message);
+  }
+}
+
+async function generateInterviewQA(id) {
+  const job = state.jobs.find(j => j.id === id);
+  if (!job) return;
+  if (!job.analysis) return alert('먼저 AI 분석부터 실행하세요');
+
+  const prompt = `다음 회사 면접에 대한 답변풀을 만들어줘. 마케팅 시니어 본부장(16년) 기준.
+
+회사: ${job.company} · ${job.position}
+공고: ${job.jdText.slice(0, 1500)}
+
+[답변풀 — 9개 핵심 질문]
+
+## 2차 실무자 인터뷰
+1. 월 예산 X억 광고주 운영 중 가장 어려웠던 케이스 + 어떻게 풀었나
+2. 매체 효율 떨어지는 광고주 캠페인 어떻게 진단·개선하나
+3. 팀원 KPI 미달 시 어떻게 코칭하나
+4. AI 자동화 도구 + 사람 운영 결합 어떻게 보나
+5. 왜 ${job.company}인가 (실무자 짧게)
+
+## 3차 임원/대표 인터뷰
+6. ${job.company}를 어떻게 보고 있는가 (회사 진단)
+7. 본부장으로 합류 시 90일 / 1년 / 3년 무엇 만들 것
+8. 솔루션·자체브랜드 시너지에 본부장 기여 가능한가
+
+## 안정성·이직 사유
+9. 왜 한 곳에서 안 오래 머무는가 (NHN 7년 + 자체브랜드 의도적 다양화 narrative)
+
+각 질문마다 60-90초 답변 BAR-I 구조 (배경·실행·성과·인사이트)로.
+지원자 시그니처 케이스 활용 (VT 20배 / 닥터미라클 7.7억 / 푸드케어 50% / NHN 50+ 수주 / 시즈노프 IMC).
+
+마크다운 형식.`;
+
+  try {
+    job.interviewQA = await callClaude(prompt, 8192);
+    saveToStorage();
+    openJobDetail(id);
+  } catch (err) {
+    alert('면접 답변풀 생성 실패: ' + err.message);
+  }
+}
+
+function deleteJob(id) {
+  if (!confirm('이 공고를 삭제하시겠습니까?')) return;
+  state.jobs = state.jobs.filter(j => j.id !== id);
+  saveToStorage();
+  closeJobDetail();
+  renderAll();
+}
+
+function downloadText(id, field, filename) {
+  const job = state.jobs.find(j => j.id === id);
+  if (!job || !job[field]) return;
+  const blob = new Blob([job[field]], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============ INTERVIEWS ============
+function openAddInterview() {
+  document.getElementById('addInterviewModal').classList.remove('hidden');
+  const select = document.getElementById('interviewJobId');
+  select.innerHTML = state.jobs.map(j =>
+    `<option value="${j.id}">${escapeHtml(j.company)} · ${escapeHtml(j.position)}</option>`
+  ).join('');
+}
+
+function closeAddInterview() {
+  document.getElementById('addInterviewModal').classList.add('hidden');
+}
+
+function addInterview() {
+  const jobId = document.getElementById('interviewJobId').value;
+  const stage = document.getElementById('interviewStage').value;
+  const date = document.getElementById('interviewDate').value;
+  const memo = document.getElementById('interviewMemo').value;
+
+  const job = state.jobs.find(j => j.id === jobId);
+  if (!job) return alert('공고를 먼저 추가하세요');
+
+  state.interviews.unshift({
+    id: Date.now().toString(),
+    jobId, jobCompany: job.company, jobPosition: job.position,
+    stage, date, memo,
+    result: '예정',
+    createdAt: new Date().toISOString()
+  });
+  saveToStorage();
+  closeAddInterview();
+  renderInterviews();
+}
+
+function renderInterviews() {
+  const list = document.getElementById('interviewList');
+  if (state.interviews.length === 0) {
+    list.innerHTML = `<div class="text-center py-16 border border-dashed border-gray-800 rounded-lg">
+      <p class="text-gray-500 mb-2">아직 면접 일정이 없습니다.</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = state.interviews.map(i => `
+    <div class="border border-gray-800 rounded-lg p-4">
+      <div class="flex justify-between items-start gap-4">
+        <div class="flex-1">
+          <h3 class="font-bold">${escapeHtml(i.jobCompany)} <span class="text-gray-400 font-normal">· ${escapeHtml(i.jobPosition)}</span></h3>
+          <p class="text-xs text-gray-500 mt-1">${i.stage} · ${i.date ? new Date(i.date).toLocaleString() : '날짜 미정'}</p>
+          ${i.memo ? `<p class="text-sm text-gray-400 mt-2">${escapeHtml(i.memo)}</p>` : ''}
+        </div>
+        <select onchange="updateInterviewResult('${i.id}', this.value)" class="bg-gray-800 border border-gray-700 rounded p-2 text-sm">
+          ${['예정','진행','합격','불합격','보류'].map(s =>
+            `<option ${s===i.result?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateInterviewResult(id, result) {
+  const i = state.interviews.find(x => x.id === id);
+  if (i) {
+    i.result = result;
+    saveToStorage();
+  }
+}
+
+// ============ STATS ============
+function renderStats() {
+  const stats = {
+    total: state.jobs.length,
+    matched: state.jobs.filter(j => j.matchScore === '◎').length,
+    applied: state.jobs.filter(j => j.status === '지원완료').length,
+    interviews: state.interviews.length
+  };
+  document.getElementById('jobStats').innerHTML = `
+    <div class="border border-gray-800 rounded-lg p-4">
+      <div class="text-3xl font-bold gradient">${stats.total}</div>
+      <div class="text-xs text-gray-500 mt-1">전체 공고</div>
+    </div>
+    <div class="border border-gray-800 rounded-lg p-4">
+      <div class="text-3xl font-bold gradient">${stats.matched}</div>
+      <div class="text-xs text-gray-500 mt-1">매칭 ◎</div>
+    </div>
+    <div class="border border-gray-800 rounded-lg p-4">
+      <div class="text-3xl font-bold gradient">${stats.applied}</div>
+      <div class="text-xs text-gray-500 mt-1">지원 완료</div>
+    </div>
+    <div class="border border-gray-800 rounded-lg p-4">
+      <div class="text-3xl font-bold gradient">${stats.interviews}</div>
+      <div class="text-xs text-gray-500 mt-1">면접 일정</div>
+    </div>
+  `;
+}
+
+function renderAll() {
+  renderStats();
+  renderJobs();
+  renderInterviews();
+}
+
+// ============ SETTINGS ============
+function saveApiKey() {
+  const v = document.getElementById('apiKeyEdit').value;
+  if (!v.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다');
+  localStorage.setItem('claudeApiKey', v);
+  alert('저장됨');
+}
+
+function savePin() {
+  const v = document.getElementById('pinEdit').value;
+  if (v.length !== 4) return alert('PIN 4자리');
+  localStorage.setItem('pin', v);
+  alert('저장됨');
+}
+
+function exportData() {
+  const data = JSON.stringify({
+    jobs: state.jobs, interviews: state.interviews,
+    exportedAt: new Date().toISOString()
+  }, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `취준데이터_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const file = document.getElementById('importFile').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.jobs) state.jobs = data.jobs;
+      if (data.interviews) state.interviews = data.interviews;
+      saveToStorage();
+      renderAll();
+      alert('가져오기 완료');
+    } catch (err) {
+      alert('파일 형식 오류: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAll() {
+  if (!confirm('모든 데이터(공고·면접)를 삭제합니다. 계속하시겠습니까?')) return;
+  if (!confirm('정말입니까? 되돌릴 수 없습니다.')) return;
+  state = { jobs: [], interviews: [], filter: 'all' };
+  localStorage.removeItem('jobs');
+  localStorage.removeItem('interviews');
+  renderAll();
+  alert('초기화 완료');
+}
+
+// ============ UTILS ============
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/^- (.*$)/gim, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[hul])(.+)$/gim, '<p>$1</p>')
+    .replace(/<p><\/p>/g, '');
+}
+
+// Start
+init();
+</script>
+</body>
+</html>

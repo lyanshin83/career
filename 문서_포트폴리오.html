@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포트폴리오 — 김OO | 디지털 광고 × 브랜드 마케팅 시니어 (16년)</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 1.2cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    color: #111;
+    background: #f3f4f6;
+    line-height: 1.5;
+    font-size: 9.8pt;
+  }
+  .page {
+    background: white;
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    padding: 14mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; padding: 0; }
+    .no-print { display: none !important; }
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
+
+  .accent { color: #FF6B35; }
+  .accent-bg { background-color: #FF6B35; }
+
+  .print-guide {
+    background: #FFF7ED;
+    border: 1px solid #FFD4A8;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 0 auto 20px;
+    max-width: 210mm;
+    font-size: 10pt;
+    color: #9A3412;
+  }
+
+  /* ========= COVER (Page 1) ========= */
+  .cover-hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1f1f1f 100%);
+    color: white;
+    padding: 30px 32px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(255,107,53,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .cover-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(255,165,89,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-tag { font-size: 8pt; letter-spacing: 0.3em; color: #9ca3af; margin-bottom: 12px; position: relative; }
+  .hero-title { font-size: 26pt; font-weight: 700; line-height: 1.15; margin-bottom: 10px; position: relative; }
+  .hero-title .gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #FFA559 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-name { font-size: 11pt; color: #d1d5db; margin-bottom: 6px; position: relative; }
+  .hero-name span { color: #FF6B35; }
+  .hero-sub { font-size: 9pt; color: #9ca3af; max-width: 90%; position: relative; line-height: 1.55; }
+
+  /* KPI grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 22px 0 0; position: relative; }
+  .kpi-value { font-size: 28pt; font-weight: 700; line-height: 1; }
+  .kpi-value .gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #FFA559 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .kpi-label { font-size: 8pt; color: #9ca3af; margin-top: 4px; line-height: 1.3; }
+
+  /* Sections */
+  section.block { margin-top: 16px; }
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #FF6B35;
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  h3 { font-size: 11pt; font-weight: 700; color: #111; margin-bottom: 6px; }
+
+  /* Brand grid */
+  .brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .brand-card {
+    border: 1px solid #e5e7eb;
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: white;
+  }
+  .brand-card .brand-year { font-size: 7.5pt; color: #FF6B35; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 3px; }
+  .brand-card .brand-name { font-size: 11pt; font-weight: 700; margin-bottom: 2px; }
+  .brand-card .brand-company { font-size: 8.5pt; color: #6b7280; }
+
+  /* Index of cases */
+  .case-index {
+    background: #FFF7ED;
+    border: 1px solid #FFD4A8;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-top: 14px;
+  }
+  .case-index .index-label { font-size: 8.5pt; color: #FF6B35; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .case-index ol { padding-left: 20px; }
+  .case-index li {
+    font-size: 9.5pt;
+    line-height: 1.6;
+    color: #1f2937;
+    padding: 2px 0;
+  }
+  .case-index li strong { color: #111; }
+  .case-index li .case-page { color: #9ca3af; font-size: 8pt; margin-left: 6px; }
+
+  /* ========= CASE STUDY ========= */
+  .case-header {
+    border-bottom: 3px solid #FF6B35;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .case-cat { font-size: 8.5pt; color: #FF6B35; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 4px; }
+  .case-name { font-size: 18pt; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
+  .case-summary { font-size: 9.5pt; color: #6b7280; line-height: 1.55; }
+  .case-tags { margin-top: 8px; }
+  .case-tags .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #f3f4f6;
+    color: #374151;
+    border-radius: 3px;
+    font-size: 8pt;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .case-tags .tag-period { background: #1f2937; color: white; }
+  .case-tags .tag-role { background: #FFF1E8; color: #C2410C; }
+
+  /* Image gallery */
+  .gallery-main {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 9pt;
+    line-height: 1.5;
+  }
+  .gallery-main strong { color: #6b7280; font-size: 10pt; }
+  .gallery-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+  .gallery-thumb {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+    border: 2px dashed #d1d5db;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 7.5pt;
+    line-height: 1.4;
+    padding: 6px;
+  }
+  .gallery-thumb strong { color: #6b7280; font-size: 8pt; display: block; margin-bottom: 2px; }
+
+  /* Case body */
+  .case-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .case-section h4 {
+    font-size: 9pt;
+    color: #FF6B35;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .case-section p { font-size: 9pt; color: #1f2937; line-height: 1.6; margin-bottom: 8px; }
+  .case-section ul { padding-left: 16px; font-size: 9pt; color: #1f2937; line-height: 1.55; }
+  .case-section li { padding: 1px 0; }
+
+  /* KPI bar */
+  .kpi-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #fafafa;
+    border-left: 3px solid #FF6B35;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 6px;
+  }
+  .kpi-row .kpi-name { font-size: 8.5pt; color: #6b7280; flex: 1; }
+  .kpi-row .kpi-before { color: #6b7280; font-size: 9pt; font-weight: 600; }
+  .kpi-row .kpi-arrow { color: #d1d5db; }
+  .kpi-row .kpi-after { color: #FF6B35; font-size: 11pt; font-weight: 700; }
+  .kpi-row .kpi-mult { margin-left: auto; color: #FF6B35; font-weight: 700; font-size: 10pt; }
+
+  /* IMC channels */
+  .imc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 10px 0; }
+  .imc-channel {
+    background: #FF6B35;
+    color: white;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 3px;
+    font-size: 8pt;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .ai-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    background: #FFF1E8;
+    color: #C2410C;
+    border-radius: 3px;
+    font-size: 8pt;
+    font-weight: 600;
+    margin: 1px 1px;
+  }
+
+  /* Footer */
+  .footer {
+    position: absolute;
+    bottom: 14mm;
+    left: 14mm;
+    right: 14mm;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 7.5pt;
+    color: #9ca3af;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<style>
+  .doc-nav { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 1000; background: white; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .doc-nav a, .doc-nav button { padding: 8px 14px; background: white; color: #111; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 9.5pt; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: inherit; }
+  .doc-nav a:hover, .doc-nav button:hover { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home:hover { background: #C2410C; }
+  @media print { .doc-nav { display: none !important; } }
+</style>
+
+<nav class="doc-nav no-print">
+  <a href="사이트_메인_v2.html" class="nav-home">← 메인</a>
+  <button onclick="window.print()">🖨️ 인쇄</button>
+  <button onclick="window.print()">💾 PDF 저장</button>
+</nav>
+
+<div class="print-guide no-print">
+  💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택 → 저장<br>
+  🖼️ <strong>이미지 교체</strong>: 점선 박스(.gallery-main / .gallery-thumb)를 <code>&lt;img src="..."&gt;</code>로 교체
+</div>
+
+<!-- ============ PAGE 1: COVER ============ -->
+<div class="page">
+
+  <div class="cover-hero">
+    <p class="hero-tag">PORTFOLIO · MARKETING SENIOR</p>
+    <h1 class="hero-title">디지털 광고와 <span class="gradient">브랜드 마케팅을 양립한</span> 16년차 시니어 마케터</h1>
+    <p class="hero-name">김<span>OO</span></p>
+    <p class="hero-sub">광고대행사 광고주 영업·매체 운영 10년 × 자체 브랜드 D2C·IMC·런칭 5년+ — 매출과 브랜드 둘 다 책임지는 본부장 트랙</p>
+
+    <div class="kpi-grid">
+      <div><div class="kpi-value"><span class="gradient">50+</span></div><div class="kpi-label">신규 광고주 수주<br>NHN커머스 7년</div></div>
+      <div><div class="kpi-value"><span class="gradient">20×</span></div><div class="kpi-label">VT코스메틱 매출<br>1억 → 20억</div></div>
+      <div><div class="kpi-value"><span class="gradient">7.7억</span></div><div class="kpi-label">닥터미라클 런칭<br>3개월차 매출</div></div>
+      <div><div class="kpi-value"><span class="gradient">5억</span></div><div class="kpi-label">월 광고예산<br>통합 운영</div></div>
+    </div>
+  </div>
+
+  <section class="block">
+    <h2>🚀 BRAND LAUNCH — 직접 콘셉 설정·런칭한 브랜드 (6건)</h2>
+    <div class="brand-grid">
+      <div class="brand-card">
+        <div class="brand-year">2020-05</div>
+        <div class="brand-name">닥터미라클</div>
+        <div class="brand-company">더에이블랩 · 화장품</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-year">2019-2021</div>
+        <div class="brand-name">더레브</div>
+        <div class="brand-company">더에이블랩 · 화장품</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-year">2023-03</div>
+        <div class="brand-name">시즈노프</div>
+        <div class="brand-company">라이프앤바이오 · 액티브웨어</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-year">2023</div>
+        <div class="brand-name">로우티 리듀스앤드</div>
+        <div class="brand-company">라이프앤바이오 · 이너뷰티</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-year">2022</div>
+        <div class="brand-name">푸드케어 신제품</div>
+        <div class="brand-company">라이프앤바이오 · 이유식</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-year">2011</div>
+        <div class="brand-name">미채움오리지널</div>
+        <div class="brand-company">오리지널 · 한방화장품</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="case-index">
+    <div class="index-label">CASE STUDIES INDEX</div>
+    <ol>
+      <li><strong>닥터미라클 신규 브랜드·쇼핑몰 런칭</strong><span class="case-page">Page 2</span><br><span style="color:#6b7280;font-size:8.5pt;">더에이블랩 · 2020-05 · 메타 Advantage+ + 머신러닝 / 3개월차 7.7억 (140%)</span></li>
+      <li><strong>시즈노프 IMC 7채널 통합 캠페인</strong><span class="case-page">Page 3</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2023-03 · 700+ 매장 + 무신사·29CM + 운동크루 + 메타</span></li>
+      <li><strong>푸드케어 광고비 50% 절감 + AI 도구 통합 운영</strong><span class="case-page">Page 4</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2022-2023 · 메타 Advantage+ 직접운영 / 네이버 자동입찰·AI / GA4 AI 인사이트</span></li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    <p>© 김OO · 16년 트랙 · Page 1 of 4</p>
+    <p>your@email.com · linkedin.com/in/yourid</p>
+  </div>
+
+</div>
+
+<!-- ============ PAGE 2: 닥터미라클 ============ -->
+<div class="page">
+
+  <div class="case-header">
+    <div class="case-cat">CASE STUDY · 01 · 신규 브랜드 런칭</div>
+    <div class="case-name">닥터미라클 신규 브랜드 · 쇼핑몰 런칭</div>
+    <div class="case-summary">2020년 5월 신규 브랜드 런칭 TFT 책임 — 메타 Advantage+ + 머신러닝 영상 최적화로 3개월차에 월 매출 7.7억 달성 (목표 5억 초과 140%)</div>
+    <div class="case-tags">
+      <span class="tag tag-period">2020.05 — 2021.03 · 런칭 3개월</span>
+      <span class="tag tag-role">더에이블랩 마케팅팀장 (4명)</span>
+      <span class="tag">화장품 D2C</span>
+      <span class="tag">신규 런칭</span>
+    </div>
+  </div>
+
+  <div class="gallery-main">
+    <div>
+      <strong>닥터미라클 캠페인 메인 비주얼</strong><br>
+      Facebook 영상 캠페인 / 자사몰 메인 / 광고 소재<br>
+      <small style="font-size:8pt;">(이미지 파일 교체: drmiracle_main.jpg 등)</small>
+    </div>
+  </div>
+
+  <div class="gallery-thumbs">
+    <div class="gallery-thumb"><div><strong>FB 영상</strong>광고 소재</div></div>
+    <div class="gallery-thumb"><div><strong>자사몰</strong>drmiracle.co.kr</div></div>
+    <div class="gallery-thumb"><div><strong>상세페이지</strong>주력 상품</div></div>
+    <div class="gallery-thumb"><div><strong>매출 차트</strong>3개월 추이</div></div>
+  </div>
+
+  <div class="case-body">
+    <div class="case-section">
+      <h4>BACKGROUND · 배경</h4>
+      <p>더에이블랩 6개 쇼핑몰 운영 환경. 화장품 신규 브랜드 닥터미라클 + 자사몰(drmiracle.co.kr) 런칭 TFT 책임. 메타 2.5억 + 포털DA 2.5억 통합 운영 환경에서 신규 브랜드의 1순위 매출 채널을 메타 영상 캠페인으로 결정.</p>
+
+      <h4>ACTION · 한 일</h4>
+      <ul>
+        <li>브랜드 콘셉 설정 + 자사몰 런칭 TFT 리딩</li>
+        <li>메타 <span class="ai-tag">Advantage+ 캠페인</span> + 머신러닝 영상 최적화</li>
+        <li>월 광고예산 2-2.5억 운영 / 광고매체 25개 분산 + 영상 1편 중심</li>
+        <li>영상 콘텐츠 기획 (인서트·후킹·CTA 구조)</li>
+        <li>자사몰 + 입점몰 통합 — 까탈릭 신세계 명동·하이버·쇼피 입점 진행</li>
+      </ul>
+    </div>
+
+    <div class="case-section">
+      <h4>RESULT · 성과</h4>
+      <div class="kpi-row">
+        <span class="kpi-name">런칭 3개월차 매출</span>
+        <span class="kpi-after">월 7.7억</span>
+        <span class="kpi-mult">140%</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">FB 영상 캠페인 달성</span>
+        <span class="kpi-before">목표 100%</span>
+        <span class="kpi-arrow">→</span>
+        <span class="kpi-after">140%</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">FB 영상 좋아요</span>
+        <span class="kpi-after">500+</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">댓글 / 공유</span>
+        <span class="kpi-after">200+ / 300+</span>
+      </div>
+      <ul style="margin-top:8px;">
+        <li>2020-06 매출 6.4억 / 2020-07 매출 7.7억 (목표 5억 초과)</li>
+        <li>광고비 효율 = 영상 1편이 다른 25개 영역 5배 효율</li>
+      </ul>
+
+      <h4>INSIGHT · 인사이트</h4>
+      <p>월 5억 예산은 <strong>단일 매체 몰빵 ❌ → 영상 1편 + 25개 영역 분산</strong>이 공식. 핵심 메시지 1개 일관 + 매체별 KPI 분리. 메타 Advantage+ 자동 타겟팅이 머신러닝 학습 후 효율 폭발.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 김OO · Case Study 01 · Page 2 of 4</p>
+    <p>your@email.com · linkedin.com/in/yourid</p>
+  </div>
+
+</div>
+
+<!-- ============ PAGE 3: 시즈노프 IMC ============ -->
+<div class="page">
+
+  <div class="case-header">
+    <div class="case-cat">CASE STUDY · 02 · IMC 통합 캠페인</div>
+    <div class="case-name">시즈노프 런칭 IMC — 7개 채널 동시 운영</div>
+    <div class="case-summary">2023년 3월 액티브웨어 신규 브랜드 런칭 — 전국 700+ 매장 디스플레이 + 무신사·29CM 입점 + 운동크루 협업 + 디지털 광고 7개 채널 통합 운영</div>
+    <div class="case-tags">
+      <span class="tag tag-period">2023.03 런칭</span>
+      <span class="tag tag-role">라이프앤바이오 실장 (5명)</span>
+      <span class="tag">액티브웨어</span>
+      <span class="tag">IMC 통합</span>
+    </div>
+  </div>
+
+  <div class="gallery-main">
+    <div>
+      <strong>시즈노프 매장 디스플레이 + 캠페인 비주얼</strong><br>
+      700+ 매장 POP / 무신사·29CM 입점 페이지 / 운동크루 협업 콘텐츠<br>
+      <small style="font-size:8pt;">(이미지 파일 교체: seasnoff_store.jpg 등)</small>
+    </div>
+  </div>
+
+  <div class="imc-grid">
+    <div class="imc-channel">매장 700+<br>POP·디스플레이</div>
+    <div class="imc-channel">무신사<br>입점</div>
+    <div class="imc-channel">29CM<br>입점</div>
+    <div class="imc-channel">운동크루<br>협찬·협업</div>
+    <div class="imc-channel">메타<br>광고</div>
+    <div class="imc-channel">라이브<br>커머스</div>
+    <div class="imc-channel">바이럴<br>SNS·체험단</div>
+  </div>
+
+  <div class="gallery-thumbs">
+    <div class="gallery-thumb"><div><strong>매장 POP</strong>700+ 디스플레이</div></div>
+    <div class="gallery-thumb"><div><strong>무신사</strong>입점 페이지</div></div>
+    <div class="gallery-thumb"><div><strong>29CM</strong>입점 페이지</div></div>
+    <div class="gallery-thumb"><div><strong>운동크루</strong>협업 콘텐츠</div></div>
+  </div>
+
+  <div class="case-body">
+    <div class="case-section">
+      <h4>BACKGROUND · 배경</h4>
+      <p>라이프앤바이오 신규 브랜드 시즈노프 (액티브웨어) 런칭. 모건스탠리 인수 직후 라인업 확장 시기. 푸드케어(이유식) + 로우티(이너뷰티)와 함께 3개 브랜드 통합 운영 책임. 액티브웨어 카테고리 신규 진입 — 디지털만으로는 인지·전환 부족 판단.</p>
+
+      <h4>ACTION · 한 일</h4>
+      <ul>
+        <li>IMC 통합 캠페인 설계 — 7개 채널 동시 가동</li>
+        <li>전국 <strong>700+ 매장</strong> 판촉 디스플레이 + POP 제작</li>
+        <li>무신사 + 29CM 입점 협상·페이지 기획</li>
+        <li>운동크루 협찬 + 협업 콘텐츠 기획</li>
+        <li>메타 광고 + 라이브커머스 + 바이럴 SNS·체험단</li>
+        <li><span class="ai-tag">ChatGPT</span> 활용 7채널 메시지 일관성 점검 + 콘텐츠 카피 초안 자동화</li>
+      </ul>
+    </div>
+
+    <div class="case-section">
+      <h4>RESULT · 성과</h4>
+      <div class="kpi-row"><span class="kpi-name">동시 운영 채널 수</span><span class="kpi-after">7개</span></div>
+      <div class="kpi-row"><span class="kpi-name">전국 매장 디스플레이</span><span class="kpi-after">700+ 매장</span></div>
+      <div class="kpi-row"><span class="kpi-name">신규 입점몰</span><span class="kpi-after">무신사 + 29CM</span></div>
+      <div class="kpi-row"><span class="kpi-name">메시지 일관성 점검</span><span class="kpi-after">ChatGPT 자동화</span></div>
+
+      <h4>INSIGHT · 인사이트</h4>
+      <p>IMC = "한 메시지 여러 매체" ❌. <strong>"고객 여정 단계별 다른 메시지 / 일관된 핵심 가치"</strong>가 본질. 7개 채널 동시 운영의 진짜 어려움은 매체별 KPI 정렬 — 인지·전환·재구매 분리 측정. ChatGPT로 메시지 일관성 자동 점검해 운영 효율 ↑.</p>
+
+      <h4>RELATED · 동시 운영</h4>
+      <ul>
+        <li><strong>푸드케어</strong>: 23년 매출 250억 책임 / 광고비 50% 절감 (다음 페이지)</li>
+        <li><strong>로우티 리듀스앤드</strong>: 신제품 — 유튜버 6명 협업(6,000만) + 메타 월 500만 / 비오틴콜라겐 부진재고 5,000개 소진</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 김OO · Case Study 02 · Page 3 of 4</p>
+    <p>your@email.com · linkedin.com/in/yourid</p>
+  </div>
+
+</div>
+
+<!-- ============ PAGE 4: 푸드케어 + AI ============ -->
+<div class="page">
+
+  <div class="case-header">
+    <div class="case-cat">CASE STUDY · 03 · 운영 효율 + AI 도구</div>
+    <div class="case-name">푸드케어 광고비 50% 절감 + AI 도구 통합 운영</div>
+    <div class="case-summary">메타 Advantage+ 직접운영 전환 + 네이버 자동입찰·AI 타겟팅 + GA4 AI 인사이트 통합 — 월 광고비 50% 절감 + 대행 수수료 15% 추가 절감 + 블로그 방문 20배</div>
+    <div class="case-tags">
+      <span class="tag tag-period">2022.07 — 2023.10</span>
+      <span class="tag tag-role">라이프앤바이오 실장 (5명)</span>
+      <span class="tag">이유식 D2C</span>
+      <span class="tag">AI 통합</span>
+    </div>
+  </div>
+
+  <div class="gallery-main">
+    <div>
+      <strong>푸드케어 운영 효율 대시보드</strong><br>
+      메타 Advantage+ / 네이버 자동입찰 / GA4 AI 인사이트 화면<br>
+      <small style="font-size:8pt;">(이미지 파일 교체: foodcare_dashboard.jpg 등)</small>
+    </div>
+  </div>
+
+  <div class="gallery-thumbs">
+    <div class="gallery-thumb"><div><strong>메타 광고</strong>Advantage+ 캠페인</div></div>
+    <div class="gallery-thumb"><div><strong>네이버 광고</strong>자동입찰</div></div>
+    <div class="gallery-thumb"><div><strong>GA4 대시보드</strong>AI 인사이트</div></div>
+    <div class="gallery-thumb"><div><strong>블로그 트래픽</strong>20배 그래프</div></div>
+  </div>
+
+  <div class="case-body">
+    <div class="case-section">
+      <h4>BACKGROUND · 배경</h4>
+      <p>라이프앤바이오 푸드케어(이유식) 23년 매출 목표 250억 책임. 기존 네이버 검색·DA 광고를 대행사가 운영했으나 월 3,000만 비용 + 효율 낮음. 메타도 대행 수수료 별도. AI 도구 직접 운영 전환으로 비용 절감 + 효율 개선 미션.</p>
+
+      <h4>ACTION · 한 일</h4>
+      <ul>
+        <li><span class="ai-tag">메타 Advantage+</span> 직접운영 전환 (대행사 제거)</li>
+        <li>네이버 <span class="ai-tag">자동입찰·AI 타겟팅</span> 효율 재정렬 (키워드·쇼핑·브랜드검색)</li>
+        <li><span class="ai-tag">GA4 AI 인사이트</span> 활용 키워드·매체별 ROI 분석</li>
+        <li>블로그 키워드 상위노출 전략 (영유아 타겟 키워드 60+)</li>
+        <li>라이브커머스(베라쇼) + 산후조리원 영유아 타겟 DB 마케팅</li>
+        <li>오메가3 공동구매 2회 진행 (3,000만 매출)</li>
+      </ul>
+    </div>
+
+    <div class="case-section">
+      <h4>RESULT · 성과</h4>
+      <div class="kpi-row">
+        <span class="kpi-name">네이버 광고비</span>
+        <span class="kpi-before">월 3,000만</span>
+        <span class="kpi-arrow">→</span>
+        <span class="kpi-after">월 1,500만</span>
+        <span class="kpi-mult">−50%</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">메타 운영 전환</span>
+        <span class="kpi-before">대행 수수료</span>
+        <span class="kpi-arrow">→</span>
+        <span class="kpi-after">직접운영</span>
+        <span class="kpi-mult">−15%</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">블로그 1일 방문자</span>
+        <span class="kpi-before">100명</span>
+        <span class="kpi-arrow">→</span>
+        <span class="kpi-after">2,000명</span>
+        <span class="kpi-mult">20×</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-name">오메가3 공동구매</span>
+        <span class="kpi-after">3,000만 매출</span>
+      </div>
+
+      <h4>INSIGHT · 인사이트</h4>
+      <p>AI 자동화 본질은 <strong>"단순 운영 자동화 ❌ → 사람의 판단 시간 확보"</strong>. 메타 Advantage+ + 구글 PMax + 네이버 자동입찰을 직접 운영하면 광고주 1인당 운영 효율 N배. 사람은 광고주 컨설팅·신규 수주·전략 의사결정에 집중.</p>
+
+      <h4>NEXT · 본부장 합류 시 적용</h4>
+      <p>이 운영 노하우를 광고대행사 본부 운영 가이드라인으로 표준화 가능. 자체 자동최적화 솔루션 + AI 도구 + 사람 컨설팅 결합 본부 구조 설계.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 김OO · Case Study 03 · Page 4 of 4</p>
+    <p>your@email.com · linkedin.com/in/yourid</p>
+  </div>
+
+</div>
+
+</body>
+</html>

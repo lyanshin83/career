@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자기소개서 — 김OO | (주)어센드미디어 본부장 지원</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    color: #111;
+    background: #f3f4f6;
+    line-height: 1.7;
+    font-size: 10.5pt;
+  }
+  .page {
+    background: white;
+    max-width: 210mm;
+    margin: 20px auto;
+    padding: 16mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; padding: 0; }
+    .no-print { display: none !important; }
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    section { page-break-inside: avoid; }
+  }
+
+  .accent { color: #FF6B35; }
+
+  /* Doc nav */
+  .doc-nav {
+    position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 1000;
+    background: white; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .doc-nav a, .doc-nav button {
+    padding: 8px 14px; background: white; color: #111; border: 1px solid #e5e7eb;
+    border-radius: 4px; font-size: 9.5pt; font-weight: 600; cursor: pointer;
+    text-decoration: none; transition: all 0.2s; font-family: inherit;
+  }
+  .doc-nav a:hover, .doc-nav button:hover { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home { background: #FF6B35; color: white; border-color: #FF6B35; }
+  .doc-nav .nav-home:hover { background: #C2410C; }
+
+  .print-guide {
+    background: #FFF7ED; border: 1px solid #FFD4A8; padding: 14px 18px; border-radius: 8px;
+    margin: 0 auto 20px; max-width: 210mm; font-size: 10pt; color: #9A3412;
+  }
+
+  /* Header */
+  .header { padding-bottom: 18px; border-bottom: 3px solid #FF6B35; margin-bottom: 26px; }
+  .header .doc-type { font-size: 9pt; color: #FF6B35; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 6px; }
+  .header .name { font-size: 24pt; font-weight: 700; }
+  .header .name span { color: #FF6B35; }
+  .header .target {
+    margin-top: 10px; padding: 8px 14px; background: #FFF7ED; border-left: 3px solid #FF6B35;
+    border-radius: 0 4px 4px 0; font-size: 9.5pt;
+  }
+  .header .target strong { color: #FF6B35; }
+
+  /* Section */
+  section { margin-top: 28px; }
+  h2 {
+    font-size: 14pt; font-weight: 700; color: #111;
+    margin-bottom: 14px; padding-bottom: 6px;
+    border-bottom: 2px solid #111;
+  }
+  h2 .num { color: #FF6B35; margin-right: 8px; }
+
+  p { margin-bottom: 14px; text-align: justify; }
+  p strong { color: #111; font-weight: 700; }
+  p em { font-style: normal; color: #FF6B35; font-weight: 600; }
+
+  /* 90-day plan */
+  .plan-box {
+    background: #fafafa; border-left: 4px solid #FF6B35;
+    padding: 16px 20px; border-radius: 0 6px 6px 0; margin: 14px 0;
+  }
+  .plan-box h3 {
+    font-size: 11pt; color: #FF6B35; font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 10px;
+  }
+  .plan-box .plan-item { margin-bottom: 10px; }
+  .plan-box .plan-item:last-child { margin-bottom: 0; }
+  .plan-box .plan-item strong { color: #111; display: block; margin-bottom: 4px; font-size: 10pt; }
+  .plan-box .plan-item p { font-size: 9.5pt; line-height: 1.6; margin-bottom: 0; color: #374151; }
+
+  /* AI vision box */
+  .ai-vision {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);
+    padding: 16px 20px; border-radius: 6px; margin: 14px 0;
+  }
+  .ai-vision .ai-label {
+    font-size: 9pt; color: #C2410C; font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 8px;
+  }
+  .ai-vision p { font-size: 10pt; line-height: 1.65; margin-bottom: 0; color: #1f2937; }
+  .ai-vision strong { color: #C2410C; }
+</style>
+</head>
+<body>
+
+<!-- Doc Nav -->
+<nav class="doc-nav no-print">
+  <a href="사이트_메인_v2.html" class="nav-home">← 메인</a>
+  <button onclick="window.print()">🖨️ 인쇄</button>
+  <button onclick="window.print()">💾 PDF 저장</button>
+</nav>
+
+<div class="print-guide no-print">
+  💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택
+</div>
+
+<div class="page">
+
+  <div class="header">
+    <div class="doc-type">자기소개서 · COVER LETTER</div>
+    <div class="name">김<span>OO</span></div>
+    <div class="target">지원: <strong>(주)어센드미디어</strong> · [업계 최고 대우] 퍼포먼스 마케터 경력 (팀장/본부장)</div>
+  </div>
+
+  <!-- ========== 1. 업무경험 ========== -->
+  <section>
+    <h2><span class="num">01.</span>업무경험</h2>
+
+    <p>저는 <strong>광고대행사 광고주 영업·운영 7년 + 자체 브랜드 D2C 4사 통합 운영</strong>을 양립한 16년차 마케터입니다.</p>
+
+    <p><strong>바론미디어·오리지널마케팅그룹·NHN커머스 (2010~2019)</strong> 광고대행사 시기에는 시장 분석과 미디어 트렌드 기반의 마케팅·광고 대행을 직접 책임졌습니다. 대표 광고주는 <strong>아이비클럽·롯데ID껌·하나금융그룹·이지함화장품·VT코스메틱·마녀공장</strong> 등이며, 검색광고·포털DA·메타·유튜브·네트워크DA·바이럴 등 온라인 광고 전 영역을 직접 운영했습니다. 분석 도구는 에이스카운터·로거·로그·GA를 사용하며, 메타·유튜브·DA용 광고 콘텐츠 기획을 통해 성과를 낸 케이스를 다수 보유하고 있습니다.</p>
+
+    <p>특히 <em>NHN커머스 7년</em>은 제 경력의 중심입니다. 자사 커머스 솔루션 사용 업체 중 월 5천만 이상 매출 업체 <strong>300여 개를 컨택해 50개 이상을 광고주로 수주</strong>했고, 월 평균 영업매출 1.5-2억(최대 3억)을 책임졌습니다. <strong>VT코스메틱은 첫 미팅 시 1억이던 몰 매출을 2년 반 만에 20억까지 끌어올렸고, 이지함화장품은 검색광고 ROI를 0.02%에서 5%까지 개선</strong>했습니다. 마케팅뿐 아니라 솔루션 업그레이드·외주 디자인·CS 부서 연결까지 통합 컨설팅을 책임졌습니다. 9명 팀의 팀장으로서 매년 2-3명의 매출 상승 도우미 역할을 하며 팀 월매출을 4.8억에서 6.5억으로 끌어올렸습니다.</p>
+
+    <p><strong>더에이블랩 (2019~2021)</strong>부터는 직접 브랜드 콘셉을 설정하고 런칭한 <strong>더레브·닥터미라클</strong> 책임자였습니다. 월 5억 예산 통합 운영(메타 2.5억·포털DA 2.5억) 환경에서 DMC미디어·메조미디어·메이크샵·NHN커머스 4개 광고대행사와 협업하며 광고매체 20여 개를 운영했습니다. <strong>닥터미라클은 2020년 5월 런칭 후 3개월차에 월 매출 7.7억(목표 5억 초과)을 달성</strong>했고, Facebook 영상 캠페인은 목표 대비 140%를 기록했습니다.</p>
+
+    <p><strong>오라팜·라이프앤바이오·아이디플라코스메틱 (2021~2024)</strong>에서는 자사몰·쿠팡·네이버·올리브영·이마트트레이더스·홈쇼핑·공동구매까지 풀스택 D2C를 운영했습니다. <strong>시즈노프 런칭</strong>은 IMC 통합 캠페인의 시그니처 케이스 — 전국 700여 매장 디스플레이 + 무신사·29CM 입점 + 운동크루 협업 + 디지털 광고를 7개 채널로 동시 가동했습니다. <strong>푸드케어에서는 네이버 광고비를 월 3,000만 원에서 1,500만 원으로 50% 절감</strong>했고, <strong>메타 광고를 대행에서 직접 운영으로 전환해 수수료 15%를 추가 절감</strong>했습니다.</p>
+
+    <p>이 16년 누적이 <strong>광고대행사 시점 + 광고주 시점 + 솔루션 통합 컨설팅 시점 셋을 모두 겪은 본부장 후보</strong>라는 본인의 정체성입니다.</p>
+  </section>
+
+  <!-- ========== 2. 성장과정 및 성격 ========== -->
+  <section>
+    <h2><span class="num">02.</span>성장과정 및 성격</h2>
+
+    <p>저는 가족이 16명인 다가족에서 자랐습니다. 모든 연령층이 한집에 있는 환경 덕에 <strong>다양한 관점·세대·갈등을 자연스럽게 다루는 법</strong>을 일찍 배웠습니다. 이 경험은 일에서도 그대로 작동합니다. 광고주 업종은 화장품·건기식·구강유산균·이유식·디바이스로 다양하고, 함께한 팀원도 디자인·콘텐츠·BM·퍼포·CS 등 결이 다른 사람들이지만, 누구와 일하든 빠르게 결을 맞추고 KPI를 정렬하는 것이 강점입니다.</p>
+
+    <p>성격은 <strong>털털한 동시에 일에서는 꼼꼼하고 세심</strong>합니다. 광고주 50개 이상을 동시에 운영하고 매체 20여 개를 동시에 가동할 수 있었던 이유는, 큰 그림은 단순하게 잡되 매체별 KPI·예산 분배·리포트는 빈틈없이 챙기는 일하는 방식이 몸에 배어 있기 때문입니다.</p>
+
+    <p>마지막으로 어머님께서 소천하시며 마지막으로 남기신 말씀이 <em>"착하게만 살아다오"</em>였습니다. 저에게 '착하게'는 인간관계의 친절을 넘어 <strong>원칙과 신뢰를 지키는 행동 기준</strong>입니다. NHN커머스 7년간 VT코스메틱·이지함화장품·더에이블랩 같은 광고주가 2년 반 이상 함께 머문 비결은 결국 광고비를 받는 사람이 아니라 <strong>광고주의 매출을 진심으로 책임지는 사람</strong>으로 신뢰를 쌓았기 때문이라고 봅니다.</p>
+  </section>
+
+</div>
+
+<div class="page">
+
+  <!-- ========== 3. 지원동기 및 입사 후 포부 ========== -->
+  <section style="margin-top: 0;">
+    <h2><span class="num">03.</span>지원동기 및 입사 후 포부</h2>
+
+    <p>어센드미디어는 광고취급액이 <strong>2022년 200억에서 2025년 370억으로 3년간 1.85배 성장</strong>하며, 종합몰·보험·대학교·병원·로펌 5개 업종의 다각 광고주를 확보했습니다. 동시에 <strong>로팅(로펌 전문 마케팅) → 로팅솔루션(CRM) → 핏업(자체 건기식 브랜드)</strong>으로 외연을 넓히고 있습니다. 이 시점에 필요한 본부장은 <strong>다업종 광고주 신규 수주 + 운영 책임 + 솔루션·자체 브랜드와의 시너지 창출</strong>을 동시에 만들 수 있는 사람이라고 봅니다.</p>
+
+    <p>저는 NHN커머스 7년에서 자사 솔루션 광고주 50+ 신규 수주와 월 영업매출 1.5-2억 운영을 책임졌고, 직후 자체 브랜드 4사에서 화장품·건기식·구강유산균·이유식 카테고리의 자사몰·홈쇼핑·입점몰 통합 운영을 했습니다. <strong>광고대행 + 광고주 + 솔루션 통합 컨설팅 셋을 모두 책임져본 16년 경험</strong>이 어센드미디어 본부장 자리와 정확히 맞다고 판단해 지원합니다.</p>
+
+    <p>솔직히 말씀드리면, JD에 명시된 5개 업종 중 <strong>종합몰과 병원</strong>(아이디플라코스메틱은 아이디병원 자회사)은 직접 운영 경력이 있지만, <strong>보험·대학교·로펌</strong>은 직접 경력이 없습니다. 그러나 신규 카테고리 진입은 NHN커머스 시기 5+ 신규 카테고리 광고주 수주와 더에이블랩 닥터미라클 런칭에서 의도적으로 쌓은 강점이라, 90일 안에 첫 PT 동행과 첫 캠페인 학습이 가능합니다.</p>
+
+    <p>한 가지 짚고 가야 할 부분이 있습니다. 최근 5년간 자체 브랜드 회사 4사를 거쳤습니다. 이는 <strong>NHN커머스 7년 광고대행 경험을 바탕으로, 화장품·건기식·구강유산균·이유식 등 다양한 카테고리에서 자사 브랜드 D2C 운영을 의도적으로 누적한 시기</strong>였습니다. 단기 근속 두 건(에스오씨·루나소프트)은 회사 재무 상황과 직군 재선택이라는 외부 사유였으며, 그 외 이직은 D2C 환경 확장과 장기 근속 가능한 조직 추구라는 일관된 방향이었습니다. 어센드미디어는 광고대행 + 솔루션 + 자체 브랜드 셋을 한 회사 안에서 다 다루는 구조라, 지난 16년 누적 경험의 종합 결산 자리이자 <strong>NHN커머스 7년 이상의 장기 근속 의지</strong>를 가진 자리라고 판단합니다.</p>
+
+    <div class="plan-box">
+      <h3>📅 입사 후 90일 플랜</h3>
+      <div class="plan-item">
+        <strong>D1-30 · 진단 + 1차 PT 동행</strong>
+        <p>5개 업종 광고주 카테고리별 매출·ROAS 베이스라인 측정 / 자동최적화 솔루션 + 사람 운영 결합 현황 진단 / 미경험 업종(보험·대학교·로펌) 시장 학습 + 1차 PT 1건 동행</p>
+      </div>
+      <div class="plan-item">
+        <strong>D31-60 · 신규 수주 PT + AI·운영 효율 재정렬</strong>
+        <p>신규 광고주 PT 직접 발표 N건 + 월 예산 5억+ 1건 수주 목표 / 어센드 자체 자동최적화 솔루션 + 메타 Advantage+ / 구글 Performance Max / 네이버 자동입찰 / 생성형 AI(ChatGPT·Claude) 결합 운영 가이드라인 설계 → 팀원 1인당 광고주 수 N% 개선 / 로팅·로팅솔루션·핏업 자산과 광고주 연결 시너지 1-2건 발굴</p>
+      </div>
+      <div class="plan-item">
+        <strong>D61-90 · 첫 성과 + 카테고리 진입</strong>
+        <p>신규 광고주 1-2개사 수주 / 기존 광고주 평균 ROAS N% 개선 / 미경험 업종 1개 카테고리 진입 / 본부 운영 체계 1차 보고</p>
+      </div>
+    </div>
+
+    <div class="ai-vision">
+      <div class="ai-label">⚡ AI VISION · 본부 운영 표준</div>
+      <p>어센드미디어 자체 솔루션(자동최적화·보고서 자동생성)은 광고대행사 + AI 솔루션 회사 정체성의 핵심 자산입니다. 본부장 합류 시 <strong>자체 솔루션 + 외부 AI 도구(메타 Advantage+·구글 Performance Max·네이버 자동입찰·생성형 AI)를 결합한 운영 가이드라인</strong>을 설계해, 광고주 1인당 운영 효율을 N배 끌어올리고 사람은 광고주 컨설팅·신규 수주·전략에 집중하는 본부 구조를 만들겠습니다. 동시에 자체 AI 솔루션을 광고주에게 마케팅하는 양면 책임도 수행하겠습니다. 그동안 푸드케어 메타 Advantage+ 직접운영 전환·네이버 자동입찰 효율 재정렬·GA4 AI 인사이트 활용·시즈노프 IMC ChatGPT 메시지 일관성 점검 등 직접 운영해본 AI 도구들을 어센드 자체 솔루션과 결합해 본부 운영의 표준을 만들 자신이 있습니다.</p>
+    </div>
+
+    <p><strong>1년 후</strong>에는 5개 업종 각 광고주 N개씩 + 미경험 1개 업종 카테고리 진입 + 팀 N명 빌드를 완성하고, <strong>3년 후</strong>에는 광고취급액을 X억에서 Y억으로 가속하면서 광고주 → 솔루션·자체 브랜드 전환율을 책임지는 본부 운영 체계를 안착시키는 것이 목표입니다.</p>
+
+    <p style="text-align: center; font-size: 12pt; font-weight: 700; color: #FF6B35; margin-top: 20px;">광고취급액 370억의 다음 단계를 함께 만드는 본부장이 되겠습니다.</p>
+  </section>
+
+</div>
+
+</body>
+</html>

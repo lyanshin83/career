@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김OO | 디지털 광고와 브랜드 마케팅을 양립한 16년차 시니어 마케터</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+  body { font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; background: #000; }
+  .accent { color: #FF6B35; }
+  .accent-bg { background-color: #FF6B35; }
+  .accent-border { border-color: #FF6B35; }
+  .gradient-text { background: linear-gradient(135deg, #FF6B35 0%, #FFA559 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Hero animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in-up { animation: fadeInUp 1s ease-out forwards; opacity: 0; }
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+  .delay-4 { animation-delay: 0.8s; }
+  .delay-5 { animation-delay: 1s; }
+
+  /* Hover */
+  .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card-hover:hover { transform: translateY(-4px); border-color: #FF6B35; }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Work experience accordion */
+  details summary { cursor: pointer; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] .arrow { transform: rotate(180deg); }
+  .arrow { transition: transform 0.3s; }
+
+  /* Timeline SVG — scroll-driven (JS controlled) */
+  .timeline-bar { transform-origin: left; transform: scaleX(0); transition: transform 0.05s linear; }
+  .timeline-section { min-height: 100vh; } /* sticky-like behavior — scroll progress through this section */
+
+  @media print {
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body class="text-white antialiased">
+
+<!-- ============ HERO ============ -->
+<section class="min-h-screen flex flex-col justify-center px-8 md:px-20 py-20 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-30 pointer-events-none">
+    <div class="absolute top-20 right-20 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(255,107,53,0.4) 0%, transparent 70%); filter: blur(60px);"></div>
+    <div class="absolute bottom-20 left-20 w-80 h-80 rounded-full" style="background: radial-gradient(circle, rgba(255,165,89,0.3) 0%, transparent 70%); filter: blur(80px);"></div>
+  </div>
+
+  <div class="relative z-10 max-w-6xl">
+    <p class="text-sm tracking-[0.3em] text-gray-500 mb-6 fade-in-up delay-1">PORTFOLIO · MARKETING SENIOR</p>
+
+    <h1 class="text-5xl md:text-8xl font-bold leading-[1.1] mb-6 fade-in-up delay-2">
+      디지털 광고와<br>
+      <span class="gradient-text">브랜드 마케팅</span>을 양립한<br>
+      16년차 시니어 마케터
+    </h1>
+
+    <p class="text-xl md:text-2xl text-gray-300 mb-2 fade-in-up delay-3">
+      김<span class="accent">OO</span>
+    </p>
+
+    <p class="text-lg md:text-xl font-light text-gray-400 mb-12 fade-in-up delay-4 max-w-3xl">
+      광고대행사 광고주 영업·매체 운영 <span class="text-white font-semibold">10년</span> ×
+      자체 브랜드 D2C·IMC·런칭 <span class="text-white font-semibold">5년+</span> —
+      <span class="accent">매출과 브랜드 둘 다 책임지는 본부장 트랙</span>
+    </p>
+
+    <!-- KPI -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 fade-in-up delay-5">
+      <div>
+        <p class="text-4xl md:text-6xl font-bold gradient-text"><span class="counter" data-target="50">0</span>+</p>
+        <p class="text-xs md:text-sm text-gray-400 mt-2">신규 광고주 수주<br>NHN커머스 7년</p>
+      </div>
+      <div>
+        <p class="text-4xl md:text-6xl font-bold gradient-text"><span class="counter" data-target="20">0</span><span class="text-2xl">×</span></p>
+        <p class="text-xs md:text-sm text-gray-400 mt-2">VT코스메틱 매출<br>1억 → 20억</p>
+      </div>
+      <div>
+        <p class="text-4xl md:text-6xl font-bold gradient-text"><span class="counter" data-target="7.7" data-decimals="1">0</span><span class="text-2xl">억</span></p>
+        <p class="text-xs md:text-sm text-gray-400 mt-2">닥터미라클 런칭<br>3개월차 매출</p>
+      </div>
+      <div>
+        <p class="text-4xl md:text-6xl font-bold gradient-text"><span class="counter" data-target="5">0</span><span class="text-2xl">억</span></p>
+        <p class="text-xs md:text-sm text-gray-400 mt-2">월 광고예산<br>통합 운영</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="flex flex-wrap gap-3 fade-in-up delay-5">
+      <a href="문서_이력서.html" target="_blank" class="px-6 py-3 accent-bg text-white font-bold rounded hover:opacity-90 transition">📄 이력서·자소서</a>
+      <a href="문서_경력기술서.html" target="_blank" class="px-6 py-3 border border-gray-600 hover:border-orange-500 text-white font-bold rounded transition">📋 경력기술서</a>
+      <a href="문서_포트폴리오.html" target="_blank" class="px-6 py-3 border border-gray-600 hover:border-orange-500 text-white font-bold rounded transition">🎨 포트폴리오</a>
+      <a href="#contact" class="px-6 py-3 border border-gray-600 hover:border-orange-500 text-white font-bold rounded transition">✉️ Contact</a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator no-print">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-500"><path d="M12 5v14m0 0l-7-7m7 7l7-7"/></svg>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section id="timeline" class="timeline-section px-8 md:px-20 py-24 border-t border-gray-900 flex flex-col justify-center">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">01 · CAREER TIMELINE</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-16" data-aos="fade-up">16년, 세 가지 트랙</h2>
+
+  <svg viewBox="0 0 1000 280" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg" data-aos="fade-up">
+    <line x1="40" y1="200" x2="960" y2="200" stroke="#374151" stroke-width="1"/>
+    <g font-size="11" fill="#9ca3af" font-family="sans-serif">
+      <text x="40" y="225">2010</text>
+      <text x="180" y="225">2012</text>
+      <text x="650" y="225">2019</text>
+      <text x="850" y="225">2024</text>
+      <text x="935" y="225">2026</text>
+    </g>
+
+    <rect x="40" y="60" width="610" height="40" fill="#1e3a8a" rx="4" class="timeline-bar delay-bar-1"/>
+    <text x="50" y="50" font-size="11" fill="#60a5fa" font-weight="500">바론미디어 · 오리지널 · ⭐ NHN커머스 (7년)</text>
+    <text x="50" y="85" font-size="13" fill="white" font-weight="600">🟦 광고대행·솔루션 영업 (9년 5개월)</text>
+
+    <rect x="650" y="105" width="200" height="40" fill="#9a3412" rx="4" class="timeline-bar delay-bar-2"/>
+    <text x="660" y="130" font-size="13" fill="white" font-weight="600">🟧 자체 브랜드 D2C (5년)</text>
+    <text x="660" y="155" font-size="11" fill="#fb923c" font-weight="500">더에이블·오라팜·라이프앤바이오·아이디플라</text>
+
+    <rect x="850" y="60" width="85" height="40" fill="#14532d" rx="4" class="timeline-bar delay-bar-3"/>
+    <text x="860" y="85" font-size="11" fill="white" font-weight="600">🟩 SaaS·CMO</text>
+    <text x="860" y="50" font-size="10" fill="#86efac" font-weight="500">루나·에스오씨</text>
+
+    <line x1="180" y1="60" x2="180" y2="190" stroke="#FF6B35" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+    <line x1="650" y1="60" x2="650" y2="190" stroke="#FF6B35" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+    <text x="370" y="180" font-size="14" fill="#FF6B35" font-weight="700">⭐ NHN커머스 7년 — 핵심 트랙</text>
+  </svg>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+    <div class="border border-gray-800 p-6 rounded-lg card-hover" data-aos="fade-up" data-aos-delay="100">
+      <p class="text-xs text-blue-400 font-bold tracking-widest mb-2">TRACK 1 · 9년 5개월</p>
+      <p class="text-xl font-bold mb-3">광고대행·솔루션 영업</p>
+      <p class="text-sm text-gray-400 leading-relaxed">바론미디어 → 오리지널 → <span class="text-white font-semibold">NHN커머스 7년</span>. 광고주 신규 수주 50+개, 월 영업매출 1.5-2억(최대 3억).</p>
+    </div>
+    <div class="border border-gray-800 p-6 rounded-lg card-hover" data-aos="fade-up" data-aos-delay="200">
+      <p class="text-xs text-orange-400 font-bold tracking-widest mb-2">TRACK 2 · 5년</p>
+      <p class="text-xl font-bold mb-3">자체 브랜드 D2C</p>
+      <p class="text-sm text-gray-400 leading-relaxed">더에이블랩·오라팜·라이프앤바이오·아이디플라코스메틱. <span class="text-white font-semibold">화장품·건기식·이유식·구강유산균</span> 4 카테고리.</p>
+    </div>
+    <div class="border border-gray-800 p-6 rounded-lg card-hover" data-aos="fade-up" data-aos-delay="300">
+      <p class="text-xs text-green-400 font-bold tracking-widest mb-2">TRACK 3 · 1.5년</p>
+      <p class="text-xl font-bold mb-3">신규 도메인</p>
+      <p class="text-sm text-gray-400 leading-relaxed">루나소프트(SaaS 영업 통합) · 에스오씨(CMO). <span class="text-white font-semibold">합병 후 영업 통합</span> + 광고서비스·DB 영업.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIGNATURE IMPACT (CATEGORIZED) ============ -->
+<section class="px-8 md:px-20 py-24 border-t border-gray-900 bg-gradient-to-b from-black to-gray-950">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">02 · SIGNATURE IMPACT</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">시그니처 케이스</h2>
+  <p class="text-gray-400 mb-16 max-w-3xl text-lg" data-aos="fade-up">정량 임팩트를 카테고리별로 정리. 16년 누적 결과.</p>
+
+  <!-- Category 1 -->
+  <div class="mb-16">
+    <div class="flex items-baseline gap-4 mb-8" data-aos="fade-right">
+      <p class="text-3xl md:text-4xl font-bold accent">①</p>
+      <h3 class="text-2xl md:text-3xl font-bold">광고주 영업·매출 견인</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-xs text-gray-500 mb-2">NHN커머스 / 7년 누적</p>
+        <h4 class="text-xl font-bold mb-3">광고주 신규 영업·수주</h4>
+        <div class="flex items-end gap-2 mb-3">
+          <p class="text-5xl font-bold accent">50<span class="text-2xl">+</span></p>
+        </div>
+        <p class="text-sm text-gray-400">300+ 컨택 → 50+ 광고주화. 월 영업매출 1.5-2억(최대 3억). 통합 컨설팅 영업.</p>
+      </div>
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="200">
+        <p class="text-xs text-gray-500 mb-2">NHN커머스 · VT코스메틱 / 2.5년</p>
+        <h4 class="text-xl font-bold mb-3">VT코스메틱 매출 견인</h4>
+        <div class="flex items-end gap-2 mb-3">
+          <p class="text-5xl font-bold accent">20<span class="text-2xl">×</span></p>
+        </div>
+        <p class="text-sm text-gray-400">월 1억 → 월 20억. 미디어 협찬(반트365·팔로우미·겟잇뷰티) + 온라인 통합.</p>
+      </div>
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="300">
+        <p class="text-xs text-gray-500 mb-2">NHN커머스 · 9명 팀 / 5년+</p>
+        <h4 class="text-xl font-bold mb-3">팀 영업매출 성장</h4>
+        <div class="flex items-end gap-2 mb-3">
+          <p class="text-5xl font-bold accent">+1.7<span class="text-2xl">억</span></p>
+        </div>
+        <p class="text-sm text-gray-400">월 4.8억 → 6.5억. 매년 2-3명 매출 상승 도우미 코칭. 영업+운영 동시 시연.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category 2 -->
+  <div class="mb-16">
+    <div class="flex items-baseline gap-4 mb-8" data-aos="fade-right">
+      <p class="text-3xl md:text-4xl font-bold accent">②</p>
+      <h3 class="text-2xl md:text-3xl font-bold">신규 브랜드 런칭</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-xs text-gray-500 mb-2">더에이블랩 / 2020-05 (런칭 3개월)</p>
+        <h4 class="text-xl font-bold mb-3">닥터미라클 신규 런칭</h4>
+        <div class="flex items-end gap-4 mb-3">
+          <div>
+            <p class="text-xs text-gray-500">목표 → 달성</p>
+            <p class="text-3xl font-bold text-gray-400">5억</p>
+          </div>
+          <p class="text-2xl text-gray-600 pb-2">→</p>
+          <p class="text-5xl font-bold accent">7.7<span class="text-2xl">억</span></p>
+          <p class="text-3xl font-bold accent ml-auto">140<span class="text-xl">%</span></p>
+        </div>
+        <p class="text-sm text-gray-400">메타 Advantage+ + 머신러닝 영상 최적화. FB 영상 캠페인 좋아요 500+, 댓글 200+.</p>
+      </div>
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="200">
+        <p class="text-xs text-gray-500 mb-2">라이프앤바이오 / 2023-03 런칭</p>
+        <h4 class="text-xl font-bold mb-3">시즈노프 IMC 통합 캠페인</h4>
+        <p class="text-5xl font-bold accent mb-3">7<span class="text-2xl">개 채널</span></p>
+        <div class="grid grid-cols-7 gap-1 mb-3">
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">매장 700+</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">무신사</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">29CM</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">운동크루</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">메타</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">라이브</p></div>
+          <div class="bg-orange-500/80 rounded p-1.5 text-center"><p class="text-[9px] text-white font-bold">바이럴</p></div>
+        </div>
+        <p class="text-sm text-gray-400">전국 700+ 매장 + 무신사·29CM + 운동크루 + 메타 + 라이브커머스. ChatGPT 메시지 일관성 점검.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category 3 -->
+  <div>
+    <div class="flex items-baseline gap-4 mb-8" data-aos="fade-right">
+      <p class="text-3xl md:text-4xl font-bold accent">③</p>
+      <h3 class="text-2xl md:text-3xl font-bold">운영 효율 + AI 도구 결합</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="100">
+        <p class="text-xs text-gray-500 mb-2">라이프앤바이오 · 푸드케어 / 2022-2023</p>
+        <h4 class="text-xl font-bold mb-3">광고비 50% 절감</h4>
+        <div class="flex items-end gap-4 mb-3">
+          <div>
+            <p class="text-xs text-gray-500">BEFORE</p>
+            <p class="text-2xl font-bold text-gray-400">월 3,000만</p>
+          </div>
+          <p class="text-2xl text-gray-600 pb-1">→</p>
+          <div>
+            <p class="text-xs accent">AFTER</p>
+            <p class="text-2xl font-bold accent">월 1,500만</p>
+          </div>
+          <p class="text-4xl font-bold accent ml-auto">-50<span class="text-xl">%</span></p>
+        </div>
+        <p class="text-sm text-gray-400">메타 Advantage+ 직접운영 전환 + 수수료 15% 추가 절감. 네이버 자동입찰·AI 타겟팅 효율 재정렬.</p>
+      </div>
+      <div class="border-l-4 accent-border bg-gray-900/50 p-6 rounded-r-lg card-hover" data-aos="fade-up" data-aos-delay="200">
+        <p class="text-xs text-gray-500 mb-2">라이프앤바이오 · 푸드케어 블로그</p>
+        <h4 class="text-xl font-bold mb-3">블로그 방문자 20배</h4>
+        <div class="flex items-end gap-4 mb-3">
+          <p class="text-2xl font-bold text-gray-400">1일 100명</p>
+          <p class="text-2xl text-gray-600 pb-1">→</p>
+          <p class="text-2xl font-bold accent">2,000명</p>
+          <p class="text-4xl font-bold accent ml-auto">20<span class="text-xl">×</span></p>
+        </div>
+        <p class="text-sm text-gray-400">키워드 상위노출 + GA4 AI 인사이트 활용 키워드 재정렬. 6개월 운영.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK EXPERIENCE ============ -->
+<section class="px-8 md:px-20 py-24 border-t border-gray-900">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">03 · WORK EXPERIENCE</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">경력 사항</h2>
+  <p class="text-gray-400 mb-16 max-w-3xl text-lg" data-aos="fade-up">9개 회사 · 시간 역순 · 펼치면 R&R·성과·이직사유 확인 가능</p>
+
+  <div class="space-y-3">
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2024.12 — 2025.12 · 1년</p>
+          <h3 class="text-xl font-bold">㈜에스오씨 <span class="text-sm font-normal text-gray-400">· 마케팅사업부 · CMO</span></h3>
+          <p class="text-sm text-gray-400 mt-1">셀픽 사진인화 키오스크 광고서비스·DB 영업 총괄</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">셀픽 광고서비스·DB 영업·운영 총괄 + 광고대행 영업·운영 총괄</p>
+        <p class="text-sm text-orange-400 font-semibold mb-2">성과</p>
+        <ul class="text-sm text-gray-300 space-y-1 mb-4">
+          <li>• 광고: 에르코스 루솔 이유식 / 네슬레 일루맘클럽 / 퓨어락 분유 영업·운영</li>
+          <li>• DB파트너: 디허브랩(태아보험) / 신한카드 국민행복 / 웅진씽크빅 책다른 / 베이비스튜디오 영업·관리</li>
+        </ul>
+        <p class="text-xs text-gray-500 italic">이직 사유: 회사 재무 상황 악화로 이직 결정</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2024.08 — 2024.11 · 4개월</p>
+          <h3 class="text-xl font-bold">㈜루나소프트 <span class="text-sm font-normal text-gray-400">· 영업팀 · 팀장 (8명)</span></h3>
+          <p class="text-sm text-gray-400 mt-1">메시지 SaaS 합병 후 양사 영업 통합 리딩</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">루나소프트 + 엠비아이솔루션 합병 후 영업팀 통합 (루나톡·해피톡 SaaS B2B 세일즈) / 사업계획·연간/월간 영업·마케팅 운영 전략 / 외부 제휴 영업(스냅컴퍼니) / 임원회의 보고</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: 마케팅 본업 지속을 위한 재이직</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2023.11 — 2024.03 · 4개월</p>
+          <h3 class="text-xl font-bold">㈜아이디플라코스메틱 <span class="text-sm font-normal text-gray-400">· 마케팅세일즈파트 · 차장(파트장, 9명)</span></h3>
+          <p class="text-sm text-gray-400 mt-1">아이디병원 자회사 코스메틱 D2C 통합 운영</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">디지털 마케팅(대행사 관리) + 퍼포·바이럴·콘텐츠 통합 / 네이버스토어·자사몰·쿠팡·와디즈·홈쇼핑 총괄 / 공동구매 벤더 영업·관리 / 신제품 상세기획·홈쇼핑 커뮤니케이션</p>
+        <p class="text-sm text-orange-400 font-semibold mb-2">성과</p>
+        <p class="text-sm text-gray-300 mb-4">9명 파트 총괄 (영업·홈쇼핑MD·온라인MD·콘텐츠BM·채널BM·퍼포·마케팅지원)</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: D2C 채널 확장 미션을 더 깊게 책임질 수 있는 환경 추구</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2022.07 — 2023.10 · 1년 4개월</p>
+          <h3 class="text-xl font-bold">㈜라이프앤바이오 <span class="text-sm font-normal text-gray-400">· 기획커뮤니케이션·커머스 · 실장 (5명)</span></h3>
+          <p class="text-sm text-gray-400 mt-1">건기식·이유식 / 푸드케어 250억 매출목표 책임 / 시즈노프 IMC 런칭</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">푸드케어(이유식) 23년 매출목표 250억 마케팅 책임 / 시즈노프 IMC 설계 / 로우티 리듀스앤드 신제품 런칭 / 판매처 확대 (쿠팡·무신사·29CM·CJ온스타일·GS샵)</p>
+        <p class="text-sm text-orange-400 font-semibold mb-2">성과</p>
+        <ul class="text-sm text-gray-300 space-y-1 mb-4">
+          <li>• <strong>푸드케어</strong>: 메타 Advantage+ 직접운영 전환 수수료 15% 절감 + 네이버 자동입찰 효율 재정렬 광고비 50% 절감 / 블로그 방문 100→2,000명</li>
+          <li>• <strong>시즈노프</strong>: 런칭 IMC 7채널 — 700+ 매장 + 무신사·29CM + 운동크루 + 메타 + ChatGPT 메시지 일관성</li>
+          <li>• <strong>로우티</strong>: 부진재고 5,000개 소진 / 신제품 유튜버 6명 협업(6,000만)</li>
+        </ul>
+        <p class="text-xs text-gray-500 italic">이직 사유: 사모펀드 인수 직후 조직 방향성 재정립 시기, 장기 근속 환경 추구</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2021.07 — 2022.07 · 1년</p>
+          <h3 class="text-xl font-bold">㈜오라팜 <span class="text-sm font-normal text-gray-400">· B2C사업부 · 팀장(부장, 5명)</span></h3>
+          <p class="text-sm text-gray-400 mt-1">구강유산균 D2C 총괄 / 쿠팡 로켓배송 + OEM(오리온·휴럼)</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">B2C사업 총괄 — 자사몰·입점몰·라이브커머스·공동구매·OEM/ODM</p>
+        <p class="text-sm text-orange-400 font-semibold mb-2">성과</p>
+        <p class="text-sm text-gray-300 mb-4">월 매출 목표 2억 / 쿠팡 로켓배송 입점 / 공동구매 벤더 3사 / 마미앱·현대H몰 신규 / 오리온 닥터유 껌 협업 / 휴럼 OEM</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: 건기식·D2C 본격 운영을 위한 스카우트 제안 수락</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2019.12 — 2021.03 · 1년 4개월</p>
+          <h3 class="text-xl font-bold">㈜더에이블랩 <span class="text-sm font-normal text-gray-400">· 마케팅팀 · 팀장 (4명)</span></h3>
+          <p class="text-sm text-gray-400 mt-1">월 5억 예산 운영 / 닥터미라클 런칭 7.7억 / 광고매체 20+ / 광고대행사 4사 협업</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-orange-400 font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">월 5억 예산 디지털 마케팅 (메타 2.5억·DA 1.5억·네이티브 0.5억·쇼핑박스 0.5억) / 닥터미라클 런칭 TFT / 광고매체 20+ 통합 / 광고대행사 4사 협업 (DMC·메조·메이크샵·NHN커머스)</p>
+        <p class="text-sm text-orange-400 font-semibold mb-2">성과</p>
+        <ul class="text-sm text-gray-300 space-y-1 mb-4">
+          <li>• 닥터미라클 2020-05 런칭 → 6월 6.4억 / 7월 7.7억 (목표 5억 초과)</li>
+          <li>• FB 영상 캠페인 140% 달성 (좋아요 500+, 댓글 200+, 공유 300+) — 메타 Advantage+ + 머신러닝</li>
+          <li>• 올더라이프 월 매출 12억 / 까탈릭 신세계 명동점 입점</li>
+        </ul>
+        <p class="text-xs text-gray-500 italic">이직 사유: 건강 회복 및 가족 사유로 단기 휴식</p>
+      </div>
+    </details>
+
+    <details class="border-2 accent-border rounded-lg bg-orange-500/5" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs accent font-semibold mb-1">⭐ CORE TRACK · 2012.11 — 2019.11 · 7년</p>
+          <h3 class="text-xl font-bold">㈜NHN커머스 <span class="text-sm font-normal text-gray-400">· 마케팅1팀 · 팀장 (9명)</span></h3>
+          <p class="text-sm text-gray-300 mt-1">광고주 50+ 신규 수주 / VT 1억→20억 / 자사몰 솔루션 카테고리 영업 7년</p>
+        </div>
+        <svg class="arrow w-5 h-5 accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t accent-border pt-4">
+        <p class="text-sm accent font-semibold mb-2">R&R</p>
+        <p class="text-sm text-gray-300 mb-4">자사 솔루션(자사몰 솔루션 = 메이크샵·카페24 동일 카테고리) 사용 업체 광고주화 미션 / 마케팅·솔루션·외주디자인·CS 부서 통합 컨설팅 영업 / 마케팅1팀 팀장 (2018.11~) + 5년 이상 사실상 팀 리더</p>
+        <p class="text-sm accent font-semibold mb-2">성과 — 영업·수주</p>
+        <ul class="text-sm text-gray-300 space-y-1 mb-4">
+          <li>• 약 300+ 업체 컨택 → <strong>50+ 광고주 수주</strong></li>
+          <li>• 월 평균 영업매출 1.5-2억 (최대 3억) / 매출이익 0.3억 (최대 0.45억)</li>
+          <li>• 팀 월매출 4.8억 → 6.5억 (1.7억 상승) — 매년 2-3명 매출 상승 도우미</li>
+        </ul>
+        <p class="text-sm accent font-semibold mb-2">성과 — 시그니처 광고주</p>
+        <ul class="text-sm text-gray-300 space-y-1 mb-4">
+          <li>• <strong>VT코스메틱</strong> (2.5년) — 첫 미팅 1억 → 20억 매출 (20배)</li>
+          <li>• <strong>이지함화장품</strong> (2.5년) — 월 0.3-0.5억 / 네이버 콘텐츠DA 패션뷰티판 초기 집행</li>
+          <li>• <strong>더에이블랩</strong> (2.5년) — 4개 몰 최대 월 30억 매출 기여</li>
+        </ul>
+        <p class="text-sm accent font-semibold mb-2">성과 — 매체 신규 발굴</p>
+        <p class="text-sm text-gray-300 mb-4">ZUM 쇼핑박스 공식대행 신설 / 네이버 실급검 5건 / 모바일 메인배너 신규 / 네이티브DA 영역 신설</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: 7년 근무 후, 자사 브랜드를 직접 책임지는 경험으로 커리어 확장</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2011.06 — 2012.08 · 1년 2개월</p>
+          <h3 class="text-xl font-bold">㈜오리지널마케팅그룹 <span class="text-sm font-normal text-gray-400">· 마케팅1팀 · 팀장</span></h3>
+          <p class="text-sm text-gray-400 mt-1">미채움한의원 네트워크 + 미채움오리지널 한방화장품 런칭</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-gray-300 mb-4">미채움 고급 한방화장품 미채움오리지널 런칭 / 한국관광공사 연계 일·중 관광객 판매 / 침톡스 한의원 네트워크 온라인 프로모션 / 아이비클럽·그래놀라 등 바이럴 광고 대행</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: 마케팅 범위 확장과 솔루션·호스팅 카테고리 경험을 위한 이직</p>
+      </div>
+    </details>
+
+    <details class="border border-gray-800 rounded-lg card-hover" data-aos="fade-up">
+      <summary class="p-6 flex justify-between items-center">
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">2010.05 — 2011.06 · 1년 1개월 (첫 직장)</p>
+          <h3 class="text-xl font-bold">㈜바론미디어 <span class="text-sm font-normal text-gray-400">· 마케팅1팀 · 대리</span></h3>
+          <p class="text-sm text-gray-400 mt-1">광고주 영업·제안·운영 (B2B 영업 시작점)</p>
+        </div>
+        <svg class="arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 border-t border-gray-800 pt-4">
+        <p class="text-sm text-gray-300 mb-4">광고주 영업·제안·운영 / 롯데ID껌 (브랜드 블로그·이벤트·바이럴) / 아이비클럽 키워드·블로그·바이럴 / 하나은행 SNS / 옴니텔(천하쟁패) / 위니아에어워셔</p>
+        <p class="text-xs text-gray-500 italic">이직 사유: 前 직장 팀장 스카우트 제안 수락</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ============ AI STACK ============ -->
+<section class="px-8 md:px-20 py-24 border-t border-gray-900 bg-gradient-to-b from-black to-gray-950">
+  <p class="text-sm tracking-[0.3em] accent mb-4" data-aos="fade-up">04 · AI MARKETING STACK</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">AI 도구 직접 운영 스택</h2>
+  <p class="text-gray-400 mb-16 max-w-3xl text-lg" data-aos="fade-up">광고 AI · 생성형 AI · 분석 AI 통합. 자동최적화 + 사람 컨설팅 결합 본부 구조 설계 가능.</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="border border-orange-900/50 p-8 rounded-lg bg-black/50" data-aos="fade-up" data-aos-delay="100">
+      <p class="text-xs accent font-bold tracking-widest mb-4">광고 AI · 직접 운영</p>
+      <ul class="space-y-3 text-base">
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>메타 Advantage+ 캠페인</strong></span></li>
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>구글 Performance Max</strong></span></li>
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>네이버 자동입찰·AI 타겟팅</strong></span></li>
+      </ul>
+    </div>
+    <div class="border border-orange-900/50 p-8 rounded-lg bg-black/50" data-aos="fade-up" data-aos-delay="200">
+      <p class="text-xs accent font-bold tracking-widest mb-4">생성형 AI</p>
+      <ul class="space-y-3 text-base">
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>ChatGPT · Claude · Gemini</strong><br><span class="text-xs text-gray-500">카피·기획·제안서·아이디에이션</span></span></li>
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>IMC 메시지 일관성 점검</strong></span></li>
+      </ul>
+    </div>
+    <div class="border border-orange-900/50 p-8 rounded-lg bg-black/50" data-aos="fade-up" data-aos-delay="300">
+      <p class="text-xs accent font-bold tracking-widest mb-4">분석 AI</p>
+      <ul class="space-y-3 text-base">
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>GA4 AI 인사이트</strong></span></li>
+        <li class="flex items-start gap-2"><span class="accent">▸</span> <span><strong>전통 분석 도구</strong><br><span class="text-xs text-gray-500">에이스카운터·로거·로그·애널리언스</span></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPETENCIES + BRAND LAUNCH ============ -->
+<section class="px-8 md:px-20 py-24 border-t border-gray-900">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">05 · COMPETENCIES & BRANDS</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-16" data-aos="fade-up">핵심 역량 · 브랜드 런칭</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mb-20">
+    <div data-aos="fade-up">
+      <p class="text-lg font-bold mb-4 accent">광고 매체 (직접 운영)</p>
+      <div class="flex flex-wrap gap-2">
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">메타 (FB·IG)</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">구글애즈</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">네이버 검색·쇼핑·DA</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">카카오 DA</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">유튜브</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">ZUM 쇼핑박스</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">네이트·디스패치</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">쿠팡 광고</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">네트워크 DA</span>
+      </div>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="100">
+      <p class="text-lg font-bold mb-4 accent">D2C 채널 풀스택</p>
+      <div class="flex flex-wrap gap-2">
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">자사몰</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">스마트스토어</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">쿠팡 (로켓배송)</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">올리브영</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">이마트트레이더스</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">무신사·29CM</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">와디즈</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">CJ온스타일·GS샵</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">라이브커머스</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">공동구매</span>
+      </div>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="200">
+      <p class="text-lg font-bold mb-4 accent">취급 카테고리</p>
+      <div class="flex flex-wrap gap-2">
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">화장품</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">건기식</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">이너뷰티</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">구강유산균</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">이유식</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">디바이스</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">쇼핑몰 솔루션</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">메시지 SaaS</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">광고 키오스크·DB</span>
+      </div>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="300">
+      <p class="text-lg font-bold mb-4 accent">리더십 · 영업</p>
+      <div class="flex flex-wrap gap-2">
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">팀장 13년+ (4-9명)</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">NHN 9명 팀 5년+</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">신규 영업·PT</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">C레벨 다이렉트</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">월 1회 임원회의</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">합병 후 영업 통합</span>
+        <span class="px-3 py-1 border border-gray-700 rounded text-xs">IMC 통합 (7채널)</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="text-2xl font-bold mb-8" data-aos="fade-up">직접 콘셉 설정·런칭한 브랜드 (6건)</h3>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="100">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2020-05</p>
+      <p class="text-lg font-bold">닥터미라클</p>
+      <p class="text-xs text-gray-500">더에이블랩 · 화장품</p>
+    </div>
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="150">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2019-2021</p>
+      <p class="text-lg font-bold">더레브</p>
+      <p class="text-xs text-gray-500">더에이블랩 · 화장품</p>
+    </div>
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="200">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2023-03</p>
+      <p class="text-lg font-bold">시즈노프</p>
+      <p class="text-xs text-gray-500">라이프앤바이오 · 액티브웨어</p>
+    </div>
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="250">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2023</p>
+      <p class="text-lg font-bold">로우티 리듀스앤드</p>
+      <p class="text-xs text-gray-500">라이프앤바이오 · 이너뷰티</p>
+    </div>
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="300">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2022</p>
+      <p class="text-lg font-bold">푸드케어 신제품</p>
+      <p class="text-xs text-gray-500">라이프앤바이오 · 이유식</p>
+    </div>
+    <div class="border border-gray-800 p-5 rounded-lg card-hover" data-aos="zoom-in" data-aos-delay="350">
+      <p class="text-xs accent font-bold tracking-widest mb-1">2011</p>
+      <p class="text-lg font-bold">미채움오리지널</p>
+      <p class="text-xs text-gray-500">오리지널 · 한방화장품</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDUCATION ============ -->
+<section class="px-8 md:px-20 py-24 border-t border-gray-900">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">06 · EDUCATION & TOOLS</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-16" data-aos="fade-up">학력 · 자격 · 도구</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div data-aos="fade-up">
+      <p class="text-sm accent font-bold mb-3">학력</p>
+      <p class="text-lg font-bold">남서울대학교</p>
+      <p class="text-sm text-gray-400">경영학부 (유통학과)</p>
+      <p class="text-xs text-gray-500 mt-1">2002.03 — 2009.02 · 학점 3.0/4.5</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="100">
+      <p class="text-sm accent font-bold mb-3">자격</p>
+      <p class="text-lg font-bold">쇼핑몰운영전문가</p>
+      <p class="text-sm text-gray-400">NHN커머스 발급</p>
+      <p class="text-xs text-gray-500 mt-1">2016.10</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="200">
+      <p class="text-sm accent font-bold mb-3">병역</p>
+      <p class="text-lg font-bold">공익근무 (군필)</p>
+      <p class="text-sm text-gray-400">대한민국</p>
+      <p class="text-xs text-gray-500 mt-1">2003.03 — 2005.06</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="px-8 md:px-20 py-24 border-t border-gray-900 bg-gradient-to-b from-black to-orange-950/20">
+  <p class="text-sm tracking-[0.3em] text-gray-500 mb-4" data-aos="fade-up">07 · CONTACT & DOWNLOADS</p>
+  <h2 class="text-4xl md:text-5xl font-bold mb-12" data-aos="fade-up">함께 만들 다음 단계</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-12">
+    <div class="border-l-2 accent-border pl-6" data-aos="fade-up">
+      <p class="text-xs text-gray-500 mb-1">EMAIL</p>
+      <p class="text-lg font-mono">your@email.com</p>
+    </div>
+    <div class="border-l-2 accent-border pl-6" data-aos="fade-up" data-aos-delay="100">
+      <p class="text-xs text-gray-500 mb-1">PHONE</p>
+      <p class="text-lg font-mono">010-XXXX-XXXX</p>
+    </div>
+    <div class="border-l-2 accent-border pl-6" data-aos="fade-up" data-aos-delay="200">
+      <p class="text-xs text-gray-500 mb-1">LINKEDIN</p>
+      <p class="text-lg font-mono">linkedin.com/in/yourid</p>
+    </div>
+  </div>
+
+  <div data-aos="fade-up">
+    <p class="text-sm accent font-bold mb-4">📥 DOWNLOAD DOCUMENTS</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="문서_이력서.html" target="_blank" class="px-6 py-3 accent-bg text-white font-bold rounded hover:opacity-90 transition">📄 이력서·자소서</a>
+      <a href="문서_경력기술서.html" target="_blank" class="px-6 py-3 border border-gray-600 hover:border-orange-500 text-white font-bold rounded transition">📋 경력기술서</a>
+      <a href="문서_포트폴리오.html" target="_blank" class="px-6 py-3 border border-gray-600 hover:border-orange-500 text-white font-bold rounded transition">🎨 포트폴리오</a>
+    </div>
+  </div>
+
+  <div class="mt-20 pt-8 border-t border-gray-800 flex flex-wrap justify-between items-center gap-4 text-xs text-gray-600">
+    <p>© 김OO · 마케팅 시니어 · 16년 트랙</p>
+    <p>광고대행 10년 + 자체 브랜드 D2C 5년+ + AI 도구 통합 운영</p>
+  </div>
+</section>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true, offset: 80 });
+
+  // Counter animation
+  const counters = document.querySelectorAll('.counter');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => observer.observe(c));
+
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || 0);
+    const duration = 1800;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = eased * target;
+      el.textContent = decimals > 0 ? value.toFixed(decimals) : Math.floor(value);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ===== Scroll-driven Timeline Animation =====
+  // 사용자 요구: "메인이 나오고 스크롤하면 16년 3가지 트랙으로 애니메이션. 내리면 애니메이션 끝나있어!"
+  const timelineBars = document.querySelectorAll('.timeline-bar');
+  const timelineSection = document.getElementById('timeline');
+
+  function updateTimelineAnimation() {
+    if (!timelineSection || !timelineBars.length) return;
+    const rect = timelineSection.getBoundingClientRect();
+    const wh = window.innerHeight;
+
+    // 섹션이 뷰포트 85%에서 시작 → 25%에서 완료
+    const startTrigger = wh * 0.85;
+    const endTrigger = wh * 0.25;
+    let progress = (startTrigger - rect.top) / (startTrigger - endTrigger);
+    progress = Math.max(0, Math.min(1, progress));
+
+    // 3개 막대 순차적 그려짐
+    timelineBars.forEach((bar, i) => {
+      const total = timelineBars.length;
+      const segStart = i / total;
+      const segEnd = (i + 1) / total;
+      let barProg = (progress - segStart) / (segEnd - segStart);
+      barProg = Math.max(0, Math.min(1, barProg));
+      bar.style.transform = `scaleX(${barProg})`;
+    });
+  }
+
+  window.addEventListener('scroll', updateTimelineAnimation, { passive: true });
+  window.addEventListener('resize', updateTimelineAnimation);
+  // 초기 호출
+  updateTimelineAnimation();
+
+  // ===== Scroll-to-top button =====
+  const scrollTopStyle = document.createElement('style');
+  scrollTopStyle.textContent = `
+    .scroll-top-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 52px; height: 52px;
+      background: #FF6B35; color: white;
+      border: none; border-radius: 50%;
+      font-size: 22pt; font-weight: 700;
+      cursor: pointer; opacity: 0; pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
+    .scroll-top-btn:hover {
+      background: #C2410C; transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+    }
+    .scroll-top-btn:active { transform: translateY(0); }
+  `;
+  document.head.appendChild(scrollTopStyle);
+
+  const scrollTopBtn = document.createElement('button');
+  scrollTopBtn.className = 'scroll-top-btn';
+  scrollTopBtn.setAttribute('aria-label', '맨 위로 올라가기');
+  scrollTopBtn.innerHTML = '↑';
+  scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.body.appendChild(scrollTopBtn);
+
+  // 50% 이상 스크롤 시 나타남, 끝까지 가도 유지
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight * 0.5) {
+      scrollTopBtn.classList.add('visible');
+    } else {
+      scrollTopBtn.classList.remove('visible');
+    }
+  }, { passive: true });
+</script>
+
+</body>
+</html>
