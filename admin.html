@@ -243,7 +243,7 @@
       <!-- GitHub 자동 저장 옵션 -->
       <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-4 mb-4">
         <label class="flex items-center gap-3 cursor-pointer">
-          <input id="githubAutoSave" type="checkbox" class="w-5 h-5 accent-orange-500">
+          <input id="githubAutoSave" type="checkbox" class="w-5 h-5 accent-orange-500" onchange="updateApplyButtons()">
           <div>
             <div class="font-bold accent">⚡ GitHub 자동 저장 (재배포 자동)</div>
             <p class="text-xs text-gray-400 mt-1">체크 시 ZIP 다운로드 ❌ → GitHub 자동 commit → Vercel 자동 재배포 (1-2분). 설정 탭에서 GitHub 토큰 등록 필요</p>
@@ -275,7 +275,7 @@
 
         <button onclick="addFindReplaceRow()" class="text-xs px-3 py-1 border border-gray-700 rounded hover:border-orange-500 mb-3">+ 변경 항목 추가</button>
 
-        <button onclick="applySimpleEdits()" class="block w-full px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 적용 + ZIP 다운로드</button>
+        <button id="applySimpleBtn" onclick="applySimpleEdits()" class="block w-full px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 적용 + ZIP 다운로드</button>
       </div>
 
       <!-- 모드 2: AI 자연어 -->
@@ -289,7 +289,7 @@
 - 시니어 톤을 좀 더 차분하게 다듬어줘
 - 자소서 90일 플랜 D31-60에 보험 업종 부분 더 강조"></textarea>
 
-        <button onclick="applyAIEdits()" class="block w-full px-6 py-3 border-2 accent-border text-orange-500 rounded font-bold hover:accent-bg hover:text-white transition">🤖 AI로 적용 + ZIP 다운로드</button>
+        <button id="applyAIBtn" onclick="applyAIEdits()" class="block w-full px-6 py-3 border-2 accent-border text-orange-500 rounded font-bold hover:accent-bg hover:text-white transition">🤖 AI로 적용 + ZIP 다운로드</button>
 
         <p class="text-xs text-gray-500 mt-3">💡 AI 모드 비용: 파일당 약 100-300원 (선택 파일 수만큼)</p>
       </div>
@@ -605,6 +605,7 @@ function enterDashboard() {
   document.getElementById('apiKeyEdit').value = localStorage.getItem('claudeApiKey') || '';
   loadProfile();
   loadGithubSettings();
+  updateApplyButtons();
 }
 
 // ============ PROFILE ============
@@ -1155,6 +1156,23 @@ function downloadText(id, field, filename) {
 // ============ EDIT (자료 수정) ============
 function checkAllEditFiles(checked) {
   document.querySelectorAll('.edit-file-check').forEach(c => c.checked = checked);
+}
+
+function updateApplyButtons() {
+  const checked = document.getElementById('githubAutoSave')?.checked;
+  const simpleBtn = document.getElementById('applySimpleBtn');
+  const aiBtn = document.getElementById('applyAIBtn');
+
+  if (simpleBtn) {
+    simpleBtn.innerHTML = checked
+      ? '⚡ 적용 + GitHub 자동저장 (재배포)'
+      : '📦 적용 + ZIP 다운로드';
+  }
+  if (aiBtn) {
+    aiBtn.innerHTML = checked
+      ? '🤖⚡ AI로 적용 + GitHub 자동저장 (재배포)'
+      : '🤖 AI로 적용 + ZIP 다운로드';
+  }
 }
 
 function addFindReplaceRow() {
