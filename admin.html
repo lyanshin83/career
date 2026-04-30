@@ -243,6 +243,35 @@
       <h2 class="text-2xl font-bold mb-2">📝 자료 텍스트 수정</h2>
       <p class="text-xs text-gray-500 mb-6">이력서·자소서·경력기술서·포트폴리오·메인 사이트 텍스트 일괄 수정 → ZIP 다운로드 → Vercel 재배포</p>
 
+      <!-- 자료 출처 선택 -->
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-6 mb-4">
+        <h3 class="font-bold accent mb-3">📂 자료 출처 선택</h3>
+        <div class="flex flex-col md:flex-row gap-3 mb-3">
+          <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-700 rounded hover:border-orange-500 flex-1">
+            <input type="radio" name="editSource" value="master" checked onchange="updateEditSource()">
+            <div>
+              <div class="font-bold text-sm">📋 마스터 자료</div>
+              <p class="text-xs text-gray-400">표준 이력서·자소서·경력기술서·포트폴리오·메인 사이트 (루트 경로)</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-700 rounded hover:border-orange-500 flex-1">
+            <input type="radio" name="editSource" value="company" onchange="updateEditSource()">
+            <div>
+              <div class="font-bold text-sm">🏢 회사별 변형 자료</div>
+              <p class="text-xs text-gray-400">companies/{회사명}/ 폴더 내 변형본만 수정</p>
+            </div>
+          </label>
+        </div>
+
+        <div id="companySelectWrap" class="hidden">
+          <label class="block text-xs text-gray-400 mb-1">회사 선택</label>
+          <select id="companySelect" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+            <option value="">-- 회사 선택 --</option>
+          </select>
+          <p class="text-xs text-gray-500 mt-2">💡 변형본이 없는 회사면 마스터 자료를 먼저 회사 폴더에 복제하세요 (공고 상세 → 📂 변형 자료 보기·수정)</p>
+        </div>
+      </div>
+
       <!-- 파일 선택 -->
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
         <h3 class="font-bold accent mb-3">1️⃣ 어떤 파일?</h3>
@@ -456,7 +485,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-3 gap-3">
         <div>
           <label class="block text-xs text-gray-400 mb-1">출처</label>
           <select id="jobSource" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
@@ -472,6 +501,18 @@
         <div>
           <label class="block text-xs text-gray-400 mb-1">마감일</label>
           <input id="jobDeadline" type="date" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">상태</label>
+          <select id="jobInitialStatus" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500">
+            <option>검토중</option>
+            <option>지원완료</option>
+            <option>서류통과</option>
+            <option>면접</option>
+            <option>합격</option>
+            <option>불합격</option>
+            <option>보류</option>
+          </select>
         </div>
       </div>
 
@@ -569,6 +610,17 @@
   }
   .filter-btn:hover { border-color: #FF6B35; color: white; }
   .filter-btn.active { background: #FF6B35; color: white; border-color: #FF6B35; }
+
+  /* select option 배경·글자 — 다크모드에서 안 보이는 버그 수정 */
+  select { color-scheme: dark; }
+  select option {
+    background: #1f2937 !important;
+    color: white !important;
+  }
+  select option:checked {
+    background: #FF6B35 !important;
+    color: white !important;
+  }
 </style>
 
 <script>
@@ -903,21 +955,43 @@ async function updateAllFiles() {
       let html = await res.text();
       const original = html;
 
-      // 이름 = 전체 주황·볼드 (사용자 요청)
+      // 이름 = 전체 주황·볼드 (HTML 영역만)
       const formattedName = `<strong class="accent" style="font-weight:700;">${profile.name}</strong>`;
 
+      // 1) <title> 태그 강력 처리 — 안의 HTML 태그 모두 제거 + 이름 교체
+      html = html.replace(/<title>([\s\S]*?)<\/title>/g, (match, content) => {
+        // HTML 태그 모두 제거 (이전에 깨진 <strong> 등 복구)
+        let clean = content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+        // 김OO 또는 깨진 이름 패턴 → 새 이름
+        if (clean.includes('김OO')) {
+          clean = clean.replace(/김OO/g, profile.name);
+        } else {
+          // " | " 구분자로 분리해서 첫 부분만 이름으로 교체
+          const parts = clean.split(' | ');
+          if (parts.length >= 2) {
+            parts[0] = profile.name;
+            clean = parts.join(' | ');
+          } else {
+            clean = profile.name + ' | ' + clean;
+          }
+        }
+        return `<title>${clean}</title>`;
+      });
+
       html = html
-        // 디자인 분리 패턴 (메인·이력서·자소서 헤더 등 모두 통일)
+        // 2) HTML 디자인 분리 패턴 (body 안) → 주황 볼드
         .replaceAll('김<span class="accent">OO</span>', formattedName)
         .replaceAll('김<span>OO</span>', formattedName)
-        .replaceAll('김<span class=\"accent\">OO</span>', formattedName)
-        // 단순 패턴
-        .replaceAll('김OO', formattedName)
+        // 3) 이전에 깨진 <strong> 패턴 (body 안) → 새 formattedName으로 교체
+        .replace(/<strong class="accent" style="font-weight:700;">[^<]*<\/strong>/g, formattedName)
+        // 4) 남은 단순 패턴 → 텍스트만 (안전)
+        .replaceAll('김OO', profile.name)
         .replaceAll('your@email.com', profile.email)
         .replaceAll('010-XXXX-XXXX', profile.phone);
 
-      if (profile.linkedin) {
-        let linkedinUrl = profile.linkedin;
+      // LinkedIn 처리 — 입력 있을 때만 적용, 없으면 항목 자체 제거
+      if (profile.linkedin && profile.linkedin.trim()) {
+        let linkedinUrl = profile.linkedin.trim();
         if (!linkedinUrl.startsWith('http')) {
           linkedinUrl = linkedinUrl.replace(/^linkedin\.com/, 'https://linkedin.com');
           if (!linkedinUrl.startsWith('http')) linkedinUrl = 'https://' + linkedinUrl;
@@ -926,6 +1000,22 @@ async function updateAllFiles() {
         html = html
           .replaceAll('linkedin.com/in/yourid', display)
           .replaceAll('https://linkedin.com/in/yourid', linkedinUrl);
+      } else {
+        // LinkedIn 입력 없음 → 항목 자체 숨김 처리
+        // 메인 사이트 Contact 섹션의 LinkedIn 카드 제거
+        html = html.replace(
+          /<div class="border-l-2 accent-border pl-6"[^>]*data-aos[^>]*>\s*<p class="text-xs text-gray-500 mb-1">LINKEDIN<\/p>[\s\S]*?<\/div>/g,
+          ''
+        );
+        // 이력서/자소서 헤더의 LinkedIn span 제거
+        html = html.replace(
+          /<span><span class="label">LINKEDIN<\/span>linkedin\.com\/in\/yourid<\/span>/g,
+          ''
+        );
+        // 포트폴리오 footer의 LinkedIn 줄 제거 (· linkedin.com/in/yourid)
+        html = html.replace(/\s*·\s*linkedin\.com\/in\/yourid/g, '');
+        // 일반 텍스트 LinkedIn 라벨 제거
+        html = html.replace(/<p class="text-xs text-gray-500 mb-1">LINKEDIN<\/p>\s*<p[^>]*>linkedin\.com\/in\/yourid<\/p>/g, '');
       }
 
       if (html === original) continue;
@@ -1093,10 +1183,11 @@ async function addJob() {
   if (!company || !position) return alert('회사·포지션 필수');
   if (!jdText) return alert('공고 본문 필수 (AI 분석용)');
 
+  const initialStatus = document.getElementById('jobInitialStatus')?.value || '검토중';
   const job = {
     id: Date.now().toString(),
     company, position, url, jdText, source, deadline,
-    status: '검토중',
+    status: initialStatus,
     matchScore: '분석중',
     createdAt: new Date().toISOString(),
     analysis: null
@@ -1110,7 +1201,7 @@ async function addJob() {
   // Auto AI analysis
   try {
     const prompt = buildJobAnalysisPrompt(job);
-    job.analysis = await callClaude(prompt);
+    job.analysis = await callClaude(prompt, 8192);
     job.matchScore = extractScore(job.analysis);
     saveToStorage();
     renderAll();
@@ -1200,15 +1291,60 @@ ${job.jdText}
 }
 
 function extractScore(analysis) {
-  // 매칭 강도 ◎ ○ △ ✗ 추출
-  const scoreMatch = analysis.match(/매칭\s*강도[:\s]*\*?\*?([◎○△✗])/);
-  if (scoreMatch) return scoreMatch[1];
-  // 본문에서 첫 번째 등장한 기호
+  if (!analysis) return '?';
+  const score = extractTotalScore(analysis);
+  if (score !== null) {
+    if (score >= 90) return '◎';
+    if (score >= 70) return '○';
+    if (score >= 50) return '△';
+    return '✗';
+  }
+
+  // 매칭 강도 기호 직접 추출 (** 0~2개, 표 셀 `|` 허용)
+  const symbolPatterns = [
+    /\*{0,2}\s*매칭\s*강도\s*\*{0,2}\s*[:|]\s*\*{0,2}\s*([◎○△✗])/,
+    /매칭\s*강도[\s\S]{0,30}?([◎○△✗])/,
+    /\*{0,2}\s*매칭\s*\*{0,2}\s*[:|]\s*\*{0,2}\s*([◎○△✗])/
+  ];
+  for (const p of symbolPatterns) {
+    const m = analysis.match(p);
+    if (m) return m[1];
+  }
+
+  // fallback — 분석 마지막 1500자에서 첫 번째 기호 (앞 표보다 결론 우선)
+  const tail = analysis.slice(-1500);
+  if (tail.includes('◎')) return '◎';
+  if (tail.includes('○')) return '○';
+  if (tail.includes('△')) return '△';
+  if (tail.includes('✗')) return '✗';
   if (analysis.includes('◎')) return '◎';
   if (analysis.includes('○')) return '○';
   if (analysis.includes('△')) return '△';
   if (analysis.includes('✗')) return '✗';
+
   return '?';
+}
+
+function extractTotalScore(analysis) {
+  if (!analysis) return null;
+  // ** 0~2개, 표 셀 구분자 `|`, 콜론 모두 허용
+  const numPatterns = [
+    /\*{0,2}\s*종합\s*점수\s*\*{0,2}\s*[:|]\s*\*{0,2}\s*(\d+)\s*\/\s*100/,
+    /\*{0,2}\s*총점\s*\*{0,2}\s*[:|]\s*\*{0,2}\s*(\d+)\s*\/\s*100/,
+    /\*{0,2}\s*종합\s*점수\s*\*{0,2}\s*[:|]\s*\*{0,2}\s*(\d+)/,
+    /총점\s*[:|]\s*\*{0,2}\s*(\d+)/,
+    /\*\*\s*(\d+)\s*\/\s*100\s*\*\*/,
+    /(\d+)\s*\/\s*100\s*점/,
+    /total[:\s]*(\d+)/i
+  ];
+  for (const p of numPatterns) {
+    const m = analysis.match(p);
+    if (m) {
+      const n = parseInt(m[1]);
+      if (!isNaN(n) && n >= 0 && n <= 100) return n;
+    }
+  }
+  return null;
 }
 
 function renderJobs() {
@@ -1250,9 +1386,12 @@ function renderJobs() {
             <span>🕒 ${new Date(job.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
-        <div class="flex items-center gap-3 shrink-0">
+        <div class="flex items-center gap-3 shrink-0" onclick="event.stopPropagation()">
           <div class="text-3xl font-bold ${scoreColor}">${job.matchScore}</div>
-          <span class="px-3 py-1 rounded text-xs ${statusColor}">${job.status}</span>
+          <select onchange="updateJobStatus('${job.id}', this.value); event.stopPropagation();" class="px-2 py-1 rounded text-xs ${statusColor} bg-gray-800 border border-gray-700 cursor-pointer hover:border-orange-500">
+            ${['검토중','지원완료','서류통과','면접','합격','불합격','보류'].map(s =>
+              `<option ${s===job.status?'selected':''}>${s}</option>`).join('')}
+          </select>
         </div>
       </div>
     </div>
@@ -1296,6 +1435,7 @@ function openJobDetail(id) {
       <button onclick="reanalyzeJob('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🔄 AI 재분석</button>
       <button onclick="generateCoverLetter('${job.id}')" class="px-3 py-2 accent-bg text-white rounded text-sm font-bold">✍️ 자소서 변형</button>
       <button onclick="transformAllDocsForJob('${job.id}')" class="px-3 py-2 bg-orange-700 text-white rounded text-sm font-bold hover:bg-orange-600">📦 회사별 풀 변형 (5개 자료)</button>
+      <button onclick="viewCompanyDocs('${job.id}')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white rounded text-sm font-bold transition">📂 변형 자료 보기·수정</button>
       <button onclick="generateInterviewQA('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🎤 면접 답변풀</button>
       <button onclick="deleteJob('${job.id}')" class="px-3 py-2 border border-red-900 text-red-400 rounded text-sm hover:bg-red-900/30">🗑️ 삭제</button>
     </div>
@@ -1352,7 +1492,7 @@ async function reanalyzeJob(id) {
   if (!job) return;
   try {
     const prompt = buildJobAnalysisPrompt(job);
-    job.analysis = await callClaude(prompt);
+    job.analysis = await callClaude(prompt, 8192);
     job.matchScore = extractScore(job.analysis);
     saveToStorage();
     openJobDetail(id);
@@ -1543,6 +1683,101 @@ ${snippet}
   }
 }
 
+function viewCompanyDocs(jobId) {
+  const job = state.jobs.find(j => j.id === jobId);
+  if (!job) return;
+  const company = (job.company || '').replace(/[\\/:*?"<>|]/g, '').trim();
+  if (!company) return alert('회사명이 없습니다');
+
+  const docs = [
+    {name: '메인 사이트', file: 'index.html', icon: '🌐'},
+    {name: '이력서·자소서', file: '문서_이력서.html', icon: '📄'},
+    {name: '경력기술서', file: '문서_경력기술서.html', icon: '📋'},
+    {name: '자소서 (백업)', file: '문서_자소서.html', icon: '✍️'},
+    {name: '포트폴리오', file: '문서_포트폴리오.html', icon: '🎨'}
+  ];
+
+  const baseUrl = `${window.location.origin}/companies/${encodeURIComponent(company)}`;
+
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
+  modal.innerHTML = `
+    <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-xl font-bold accent">📂 ${escapeHtml(company)} 변형 자료</h2>
+          <p class="text-xs text-gray-500 mt-1">companies/${escapeHtml(company)}/ 폴더의 5개 자료</p>
+        </div>
+        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-3 mb-6">
+        ${docs.map(d => `
+          <div class="border border-gray-800 rounded-lg p-4 hover:border-orange-500 transition">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <p class="font-bold">${d.icon} ${escapeHtml(d.name)}</p>
+                <p class="text-xs text-gray-500">${escapeHtml(d.file)}</p>
+              </div>
+              <div class="flex gap-2">
+                <a href="${baseUrl}/${encodeURIComponent(d.file)}" target="_blank" class="px-3 py-1 accent-bg text-white text-xs rounded font-bold">새 탭 열기</a>
+                <button onclick="downloadCompanyDoc('${escapeHtml(company)}', '${escapeHtml(d.file)}')" class="px-3 py-1 border border-gray-700 hover:border-orange-500 text-xs rounded">다운로드</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-4 mb-4">
+        <p class="font-bold accent mb-2">✏️ 회사별 자료 수정하려면</p>
+        <p class="text-sm text-gray-300 mb-3">자료 수정 탭에서 "📂 회사별 자료" 선택 → ${escapeHtml(company)} 선택 → 수정 → 적용</p>
+        <button onclick="openEditTabWithCompany('${escapeHtml(company)}')" class="accent-bg text-white px-4 py-2 rounded font-bold text-sm">📝 자료 수정 탭으로 이동 (${escapeHtml(company)} 선택)</button>
+      </div>
+
+      <details class="border border-gray-800 rounded-lg p-4">
+        <summary class="cursor-pointer font-bold text-gray-400">📋 URL 복사용 (이메일·메시지 첨부)</summary>
+        <pre class="text-xs text-gray-400 whitespace-pre-wrap mt-3 font-mono">${docs.map(d => `${d.name}: ${baseUrl}/${encodeURIComponent(d.file)}`).join('\n')}</pre>
+      </details>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+async function downloadCompanyDoc(company, file) {
+  try {
+    const res = await fetch(`companies/${company}/${file}`);
+    if (!res.ok) throw new Error(`Not Found (${res.status}). 회사별 풀 변형부터 실행하세요`);
+    const html = await res.text();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${company}_${file}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('다운로드 실패: ' + err.message);
+  }
+}
+
+function openEditTabWithCompany(company) {
+  // 자료 수정 탭으로 이동 + 회사 선택 자동 설정
+  document.querySelectorAll('.fixed').forEach(m => {
+    if (m.classList.contains('z-50')) m.remove();
+  });
+  document.querySelector('.tab-btn[data-tab="edit"]')?.click();
+
+  setTimeout(() => {
+    const companyRadio = document.querySelector('input[name="editSource"][value="company"]');
+    if (companyRadio) {
+      companyRadio.checked = true;
+      updateEditSource();
+      const sel = document.getElementById('companySelect');
+      if (sel) sel.value = company;
+    }
+  }, 100);
+}
+
 async function generateInterviewQA(id) {
   const job = state.jobs.find(j => j.id === id);
   if (!job) return;
@@ -1609,6 +1844,42 @@ function checkAllEditFiles(checked) {
   document.querySelectorAll('.edit-file-check').forEach(c => c.checked = checked);
 }
 
+function updateEditSource() {
+  const source = document.querySelector('input[name="editSource"]:checked')?.value || 'master';
+  const wrap = document.getElementById('companySelectWrap');
+  if (!wrap) return;
+  if (source === 'company') {
+    wrap.classList.remove('hidden');
+    populateCompanySelect();
+  } else {
+    wrap.classList.add('hidden');
+  }
+  updateApplyButtons();
+}
+
+function populateCompanySelect() {
+  const sel = document.getElementById('companySelect');
+  if (!sel) return;
+  const prevValue = sel.value;
+  const companies = Array.from(new Set((state.jobs || []).map(j => j.company).filter(Boolean))).sort();
+  sel.innerHTML = '<option value="">-- 회사 선택 --</option>' +
+    companies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  if (prevValue && companies.includes(prevValue)) sel.value = prevValue;
+}
+
+function getEditSourceConfig() {
+  const source = document.querySelector('input[name="editSource"]:checked')?.value || 'master';
+  if (source === 'master') {
+    return { source: 'master', company: null, pathPrefix: '' };
+  }
+  const company = document.getElementById('companySelect')?.value?.trim();
+  if (!company) {
+    alert('회사를 선택하세요');
+    return null;
+  }
+  return { source: 'company', company, pathPrefix: `companies/${encodeURIComponent(company)}/` };
+}
+
 function updateApplyButtons() {
   const checked = document.getElementById('githubAutoSave')?.checked;
   const simpleBtn = document.getElementById('applySimpleBtn');
@@ -1661,6 +1932,9 @@ function getFindReplacePairs() {
 }
 
 async function processFiles(files, transformFn, modeName) {
+  const sourceConfig = getEditSourceConfig();
+  if (!sourceConfig) return; // 회사 미선택 등
+
   const githubAutoSave = document.getElementById('githubAutoSave')?.checked;
 
   // GitHub 자동 저장 체크했는데 설정 없으면 명확한 안내
@@ -1697,33 +1971,58 @@ async function processFiles(files, transformFn, modeName) {
     const reports = [];
     const githubResults = [];
 
+    const labelPrefix = sourceConfig.source === 'company' ? `[${sourceConfig.company}] ` : '';
+
     for (const file of files) {
-      showLoading(`${file} 처리 중...`);
-      const res = await fetch(file);
-      if (!res.ok) {
+      const fetchPath = sourceConfig.source === 'company'
+        ? `companies/${encodeURIComponent(sourceConfig.company)}/${file}`
+        : file;
+      const commitPath = sourceConfig.source === 'company'
+        ? `companies/${sourceConfig.company}/${file}`
+        : file;
+
+      showLoading(`${labelPrefix}${file} 처리 중...`);
+      let res = await fetch(fetchPath);
+      let usedFallback = false;
+
+      // 회사 변형본 없으면 마스터에서 fallback (확인 후 복제)
+      if (sourceConfig.source === 'company' && !res.ok) {
+        const ok = confirm(`⚠️ ${sourceConfig.company} 폴더에 ${file} 변형본이 없습니다.\n\n[확인] = 마스터(${file}) 가져와서 수정 후 회사 폴더에 새로 저장\n[취소] = 이 파일 건너뛰기`);
+        if (!ok) {
+          reports.push(`⏭️ ${labelPrefix}${file}: 건너뜀 (변형본 없음)`);
+          continue;
+        }
+        res = await fetch(file);
+        if (!res.ok) {
+          reports.push(`❌ ${labelPrefix}${file}: 마스터도 없음`);
+          continue;
+        }
+        usedFallback = true;
+      } else if (!res.ok) {
         reports.push(`⚠️ ${file}: 가져오기 실패`);
         continue;
       }
+
       let html = await res.text();
       const original = html;
 
       const result = await transformFn(file, html);
       html = result.newHtml;
       totalChanges += result.changes;
-      if (result.report) reports.push(result.report);
+      if (result.report) reports.push(`${labelPrefix}${result.report}${usedFallback ? ' (마스터에서 신규 생성)' : ''}`);
 
-      if (html === original) continue;
+      if (html === original && !usedFallback) continue;
 
       if (useGithub) {
         try {
-          showLoading(`GitHub에 ${file} 저장 중...`);
-          await commitToGithub(file, html, `Update ${file} via admin dashboard`);
-          githubResults.push(`✅ ${file} GitHub 저장 완료`);
+          showLoading(`GitHub에 ${commitPath} 저장 중...`);
+          await commitToGithub(commitPath, html, `Update ${commitPath} via admin dashboard`);
+          githubResults.push(`✅ ${commitPath} GitHub 저장 완료`);
         } catch (err) {
-          githubResults.push(`❌ ${file} GitHub 실패: ${err.message}`);
+          githubResults.push(`❌ ${commitPath} GitHub 실패: ${err.message}`);
         }
       } else {
-        zip.file(file, html);
+        zip.file(commitPath, html);
       }
     }
 
@@ -1820,7 +2119,9 @@ async function commitToGithub(filepath, content, message) {
   const repo = localStorage.getItem('githubRepo');
   if (!token || !owner || !repo) throw new Error('GitHub 설정이 없습니다 (설정 탭에서 입력)');
 
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(filepath)}`;
+  // 슬래시는 폴더 구분이라 인코딩 ❌, 각 세그먼트만 인코딩
+  const encodedPath = filepath.split('/').map(seg => encodeURIComponent(seg)).join('/');
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodedPath}`;
 
   // 1. 기존 파일 SHA 가져오기
   let sha = null;
