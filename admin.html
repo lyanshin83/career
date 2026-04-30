@@ -1193,7 +1193,32 @@ function getFindReplacePairs() {
 
 async function processFiles(files, transformFn, modeName) {
   const githubAutoSave = document.getElementById('githubAutoSave')?.checked;
-  const useGithub = githubAutoSave && localStorage.getItem('githubToken');
+
+  // GitHub 자동 저장 체크했는데 설정 없으면 명확한 안내
+  if (githubAutoSave) {
+    const token = localStorage.getItem('githubToken');
+    const owner = localStorage.getItem('githubOwner');
+    const repo = localStorage.getItem('githubRepo');
+    const missing = [];
+    if (!token) missing.push('Token');
+    if (!owner) missing.push('Owner');
+    if (!repo) missing.push('Repo');
+    if (missing.length > 0) {
+      const goto = confirm(`⚠️ GitHub 자동 저장이 체크됐지만 설정이 없습니다.\n\n누락: ${missing.join(', ')}\n\n[확인] = 설정 탭으로 이동\n[취소] = 그냥 ZIP 다운로드 (자동 저장 ❌)`);
+      if (goto) {
+        document.querySelector('.tab-btn[data-tab="settings"]').click();
+        setTimeout(() => {
+          document.getElementById('githubTokenInput').focus();
+          document.getElementById('githubTokenInput').scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+        return;
+      }
+      // 취소 시: ZIP 모드로 폴백 (체크박스 해제)
+      document.getElementById('githubAutoSave').checked = false;
+    }
+  }
+
+  const useGithub = githubAutoSave && localStorage.getItem('githubToken') && localStorage.getItem('githubOwner') && localStorage.getItem('githubRepo');
 
   showLoading(`${modeName} 처리 중...`);
 
