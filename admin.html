@@ -64,9 +64,11 @@
       <label class="block text-sm text-gray-400 mb-2">Claude API Key</label>
       <input id="apiKeySet" type="password" placeholder="sk-ant-..."
         class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
-      <p class="text-xs text-gray-500 mb-6">
+      <p class="text-xs text-gray-500 mb-3">
         💡 <a href="https://console.anthropic.com" target="_blank" class="accent underline">console.anthropic.com</a>에서 발급 (5분, 본인 계정)
       </p>
+
+      <p class="text-xs text-orange-400 mb-6">💡 비용 안전: console에서 <strong>월 한도 $5</strong> 설정 권장 (약 6,500원, 자동 차단)</p>
 
       <button onclick="setupComplete()" class="w-full accent-bg text-white font-bold py-3 rounded hover:opacity-90 transition">시작 →</button>
     </div>
@@ -103,6 +105,7 @@
     <button class="tab-btn active" data-tab="jobs">📋 채용공고</button>
     <button class="tab-btn" data-tab="interviews">🎤 면접 관리</button>
     <button class="tab-btn" data-tab="profile">👤 프로필</button>
+    <button class="tab-btn" data-tab="edit">📝 자료 수정</button>
     <button class="tab-btn" data-tab="docs">📄 자료 다운로드</button>
     <button class="tab-btn" data-tab="settings">⚙️ 설정</button>
   </nav>
@@ -206,6 +209,103 @@
       </div>
     </section>
 
+    <!-- ===== TAB: 자료 수정 ===== -->
+    <section id="tab-edit" class="tab-content hidden">
+      <h2 class="text-2xl font-bold mb-2">📝 자료 텍스트 수정</h2>
+      <p class="text-xs text-gray-500 mb-6">이력서·자소서·경력기술서·포트폴리오·메인 사이트 텍스트 일괄 수정 → ZIP 다운로드 → Vercel 재배포</p>
+
+      <!-- 파일 선택 -->
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold accent mb-3">1️⃣ 어떤 파일?</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-900 rounded">
+            <input type="checkbox" class="edit-file-check" value="index.html" checked> <span class="text-sm">🌐 메인 사이트</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-900 rounded">
+            <input type="checkbox" class="edit-file-check" value="문서_이력서.html" checked> <span class="text-sm">📄 이력서·자소서</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-900 rounded">
+            <input type="checkbox" class="edit-file-check" value="문서_경력기술서.html" checked> <span class="text-sm">📋 경력기술서</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-900 rounded">
+            <input type="checkbox" class="edit-file-check" value="문서_자소서.html"> <span class="text-sm">✍️ 자소서 (백업)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-900 rounded">
+            <input type="checkbox" class="edit-file-check" value="문서_포트폴리오.html" checked> <span class="text-sm">🎨 포트폴리오</span>
+          </label>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button onclick="checkAllEditFiles(true)" class="text-xs px-3 py-1 border border-gray-700 rounded hover:border-orange-500">전체 선택</button>
+          <button onclick="checkAllEditFiles(false)" class="text-xs px-3 py-1 border border-gray-700 rounded hover:border-orange-500">전체 해제</button>
+        </div>
+      </div>
+
+      <!-- GitHub 자동 저장 옵션 -->
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-4 mb-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input id="githubAutoSave" type="checkbox" class="w-5 h-5 accent-orange-500">
+          <div>
+            <div class="font-bold accent">⚡ GitHub 자동 저장 (재배포 자동)</div>
+            <p class="text-xs text-gray-400 mt-1">체크 시 ZIP 다운로드 ❌ → GitHub 자동 commit → Vercel 자동 재배포 (1-2분). 설정 탭에서 GitHub 토큰 등록 필요</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- 모드 1: 단순 find-replace -->
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold accent mb-3">2️⃣ 단순 모드 — 원본 → 새 텍스트 (무료, 빠름)</h3>
+        <p class="text-xs text-gray-500 mb-4">정확히 일치하는 문자열을 새 문자열로 일괄 변경. AI 사용 ❌</p>
+
+        <div id="findReplaceList" class="space-y-3 mb-3">
+          <!-- 첫 번째 변경 -->
+          <div class="find-replace-row grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">원본 텍스트</label>
+              <input class="fr-find w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm" placeholder="월 매출 7.7억">
+            </div>
+            <div class="flex gap-2">
+              <div class="flex-1">
+                <label class="block text-xs text-gray-400 mb-1">새 텍스트</label>
+                <input class="fr-replace w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm" placeholder="월 매출 8억">
+              </div>
+              <button onclick="this.closest('.find-replace-row').remove()" class="self-end px-3 py-2 text-red-400 hover:bg-red-900/30 rounded">×</button>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="addFindReplaceRow()" class="text-xs px-3 py-1 border border-gray-700 rounded hover:border-orange-500 mb-3">+ 변경 항목 추가</button>
+
+        <button onclick="applySimpleEdits()" class="block w-full px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 적용 + ZIP 다운로드</button>
+      </div>
+
+      <!-- 모드 2: AI 자연어 -->
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold accent mb-3">3️⃣ AI 모드 — 자연어로 요청 (Claude API 사용)</h3>
+        <p class="text-xs text-gray-500 mb-4">"닥터미라클 매출 8억으로 바꿔줘" 처럼 자연어로 요청 → AI가 자동으로 변경 사항 찾아서 적용</p>
+
+        <textarea id="aiEditInstruction" rows="4" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500 text-sm mb-3" placeholder="예시:
+- 닥터미라클 런칭 매출 7.7억을 8억으로 바꿔줘
+- VT코스메틱 매출 견인 부분에 '매주 보고서 제공' 추가
+- 시니어 톤을 좀 더 차분하게 다듬어줘
+- 자소서 90일 플랜 D31-60에 보험 업종 부분 더 강조"></textarea>
+
+        <button onclick="applyAIEdits()" class="block w-full px-6 py-3 border-2 accent-border text-orange-500 rounded font-bold hover:accent-bg hover:text-white transition">🤖 AI로 적용 + ZIP 다운로드</button>
+
+        <p class="text-xs text-gray-500 mt-3">💡 AI 모드 비용: 파일당 약 100-300원 (선택 파일 수만큼)</p>
+      </div>
+
+      <!-- 안내 -->
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-6">
+        <h3 class="font-bold accent mb-3">📋 적용 후 다음 단계</h3>
+        <ol class="text-sm text-gray-300 space-y-2 list-decimal list-inside">
+          <li>다운로드된 ZIP 압축 해제</li>
+          <li>HTML 파일들을 본인 폴더에 덮어쓰기</li>
+          <li>GitHub에 업로드 → Vercel 자동 재배포 (1-2분)</li>
+          <li>변경 확인 → 만족하면 끝, 아니면 다시 수정</li>
+        </ol>
+      </div>
+    </section>
+
     <!-- ===== TAB: 자료 다운로드 ===== -->
     <section id="tab-docs" class="tab-content hidden">
       <h2 class="text-2xl font-bold mb-2">📄 자료 다운로드</h2>
@@ -248,6 +348,44 @@
         <h3 class="font-bold mb-3 accent">PIN 변경</h3>
         <input id="pinEdit" type="password" maxlength="4" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
         <button onclick="savePin()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
+      </div>
+
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-6 mb-4">
+        <h3 class="font-bold mb-3 accent">⚡ GitHub 자동 저장 설정 (선택)</h3>
+        <p class="text-xs text-gray-400 mb-4">자료 수정 후 GitHub에 자동 commit → Vercel 자동 재배포. ZIP 다운로드·폴더 덮어쓰기 ❌</p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">GitHub Personal Access Token</label>
+            <input id="githubTokenInput" type="password" placeholder="ghp_... 또는 github_pat_..." class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+            <p class="text-xs text-gray-500 mt-1">
+              💡 <a href="https://github.com/settings/tokens" target="_blank" class="accent underline">github.com/settings/tokens</a> → "Generate new token (classic)" → 권한 <strong>repo</strong> 체크 → 생성
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Repo Owner (사용자명)</label>
+              <input id="githubOwnerInput" placeholder="lyanshin83" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Repo 이름</label>
+              <input id="githubRepoInput" placeholder="career-beta-eight" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Branch (기본: main)</label>
+            <input id="githubBranchInput" placeholder="main" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+          </div>
+        </div>
+
+        <button onclick="saveGithubSettings()" class="mt-4 accent-bg text-white px-4 py-2 rounded">저장</button>
+
+        <div class="mt-4 p-3 bg-black/40 rounded text-xs text-gray-400">
+          <p class="font-bold accent mb-1">⚠️ 보안</p>
+          <p>Token은 본인 PC localStorage에만 저장. Anthropic·외부 ❌. 단 Token 노출 시 즉시 GitHub에서 Revoke 가능.</p>
+        </div>
       </div>
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
@@ -466,6 +604,7 @@ function enterDashboard() {
   renderAll();
   document.getElementById('apiKeyEdit').value = localStorage.getItem('claudeApiKey') || '';
   loadProfile();
+  loadGithubSettings();
 }
 
 // ============ PROFILE ============
@@ -1011,6 +1150,245 @@ function downloadText(id, field, filename) {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ============ EDIT (자료 수정) ============
+function checkAllEditFiles(checked) {
+  document.querySelectorAll('.edit-file-check').forEach(c => c.checked = checked);
+}
+
+function addFindReplaceRow() {
+  const container = document.getElementById('findReplaceList');
+  const row = document.createElement('div');
+  row.className = 'find-replace-row grid grid-cols-2 gap-3';
+  row.innerHTML = `
+    <div>
+      <label class="block text-xs text-gray-400 mb-1">원본 텍스트</label>
+      <input class="fr-find w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+    </div>
+    <div class="flex gap-2">
+      <div class="flex-1">
+        <label class="block text-xs text-gray-400 mb-1">새 텍스트</label>
+        <input class="fr-replace w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+      </div>
+      <button onclick="this.closest('.find-replace-row').remove()" class="self-end px-3 py-2 text-red-400 hover:bg-red-900/30 rounded">×</button>
+    </div>
+  `;
+  container.appendChild(row);
+}
+
+function getSelectedEditFiles() {
+  return Array.from(document.querySelectorAll('.edit-file-check:checked')).map(c => c.value);
+}
+
+function getFindReplacePairs() {
+  const pairs = [];
+  document.querySelectorAll('.find-replace-row').forEach(row => {
+    const find = row.querySelector('.fr-find').value;
+    const replace = row.querySelector('.fr-replace').value;
+    if (find) pairs.push({ find, replace });
+  });
+  return pairs;
+}
+
+async function processFiles(files, transformFn, modeName) {
+  const githubAutoSave = document.getElementById('githubAutoSave')?.checked;
+  const useGithub = githubAutoSave && localStorage.getItem('githubToken');
+
+  showLoading(`${modeName} 처리 중...`);
+
+  try {
+    const zip = useGithub ? null : new JSZip();
+    let totalChanges = 0;
+    const reports = [];
+    const githubResults = [];
+
+    for (const file of files) {
+      showLoading(`${file} 처리 중...`);
+      const res = await fetch(file);
+      if (!res.ok) {
+        reports.push(`⚠️ ${file}: 가져오기 실패`);
+        continue;
+      }
+      let html = await res.text();
+      const original = html;
+
+      const result = await transformFn(file, html);
+      html = result.newHtml;
+      totalChanges += result.changes;
+      if (result.report) reports.push(result.report);
+
+      if (html === original) continue;
+
+      if (useGithub) {
+        try {
+          showLoading(`GitHub에 ${file} 저장 중...`);
+          await commitToGithub(file, html, `Update ${file} via admin dashboard`);
+          githubResults.push(`✅ ${file} GitHub 저장 완료`);
+        } catch (err) {
+          githubResults.push(`❌ ${file} GitHub 실패: ${err.message}`);
+        }
+      } else {
+        zip.file(file, html);
+      }
+    }
+
+    if (useGithub) {
+      hideLoading();
+      alert(`✅ GitHub 자동 저장 완료\n\n총 변경: ${totalChanges}건\n\n${reports.join('\n')}\n\n${githubResults.join('\n')}\n\nVercel 자동 재배포 진행 (1-2분)`);
+    } else {
+      showLoading('ZIP 생성 중...');
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `자료수정_${new Date().toISOString().split('T')[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      hideLoading();
+      alert(`✅ ZIP 다운로드 완료\n\n총 변경: ${totalChanges}건\n\n${reports.join('\n')}\n\nZIP 풀어서 폴더 덮어쓰기 → GitHub 업로드`);
+    }
+  } catch (err) {
+    hideLoading();
+    alert('실패: ' + err.message);
+  }
+}
+
+async function applySimpleEdits() {
+  const files = getSelectedEditFiles();
+  const pairs = getFindReplacePairs();
+
+  if (files.length === 0) return alert('파일 1개 이상 선택');
+  if (pairs.length === 0) return alert('변경 항목 1개 이상 입력');
+
+  await processFiles(files, async (file, html) => {
+    let changes = 0;
+    pairs.forEach(p => {
+      const before = html;
+      html = html.split(p.find).join(p.replace);
+      if (html !== before) changes++;
+    });
+    return { newHtml: html, changes, report: `✅ ${file}: ${changes}건` };
+  }, '단순 수정');
+}
+
+async function applyAIEdits() {
+  const files = getSelectedEditFiles();
+  const instruction = document.getElementById('aiEditInstruction').value.trim();
+
+  if (files.length === 0) return alert('파일 1개 이상 선택');
+  if (!instruction) return alert('AI 요청 입력');
+  if (!confirm(`AI로 ${files.length}개 파일 수정. 비용 약 ${files.length * 200}원. 계속?`)) return;
+
+  await processFiles(files, async (file, html) => {
+    const snippet = html.length > 80000 ? html.slice(0, 80000) + '\n... (truncated)' : html;
+    const prompt = `다음 HTML 파일에 대한 사용자 변경 요청을 분석해서, find-replace 작업 목록을 JSON 배열로만 응답해줘.
+
+[사용자 요청]
+${instruction}
+
+[파일명] ${file}
+[HTML]
+${snippet}
+
+[규칙]
+- JSON 배열만 (마크다운·설명 ❌)
+- 형식: [{"find":"원본 정확 문자열","replace":"새 문자열"}, ...]
+- find는 HTML에 정확히 존재 + unique (컨텍스트 포함)
+- HTML 태그 구조 보존
+- 변경 없으면 []`;
+
+    const result = await callClaude(prompt, 4096);
+    let edits = [];
+    try {
+      let cleaned = result.trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```\s*$/, '').trim();
+      edits = JSON.parse(cleaned);
+      if (!Array.isArray(edits)) edits = [];
+    } catch {
+      return { newHtml: html, changes: 0, report: `⚠️ ${file}: AI 응답 파싱 실패` };
+    }
+
+    let changes = 0;
+    edits.forEach(e => {
+      if (!e.find) return;
+      const before = html;
+      html = html.split(e.find).join(e.replace || '');
+      if (html !== before) changes++;
+    });
+    return { newHtml: html, changes, report: `✅ ${file}: ${changes}건 (AI 제안 ${edits.length}건)` };
+  }, 'AI 수정');
+}
+
+// ============ GITHUB API ============
+async function commitToGithub(filepath, content, message) {
+  const token = localStorage.getItem('githubToken');
+  const owner = localStorage.getItem('githubOwner');
+  const repo = localStorage.getItem('githubRepo');
+  if (!token || !owner || !repo) throw new Error('GitHub 설정이 없습니다 (설정 탭에서 입력)');
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(filepath)}`;
+
+  // 1. 기존 파일 SHA 가져오기
+  let sha = null;
+  try {
+    const getRes = await fetch(apiUrl, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }
+    });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    }
+  } catch {}
+
+  // 2. PUT (생성 또는 업데이트)
+  const body = {
+    message: message,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: localStorage.getItem('githubBranch') || 'main'
+  };
+  if (sha) body.sha = sha;
+
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github+json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!putRes.ok) {
+    const err = await putRes.json();
+    throw new Error(err.message || `GitHub API ${putRes.status}`);
+  }
+  return putRes.json();
+}
+
+function saveGithubSettings() {
+  const token = document.getElementById('githubTokenInput').value.trim();
+  const owner = document.getElementById('githubOwnerInput').value.trim();
+  const repo = document.getElementById('githubRepoInput').value.trim();
+  const branch = document.getElementById('githubBranchInput').value.trim() || 'main';
+
+  if (!token || !owner || !repo) return alert('Token·Owner·Repo 모두 입력 필수');
+  if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+    return alert('Token은 "ghp_..." 또는 "github_pat_..."로 시작합니다');
+  }
+
+  localStorage.setItem('githubToken', token);
+  localStorage.setItem('githubOwner', owner);
+  localStorage.setItem('githubRepo', repo);
+  localStorage.setItem('githubBranch', branch);
+  alert('GitHub 설정 저장 완료. 이제 자료 수정 탭에서 "GitHub 자동 저장" 체크박스 사용 가능');
+}
+
+function loadGithubSettings() {
+  const fields = ['Token', 'Owner', 'Repo', 'Branch'];
+  fields.forEach(f => {
+    const el = document.getElementById('github' + f + 'Input');
+    if (el) el.value = localStorage.getItem('github' + f) || '';
+  });
 }
 
 // ============ INTERVIEWS ============
