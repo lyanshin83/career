@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="0; url=사이트_메인_v2.html">
+<title>김OO | 마케팅 시니어 — 로딩 중...</title>
+<script>
+  // 자동 리다이렉트 (메타 태그 fallback)
+  window.location.replace('사이트_메인_v2.html');
+</script>
+<style>
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    color: white;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container { max-width: 600px; text-align: center; }
+  h1 { font-size: 2rem; margin-bottom: 1rem; }
+  .accent { color: #FF6B35; }
+  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 2rem; }
+  .links a {
+    color: white;
+    background: #FF6B35;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .links a:hover { opacity: 0.85; }
+  .links a.secondary {
+    background: transparent;
+    border: 1px solid #444;
+  }
+  .links a.secondary:hover { border-color: #FF6B35; }
+  .spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid #333;
+    border-top-color: #FF6B35;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  p { color: #999; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="spinner"></div>
+  <h1>김<span class="accent">OO</span> · 메인 사이트로 이동 중...</h1>
+  <p>자동으로 이동되지 않으면 아래 버튼을 클릭하세요.</p>
+  <div class="links">
+    <a href="사이트_메인_v2.html">🌐 메인 사이트</a>
+    <a href="문서_이력서.html" class="secondary">📄 이력서·자소서</a>
+    <a href="문서_경력기술서.html" class="secondary">📋 경력기술서</a>
+    <a href="문서_포트폴리오.html" class="secondary">🎨 포트폴리오</a>
+    <a href="admin.html" class="secondary">🔒 관리자</a>
+  </div>
+</div>
+</body>
+</html>
+</parameter>
