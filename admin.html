@@ -103,6 +103,7 @@
   <!-- TABS -->
   <nav class="border-b border-gray-800 px-6 flex gap-1 overflow-x-auto">
     <button class="tab-btn active" data-tab="jobs">📋 채용공고</button>
+    <button class="tab-btn" data-tab="autosearch">📡 자동 검색</button>
     <button class="tab-btn" data-tab="interviews">🎤 면접 관리</button>
     <button class="tab-btn" data-tab="profile">👤 프로필</button>
     <button class="tab-btn" data-tab="edit">📝 자료 수정</button>
@@ -124,7 +125,10 @@
           <h2 class="text-2xl font-bold">채용공고</h2>
           <p class="text-xs text-gray-500 mt-1">URL 또는 공고 본문 붙여넣기 → AI 자동 분석</p>
         </div>
-        <button onclick="openAddJob()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">+ 공고 추가</button>
+        <div class="flex gap-2">
+          <button onclick="recommendSimilarJobs()" class="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-4 py-2 rounded font-bold transition">📡 유사 공고 추천</button>
+          <button onclick="openAddJob()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">+ 공고 추가</button>
+        </div>
       </div>
 
       <!-- Filter -->
@@ -137,6 +141,20 @@
       </div>
 
       <div id="jobList" class="space-y-3"></div>
+    </section>
+
+    <!-- ===== TAB: 자동 검색 ===== -->
+    <section id="tab-autosearch" class="tab-content hidden">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">📡 자동 채용 검색</h2>
+          <p class="text-xs text-gray-500 mt-1">매일 9시 자동 (GitHub Actions Cron) · 8개 사이트 검색 키워드·URL 추천</p>
+        </div>
+        <button onclick="runAutoSearch()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">🔍 지금 검색</button>
+      </div>
+
+      <div id="autoSearchStatus" class="mb-4"></div>
+      <div id="autoSearchResult"></div>
     </section>
 
     <!-- ===== TAB: 면접 관리 ===== -->
@@ -193,9 +211,20 @@
         </ul>
       </div>
 
+      <!-- GitHub 자동 저장 옵션 -->
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-4 mb-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input id="profileGithubAutoSave" type="checkbox" class="w-5 h-5 accent-orange-500" onchange="updateProfileButtons()">
+          <div>
+            <div class="font-bold accent">⚡ GitHub 자동 저장 (재배포 자동)</div>
+            <p class="text-xs text-gray-400 mt-1">체크 시 ZIP ❌ → GitHub 자동 commit → Vercel 자동 재배포 (1-2분). 설정 탭에서 GitHub 토큰 등록 필요</p>
+          </div>
+        </label>
+      </div>
+
       <div class="flex flex-wrap gap-3 mb-6">
         <button onclick="saveProfileOnly()" class="px-6 py-3 border border-gray-700 rounded font-bold hover:border-orange-500 transition">💾 정보만 저장 (브라우저)</button>
-        <button onclick="updateAllFiles()" class="px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 5개 파일 일괄 적용 + ZIP 다운로드</button>
+        <button id="updateAllFilesBtn" onclick="updateAllFiles()" class="px-6 py-3 accent-bg text-white rounded font-bold hover:opacity-90 transition">📦 5개 파일 일괄 적용 + ZIP 다운로드</button>
       </div>
 
       <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-6">
@@ -606,6 +635,173 @@ function enterDashboard() {
   loadProfile();
   loadGithubSettings();
   updateApplyButtons();
+  updateProfileButtons();
+  loadAutoSearchResult();
+}
+
+// ============ RECOMMEND SIMILAR JOBS ============
+async function recommendSimilarJobs() {
+  if (state.jobs.length === 0) return alert('저장된 공고가 없습니다. 공고를 먼저 1개 이상 추가해주세요.');
+
+  showLoading('AI가 패턴 분석 중...');
+  try {
+    const apiKey = localStorage.getItem('claudeApiKey');
+    if (!apiKey) throw new Error('Claude API 키가 없습니다');
+
+    const res = await fetch('/api/recommend-jobs', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+      body: JSON.stringify({ jobs: state.jobs })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'API 호출 실패');
+
+    hideLoading();
+    showRecommendModal(data);
+  } catch (err) {
+    hideLoading();
+    alert('실패: ' + err.message);
+  }
+}
+
+function showRecommendModal(data) {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
+  modal.innerHTML = `
+    <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold accent">📡 유사 공고 추천</h2>
+        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="border border-gray-800 rounded p-4 mb-4">
+        <h3 class="font-bold mb-2 accent">📊 패턴 분석</h3>
+        <pre class="text-sm text-gray-300 whitespace-pre-wrap">${JSON.stringify(data.patterns || {}, null, 2)}</pre>
+      </div>
+
+      <div class="border border-gray-800 rounded p-4 mb-4">
+        <h3 class="font-bold mb-2 accent">🔍 비슷한 공고 검색 키워드</h3>
+        <ul class="text-sm text-gray-300 space-y-1">
+          ${(data.similarSearchKeywords || []).map(k => `<li>• ${escapeHtml(k)}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="border border-gray-800 rounded p-4 mb-4">
+        <h3 class="font-bold mb-2 accent">🎯 인접 직군 카테고리</h3>
+        ${(data.adjacentCategories || []).map(c => `
+          <div class="mb-3 pb-3 border-b border-gray-800 last:border-0">
+            <p class="font-bold">${escapeHtml(c.name || '')}</p>
+            <p class="text-xs text-gray-500 mb-1">${escapeHtml(c.reason || '')}</p>
+            <p class="text-xs text-gray-400">검색: ${(c.searchTerms || []).map(t => `<span class="px-2 py-1 bg-gray-800 rounded text-xs">${escapeHtml(t)}</span>`).join(' ')}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="border border-orange-900 bg-orange-950/10 rounded p-4 mb-4">
+        <h3 class="font-bold mb-2 accent">🌐 추천 채용 사이트 (8개)</h3>
+        <div class="space-y-2">
+          ${(data.recommendedSites || []).map(s => `
+            <a href="${escapeHtml(s.url || '#')}" target="_blank" class="block border border-gray-800 rounded p-3 hover:border-orange-500 transition">
+              <p class="font-bold text-sm">${escapeHtml(s.site || '')}</p>
+              <p class="text-xs text-gray-500 mt-1">${escapeHtml(s.filter || '')}</p>
+              <p class="text-xs accent mt-1 truncate">${escapeHtml(s.url || '')}</p>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+      ${data.warnings && data.warnings.length ? `
+        <div class="border border-yellow-900 bg-yellow-950/10 rounded p-4 mb-4">
+          <h3 class="font-bold mb-2 text-yellow-400">⚠️ 주의</h3>
+          <ul class="text-sm text-gray-300 space-y-1">
+            ${data.warnings.map(w => `<li>• ${escapeHtml(w)}</li>`).join('')}
+          </ul>
+        </div>` : ''}
+
+      <p class="text-sm text-gray-400 italic">${escapeHtml(data.summary || '')}</p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+// ============ AUTO SEARCH ============
+async function runAutoSearch() {
+  showLoading('자동 검색 실행 중 (8개 사이트)...');
+  try {
+    const apiKey = localStorage.getItem('claudeApiKey');
+    if (!apiKey) throw new Error('Claude API 키가 없습니다');
+
+    const headers = { 'content-type': 'application/json', 'x-api-key': apiKey };
+    const githubToken = localStorage.getItem('githubToken');
+    const githubOwner = localStorage.getItem('githubOwner');
+    const githubRepo = localStorage.getItem('githubRepo');
+    if (githubToken) {
+      headers['x-github-token'] = githubToken;
+      headers['x-github-owner'] = githubOwner;
+      headers['x-github-repo'] = githubRepo;
+    }
+
+    const res = await fetch('/api/auto-search', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'API 호출 실패');
+
+    hideLoading();
+    renderAutoSearchResult(data.result);
+    if (data.githubCommitted) {
+      alert('✅ 자동 검색 완료 + GitHub 자동 저장 (jobs/auto-found.json)');
+    } else {
+      alert('✅ 자동 검색 완료. GitHub 자동 저장은 토큰 입력 시 작동');
+    }
+  } catch (err) {
+    hideLoading();
+    alert('실패: ' + err.message);
+  }
+}
+
+async function loadAutoSearchResult() {
+  try {
+    const res = await fetch('jobs/auto-found.json?_=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.lastUpdated) renderAutoSearchResult(data);
+  } catch {}
+}
+
+function renderAutoSearchResult(data) {
+  const container = document.getElementById('autoSearchResult');
+  if (!container || !data) return;
+
+  const sites = data.sites || [];
+  const tips = data.tips || [];
+  container.innerHTML = `
+    <div class="border border-gray-800 rounded-lg p-4 mb-4">
+      <p class="text-xs text-gray-500 mb-2">마지막 업데이트: ${data.searchedAt || data.lastUpdated || '-'}</p>
+      <p class="text-sm text-gray-300">${escapeHtml(data.summary || '')}</p>
+    </div>
+
+    ${tips.length ? `
+      <div class="border border-orange-900 bg-orange-950/10 rounded-lg p-4 mb-4">
+        <h3 class="font-bold mb-2 accent">💡 오늘의 팁</h3>
+        <ul class="text-sm text-gray-300 space-y-1">
+          ${tips.map(t => `<li>• ${escapeHtml(t)}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+    <h3 class="text-lg font-bold mb-3">🌐 8개 채용 사이트 (자동 추천)</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      ${sites.map(s => `
+        <a href="${escapeHtml(s.searchUrl || '#')}" target="_blank" class="border border-gray-800 rounded-lg p-4 hover:border-orange-500 transition card-hover">
+          <p class="font-bold accent">${escapeHtml(s.name || '')}</p>
+          <p class="text-xs text-gray-500 mt-1">${escapeHtml(s.recommendedFilter || '')}</p>
+          <p class="text-xs text-gray-400 mt-2 truncate">${escapeHtml(s.searchUrl || '')}</p>
+        </a>
+      `).join('')}
+    </div>
+  `;
 }
 
 // ============ PROFILE ============
@@ -635,14 +831,48 @@ function saveProfileOnly() {
   alert('브라우저에 저장됐습니다.\n\n5개 파일에 적용하려면 "📦 일괄 적용 + ZIP 다운로드" 버튼을 눌러주세요.');
 }
 
+function updateProfileButtons() {
+  const checked = document.getElementById('profileGithubAutoSave')?.checked;
+  const btn = document.getElementById('updateAllFilesBtn');
+  if (btn) {
+    btn.innerHTML = checked
+      ? '⚡ 5개 파일 일괄 적용 + GitHub 자동저장 (재배포)'
+      : '📦 5개 파일 일괄 적용 + ZIP 다운로드';
+  }
+}
+
 async function updateAllFiles() {
   const profile = getProfileFromForm();
   if (!profile.name || !profile.email || !profile.phone) {
     return alert('이름·이메일·전화는 필수입니다');
   }
 
-  // 저장 먼저
   localStorage.setItem('userProfile', JSON.stringify(profile));
+
+  // GitHub 자동 저장 검증
+  const githubAutoSave = document.getElementById('profileGithubAutoSave')?.checked;
+  if (githubAutoSave) {
+    const token = localStorage.getItem('githubToken');
+    const owner = localStorage.getItem('githubOwner');
+    const repo = localStorage.getItem('githubRepo');
+    const missing = [];
+    if (!token) missing.push('Token');
+    if (!owner) missing.push('Owner');
+    if (!repo) missing.push('Repo');
+    if (missing.length > 0) {
+      const goto = confirm(`⚠️ GitHub 자동 저장이 체크됐지만 설정이 없습니다.\n\n누락: ${missing.join(', ')}\n\n[확인] = 설정 탭으로 이동\n[취소] = ZIP 다운로드`);
+      if (goto) {
+        document.querySelector('.tab-btn[data-tab="settings"]').click();
+        setTimeout(() => {
+          document.getElementById('githubTokenInput').focus();
+          document.getElementById('githubTokenInput').scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+        return;
+      }
+      document.getElementById('profileGithubAutoSave').checked = false;
+    }
+  }
+  const useGithub = githubAutoSave && localStorage.getItem('githubToken') && localStorage.getItem('githubOwner') && localStorage.getItem('githubRepo');
 
   showLoading('5개 파일 처리 중...');
 
@@ -655,7 +885,9 @@ async function updateAllFiles() {
   ];
 
   try {
-    const zip = new JSZip();
+    const zip = useGithub ? null : new JSZip();
+    const githubResults = [];
+    let processedCount = 0;
 
     for (const file of files) {
       showLoading(`${file} 처리 중...`);
@@ -665,15 +897,14 @@ async function updateAllFiles() {
         continue;
       }
       let html = await res.text();
+      const original = html;
 
-      // 일괄 교체
       html = html
         .replaceAll('김OO', profile.name)
         .replaceAll('your@email.com', profile.email)
         .replaceAll('010-XXXX-XXXX', profile.phone);
 
       if (profile.linkedin) {
-        // LinkedIn URL 정규화 (https:// 자동 추가)
         let linkedinUrl = profile.linkedin;
         if (!linkedinUrl.startsWith('http')) {
           linkedinUrl = linkedinUrl.replace(/^linkedin\.com/, 'https://linkedin.com');
@@ -685,23 +916,40 @@ async function updateAllFiles() {
           .replaceAll('https://linkedin.com/in/yourid', linkedinUrl);
       }
 
-      zip.file(file, html);
+      if (html === original) continue;
+      processedCount++;
+
+      if (useGithub) {
+        try {
+          showLoading(`GitHub에 ${file} 저장 중...`);
+          await commitToGithub(file, html, `Update profile in ${file}`);
+          githubResults.push(`✅ ${file}`);
+        } catch (err) {
+          githubResults.push(`❌ ${file}: ${err.message}`);
+        }
+      } else {
+        zip.file(file, html);
+      }
     }
 
-    showLoading('ZIP 생성 중...');
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `프로필적용_${new Date().toISOString().split('T')[0]}.zip`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    hideLoading();
-    alert('✅ ZIP 다운로드 완료!\n\n다음 단계:\n1. ZIP 압축 해제\n2. 5개 HTML 파일을 본인 폴더에 덮어쓰기\n3. Vercel 재배포 (드래그 앤 드롭)');
+    if (useGithub) {
+      hideLoading();
+      alert(`✅ GitHub 자동 저장 완료\n\n${processedCount}개 파일 처리\n\n${githubResults.join('\n')}\n\nVercel 자동 재배포 (1-2분)`);
+    } else {
+      showLoading('ZIP 생성 중...');
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `프로필적용_${new Date().toISOString().split('T')[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      hideLoading();
+      alert(`✅ ZIP 다운로드 완료 (${processedCount}개 파일)\n\nZIP 풀어서 폴더 덮어쓰기 → GitHub 업로드 → Vercel 재배포`);
+    }
   } catch (err) {
     hideLoading();
-    alert('실패: ' + err.message + '\n\n💡 로컬 파일에서 직접 열고 있다면 작동 안 합니다. Vercel 배포 후 사이트에서 시도해주세요.');
+    alert('실패: ' + err.message + '\n\n💡 Vercel 배포 후 사이트에서 사용해주세요');
   }
 }
 
@@ -832,6 +1080,7 @@ function buildJobAnalysisPrompt(job) {
 - 시즈노프 IMC 7채널, 푸드케어 광고비 50% 절감
 - 메타 Advantage+·구글 PMax·네이버 자동입찰·ChatGPT·Claude·GA4 AI 직접 운영
 - 6사 팀장 누적 13년+ (4-9명), C레벨 다이렉트 미팅 다수
+- 직군 카테고리: 마케팅 본부장 / 그로스 / 브랜드 / 퍼포먼스 / D2C / 광고대행 / 솔루션 영업
 
 [공고 정보]
 회사: ${job.company}
@@ -840,7 +1089,7 @@ URL: ${job.url || '미상'}
 공고 본문:
 ${job.jdText}
 
-[분석 요청 — 6렌즈 + 4축]
+[분석 요청 — 6렌즈 + 4축 + 10가지 기준 점수]
 
 ## 1. 6렌즈 분석
 1) **시장 렌즈**: 산업·이 직군 수요·연봉 밴드
@@ -856,21 +1105,46 @@ ${job.jdText}
 3) **숨은 함정**: 5인 일량·모호 R&R·반복 채용 등
 4) **팀 구조 신호**: 솔로/팀·리포팅 라인
 
-## 3. KPI 추론 (입사 90일 증명할 수치 3개)
+## 3. 🎯 10가지 기준 매칭 점수 ⭐ (각 0-10점)
 
-## 4. 키워드 3분류
-- 반드시 박을 단어 (자소서·이력서)
+| # | 기준 | 점수 | 근거 |
+|---|---|---|---|
+| 1 | **직무 적합도** (포지션·R&R 매칭) | X/10 | ... |
+| 2 | **연차·시니어급 적합** | X/10 | ... |
+| 3 | **업종 경험 매칭** (광고대행·D2C·솔루션 등) | X/10 | ... |
+| 4 | **회사 단계 적합** (시드·시리즈·상장 결) | X/10 | ... |
+| 5 | **연봉·처우 추정** | X/10 | ... |
+| 6 | **AI·디지털 도구 활용 매칭** | X/10 | ... |
+| 7 | **팀 빌딩·리더십 적합** | X/10 | ... |
+| 8 | **C레벨 협상·PT 적합** | X/10 | ... |
+| 9 | **성장성·커리어 발전성** | X/10 | ... |
+| 10 | **리스크 (반대 신호)** | X/10 | ... |
+| | **종합 점수** | **X/100** | |
+
+## 4. KPI 추론 (입사 90일 증명할 수치 3개)
+
+## 5. 키워드 3분류
+- 반드시 박을 단어
 - 자연스럽게 녹일 단어
 - 피할 단어
 
-## 5. 면접관 체크박스 5개 (자소서가 답해야 할 질문)
+## 6. 면접관 체크박스 5개
 
-## 6. 종합 결론
-- **매칭 강도**: ◎ / ○ / △ / ✗ 중 하나 (반드시 명시)
-- **지원 권장도**: 강력 추천 / 조건부 / 비추 (반드시 명시)
-- 한 줄 요약 이유
+## 7. 🔗 관련·인접 직무 카테고리 추천
+- 이 공고와 비슷한 인접 직군 3-5개 (검색 키워드)
+- 예: "마케팅 본부장" 외에 "그로스 헤드", "퍼포먼스 디렉터", "CMO", "솔루션 영업 실장" 등
 
-마크다운 형식으로 정리해줘.`;
+## 8. 🔍 비슷한 공고 검색 키워드 추천
+- 이 공고와 비슷한 자리 찾기 위한 검색 키워드 5-10개
+- 사람인·잡코리아·리멤버 검색용
+
+## 9. 종합 결론
+- **종합 점수**: X/100 (반드시 숫자 명시)
+- **매칭 강도**: ◎ / ○ / △ / ✗ (90+ ◎ / 70-89 ○ / 50-69 △ / 50 미만 ✗)
+- **지원 권장도**: 강력 추천 / 조건부 / 비추
+- 한 줄 요약 이유 (왜 이 점수인가)
+
+마크다운 형식으로 정리. 점수는 반드시 숫자로 명확히.`;
 }
 
 function extractScore(analysis) {
@@ -969,6 +1243,7 @@ function openJobDetail(id) {
       ${job.url ? `<a href="${job.url}" target="_blank" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🔗 공고 보기</a>` : ''}
       <button onclick="reanalyzeJob('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🔄 AI 재분석</button>
       <button onclick="generateCoverLetter('${job.id}')" class="px-3 py-2 accent-bg text-white rounded text-sm font-bold">✍️ 자소서 변형</button>
+      <button onclick="transformAllDocsForJob('${job.id}')" class="px-3 py-2 bg-orange-700 text-white rounded text-sm font-bold hover:bg-orange-600">📦 회사별 풀 변형 (5개 자료)</button>
       <button onclick="generateInterviewQA('${job.id}')" class="px-3 py-2 border border-gray-700 rounded text-sm hover:border-orange-500">🎤 면접 답변풀</button>
       <button onclick="deleteJob('${job.id}')" class="px-3 py-2 border border-red-900 text-red-400 rounded text-sm hover:bg-red-900/30">🗑️ 삭제</button>
     </div>
@@ -1089,6 +1364,130 @@ ${job.analysis}
     openJobDetail(id);
   } catch (err) {
     alert('자소서 생성 실패: ' + err.message);
+  }
+}
+
+async function transformAllDocsForJob(jobId) {
+  const job = state.jobs.find(j => j.id === jobId);
+  if (!job) return;
+  if (!job.analysis) return alert('먼저 AI 분석부터 실행하세요');
+
+  const sanitizedCompany = (job.company || 'company').replace(/[\\/:*?"<>|]/g, '').trim();
+  if (!confirm(`${sanitizedCompany} 회사 맞춤으로 5개 자료 (메인·이력서·경력·자소서·포폴) 일괄 변형합니다.\n\n비용 약 1,000원 (Claude API).\n\n계속?`)) return;
+
+  // GitHub 저장 옵션
+  const useGithub = confirm('변형된 자료를 GitHub에 자동 저장하시겠습니까?\n\n[확인] = companies/' + sanitizedCompany + '/ 폴더에 자동 commit\n[취소] = ZIP 다운로드');
+
+  if (useGithub) {
+    const token = localStorage.getItem('githubToken');
+    const owner = localStorage.getItem('githubOwner');
+    const repo = localStorage.getItem('githubRepo');
+    if (!token || !owner || !repo) {
+      alert('GitHub 설정 누락. 설정 탭에서 Token·Owner·Repo 입력 후 다시 시도');
+      return;
+    }
+  }
+
+  const files = [
+    'index.html',
+    '문서_이력서.html',
+    '문서_경력기술서.html',
+    '문서_자소서.html',
+    '문서_포트폴리오.html'
+  ];
+
+  showLoading('회사별 자료 변형 시작...');
+  const zip = useGithub ? null : new JSZip();
+  const reports = [];
+  const githubResults = [];
+
+  try {
+    for (const file of files) {
+      showLoading(`${file} AI 변형 중...`);
+      const res = await fetch(file);
+      if (!res.ok) {
+        reports.push(`⚠️ ${file}: 가져오기 실패`);
+        continue;
+      }
+      let html = await res.text();
+      const snippet = html.length > 80000 ? html.slice(0, 80000) + '\n... (truncated)' : html;
+
+      const prompt = `다음 마스터 자료를 "${job.company} (${job.position})" 공고에 맞춰 회사 맞춤 변형하는 find-replace 작업을 JSON 배열로만 답변해줘.
+
+[공고]
+회사: ${job.company}
+포지션: ${job.position}
+공고 본문: ${(job.jdText || '').slice(0, 3000)}
+
+[AI 분석 결과 — 참고]
+${(job.analysis || '').slice(0, 3000)}
+
+[마스터 자료 — ${file}]
+${snippet}
+
+[변형 가이드]
+- 회사·포지션·KPI에 맞춰 강조 포인트 재배치
+- 핵심 키워드 자연스럽게 포함
+- 사실·수치는 보존 (변형 ❌)
+- HTML 태그 구조 보존, 텍스트만 변경
+- 작은 변형 위주 (헤더 카피·핵심 성과 우선순위·90일 플랜·키워드)
+
+[응답 — JSON 배열만, 마크다운 ❌, 설명 ❌]
+[{"find":"원본 정확 문자열","replace":"새 문자열"}, ...]
+- find는 HTML에 정확히 존재 + unique (컨텍스트 포함)
+- 변경 없으면 []`;
+
+      const result = await callClaude(prompt, 4096);
+      let edits = [];
+      try {
+        let cleaned = result.trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```\s*$/, '').trim();
+        edits = JSON.parse(cleaned);
+        if (!Array.isArray(edits)) edits = [];
+      } catch {
+        reports.push(`⚠️ ${file}: AI 응답 파싱 실패`);
+        continue;
+      }
+
+      let changes = 0;
+      edits.forEach(e => {
+        if (!e.find) return;
+        const before = html;
+        html = html.split(e.find).join(e.replace || '');
+        if (html !== before) changes++;
+      });
+      reports.push(`✅ ${file}: ${changes}건 변형`);
+
+      if (useGithub) {
+        try {
+          const githubPath = `companies/${sanitizedCompany}/${file}`;
+          await commitToGithub(githubPath, html, `${sanitizedCompany} 회사 맞춤 변형: ${file}`);
+          githubResults.push(`✅ companies/${sanitizedCompany}/${file}`);
+        } catch (err) {
+          githubResults.push(`❌ ${file}: ${err.message}`);
+        }
+      } else {
+        zip.file(`companies/${sanitizedCompany}/${file}`, html);
+      }
+    }
+
+    if (useGithub) {
+      hideLoading();
+      alert(`✅ ${sanitizedCompany} 회사별 풀 변형 완료\n\n${reports.join('\n')}\n\n📂 GitHub 저장:\n${githubResults.join('\n')}\n\n📍 변형된 자료 URL:\nyoursite.com/companies/${encodeURIComponent(sanitizedCompany)}/문서_이력서.html\n\nVercel 자동 재배포 (1-2분)`);
+    } else {
+      showLoading('ZIP 생성 중...');
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${sanitizedCompany}_회사맞춤자료_${new Date().toISOString().split('T')[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      hideLoading();
+      alert(`✅ ZIP 다운로드 완료 — ${sanitizedCompany}\n\n${reports.join('\n')}\n\nZIP 풀어서 GitHub repo의 companies/${sanitizedCompany}/ 폴더로 업로드`);
+    }
+  } catch (err) {
+    hideLoading();
+    alert('실패: ' + err.message);
   }
 }
 
