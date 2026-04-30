@@ -1396,7 +1396,16 @@ function renderJobs() {
           </div>
         </div>
         <div class="flex items-center gap-3 shrink-0" onclick="event.stopPropagation()">
-          <div class="text-3xl font-bold ${scoreColor}">${job.matchScore}</div>
+          ${(() => {
+            const total = extractTotalScore(job.analysis);
+            if (total !== null) {
+              return `<div class="text-right">
+                <div class="text-3xl font-bold ${scoreColor}">${total}<span class="text-sm text-gray-400">/100</span></div>
+                <div class="text-xs ${scoreColor}">${job.matchScore}</div>
+              </div>`;
+            }
+            return `<div class="text-3xl font-bold ${scoreColor}">${job.matchScore}</div>`;
+          })()}
           <select onchange="updateJobStatus('${job.id}', this.value); event.stopPropagation();" class="px-2 py-1 rounded text-xs ${statusColor} bg-gray-800 border border-gray-700 cursor-pointer hover:border-orange-500">
             ${['검토중','지원완료','서류통과','면접','합격','불합격','보류'].map(s =>
               `<option ${s===job.status?'selected':''}>${s}</option>`).join('')}
@@ -1423,8 +1432,14 @@ function openJobDetail(id) {
 
     <div class="grid grid-cols-3 gap-3 mb-4">
       <div class="border border-gray-800 rounded p-3">
-        <div class="text-xs text-gray-500 mb-1">매칭 강도</div>
-        <div class="text-3xl font-bold accent">${job.matchScore}</div>
+        <div class="text-xs text-gray-500 mb-1">매칭 점수</div>
+        ${(() => {
+          const total = extractTotalScore(job.analysis);
+          if (total !== null) {
+            return `<div class="text-3xl font-bold accent">${total}<span class="text-base text-gray-400">/100</span> <span class="text-lg">${job.matchScore}</span></div>`;
+          }
+          return `<div class="text-3xl font-bold accent">${job.matchScore}</div>`;
+        })()}
       </div>
       <div class="border border-gray-800 rounded p-3">
         <div class="text-xs text-gray-500 mb-1">상태</div>
