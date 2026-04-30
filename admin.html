@@ -197,6 +197,11 @@
             <input id="profileLinkedin" placeholder="linkedin.com/in/hong-marketer" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
             <p class="text-xs text-gray-600 mt-1">현재: <code class="text-orange-400">linkedin.com/in/yourid</code></p>
           </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs text-gray-400 mb-1">사이트 이름 (브라우저 탭 제목)</label>
+            <input id="profileSiteTitle" placeholder="디지털 마케터 포트폴리오" class="w-full bg-gray-900 border border-gray-700 rounded p-3 outline-none focus:border-orange-500">
+            <p class="text-xs text-gray-600 mt-1">예시: <code class="text-orange-400">디지털 마케터 포트폴리오</code> → 탭 제목이 "이름 | 디지털 마케터 포트폴리오"로 표시</p>
+          </div>
         </div>
       </div>
 
@@ -867,6 +872,7 @@ function loadProfile() {
   if (p.email) document.getElementById('profileEmail').value = p.email;
   if (p.phone) document.getElementById('profilePhone').value = p.phone;
   if (p.linkedin) document.getElementById('profileLinkedin').value = p.linkedin;
+  if (p.siteTitle) document.getElementById('profileSiteTitle').value = p.siteTitle;
 }
 
 function getProfileFromForm() {
@@ -874,7 +880,8 @@ function getProfileFromForm() {
     name: document.getElementById('profileName').value.trim(),
     email: document.getElementById('profileEmail').value.trim(),
     phone: document.getElementById('profilePhone').value.trim(),
-    linkedin: document.getElementById('profileLinkedin').value.trim()
+    linkedin: document.getElementById('profileLinkedin').value.trim(),
+    siteTitle: document.getElementById('profileSiteTitle').value.trim()
   };
 }
 
@@ -958,15 +965,17 @@ async function updateAllFiles() {
       // 이름 = 전체 주황·볼드 (HTML 영역만)
       const formattedName = `<strong class="accent" style="font-weight:700;">${profile.name}</strong>`;
 
-      // 1) <title> 태그 강력 처리 — 안의 HTML 태그 모두 제거 + 이름 교체
+      // 1) <title> 태그 강력 처리 — 안의 HTML 태그 모두 제거 + 이름·사이트명 교체
       html = html.replace(/<title>([\s\S]*?)<\/title>/g, (match, content) => {
+        // 사이트 이름 입력했으면 무조건 "이름 | 사이트이름"으로 통일
+        if (profile.siteTitle) {
+          return `<title>${profile.name} | ${profile.siteTitle}</title>`;
+        }
         // HTML 태그 모두 제거 (이전에 깨진 <strong> 등 복구)
         let clean = content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-        // 김OO 또는 깨진 이름 패턴 → 새 이름
         if (clean.includes('김OO')) {
           clean = clean.replace(/김OO/g, profile.name);
         } else {
-          // " | " 구분자로 분리해서 첫 부분만 이름으로 교체
           const parts = clean.split(' | ');
           if (parts.length >= 2) {
             parts[0] = profile.name;
