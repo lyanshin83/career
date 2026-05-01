@@ -11,9 +11,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = req.headers['x-api-key'];
-  if (!apiKey) return res.status(401).json({ error: 'API key required' });
-  if (!apiKey.startsWith('sk-')) return res.status(401).json({ error: 'Invalid API key format' });
+  const apiKey = req.headers['x-api-key'] || process.env.CLAUDE_API_KEY;
+  if (!apiKey) return res.status(401).json({ error: 'API key required (헤더 또는 Vercel 환경변수 CLAUDE_API_KEY)' });
+  if (!apiKey.startsWith('sk-')) return res.status(401).json({ error: 'Invalid API key format (sk-ant-...로 시작)' });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {

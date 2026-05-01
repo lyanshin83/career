@@ -9,10 +9,10 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = req.headers['x-api-key'];
+  const apiKey = req.headers['x-api-key'] || process.env.CLAUDE_API_KEY;
   const { url } = req.body || {};
 
-  if (!apiKey) return res.status(401).json({ error: 'Claude API key required' });
+  if (!apiKey) return res.status(401).json({ error: 'Claude API key required (헤더 또는 Vercel 환경변수 CLAUDE_API_KEY)' });
   if (!url) return res.status(400).json({ error: 'URL required' });
   if (!url.startsWith('http')) return res.status(400).json({ error: 'URL must start with http(s)://' });
 
