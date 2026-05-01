@@ -9,10 +9,10 @@
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
   body { font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; background: #000; }
-  .accent { color: #2c5282; }
-  .accent-bg { background-color: #2c5282; }
-  .accent-border { border-color: #2c5282; }
-  .gradient-text { background: linear-gradient(135deg, #2c5282 0%, #FFA559 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .accent { color: #3b82f6; }
+  .accent-bg { background-color: #3b82f6; }
+  .accent-border { border-color: #3b82f6; }
+  .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #FFA559 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
   /* Hero animations */
   @keyframes fadeInUp {
@@ -28,7 +28,7 @@
 
   /* Hover */
   .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-  .card-hover:hover { transform: translateY(-4px); border-color: #2c5282; }
+  .card-hover:hover { transform: translateY(-4px); border-color: #3b82f6; }
 
   /* Scroll indicator */
   .scroll-indicator {
@@ -49,9 +49,119 @@
   .timeline-bar { transform-origin: left; transform: scaleX(0); transition: transform 0.05s linear; }
   .timeline-section { min-height: 100vh; } /* sticky-like behavior — scroll progress through this section */
 
+  /* ============ PPT 16:9 가로용 인쇄 모드 (PDF 저장 시 자동 적용) ============ */
   @media print {
-    .no-print { display: none; }
+    /* PPT 16:9 widescreen (13.333in × 7.5in) */
+    @page {
+      size: 13.333in 7.5in;
+      margin: 0.4in 0.6in;
+    }
+
+    /* 라이트 배경 + 검정 텍스트 강제 (다크 디자인 → 인쇄 친화) */
+    html, body {
+      background: white !important;
+      color: #111 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body, body * {
+      background-color: transparent !important;
+      background-image: none !important;
+    }
+    body, body p, body div, body span, body li {
+      color: #111 !important;
+    }
+
+    /* 다크 배경 클래스 모두 흰색 */
+    .bg-black, [class*="bg-gray-9"], [class*="bg-gray-8"], [class*="bg-zinc-9"] {
+      background-color: white !important;
+    }
+
+    /* 흰/회색 텍스트 → 검정 */
+    .text-white, [class*="text-gray-3"], [class*="text-gray-4"], [class*="text-gray-5"], [class*="text-gray-6"] {
+      color: #111 !important;
+    }
+
+    /* 강조 색은 블루로 통일 */
+    .accent, .gradient-text, [class*="text-orange-"], [class*="text-blue-"] {
+      color: #3b82f6 !important;
+      background: none !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      -webkit-text-fill-color: #3b82f6 !important;
+    }
+    .accent-bg, [class*="bg-orange-"], [class*="bg-blue-"] {
+      background-color: #3b82f6 !important;
+      color: white !important;
+    }
+    .accent-border, [class*="border-orange-"], [class*="border-blue-"] {
+      border-color: #3b82f6 !important;
+    }
+
+    /* 인터랙티브·장식 요소 숨김 */
+    .no-print,
+    .scroll-indicator,
+    .timeline-bar,
+    [style*="radial-gradient"],
+    [style*="filter: blur"],
+    [style*="backdrop-blur"],
+    button:not(.print-keep),
+    a[href="admin.html"],
+    a[href*="admin"]:not(.print-keep),
+    canvas,
+    iframe {
+      display: none !important;
+    }
+
+    /* 애니메이션·트랜지션 모두 제거 */
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+
+    /* 섹션마다 슬라이드 break (각 section = 1 슬라이드) */
+    section {
+      page-break-inside: avoid;
+      page-break-after: always;
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 0.3in 0.5in !important;
+      display: block !important;
+    }
+    section:last-of-type {
+      page-break-after: auto;
+    }
+
+    /* 폰트 크기 PPT용 조정 */
+    h1 { font-size: 30pt !important; line-height: 1.15 !important; margin-bottom: 12pt !important; }
+    h2 { font-size: 22pt !important; line-height: 1.2 !important; margin-bottom: 10pt !important; }
+    h3 { font-size: 16pt !important; margin-bottom: 8pt !important; }
+    h4 { font-size: 13pt !important; margin-bottom: 6pt !important; }
+    p, li { font-size: 11pt !important; line-height: 1.5 !important; }
+    .text-xs { font-size: 9pt !important; }
+    .text-sm { font-size: 10pt !important; }
+    .text-lg, .text-xl { font-size: 13pt !important; }
+    .text-2xl, .text-3xl { font-size: 18pt !important; }
+    .text-4xl, .text-5xl { font-size: 24pt !important; }
+    .text-6xl, .text-7xl, .text-8xl { font-size: 30pt !important; }
+
+    /* 카드·박스 보더 (구조 유지) */
+    .card-hover, [class*="border"] {
+      border-color: #d1d5db !important;
+      border-width: 1px !important;
+    }
+
+    /* 이미지·영상 최대 너비 */
+    img, video {
+      max-width: 100% !important;
+      height: auto !important;
+      page-break-inside: avoid;
+    }
   }
+
+  /* 화면용 .no-print는 그대로 (인쇄에서만 숨김) */
 </style>
 </head>
 <body class="text-white antialiased">
@@ -144,7 +254,7 @@
     <text x="50" y="50" font-size="11" fill="#60a5fa" font-weight="500">바론미디어 · 오리지널 · ⭐ NHN커머스 (7년)</text>
     <text x="50" y="85" font-size="13" fill="white" font-weight="600">🟦 광고대행·솔루션 영업 (9년 5개월)</text>
 
-    <rect x="650" y="105" width="200" height="40" fill="#1e3a5f" rx="4" class="timeline-bar delay-bar-2"/>
+    <rect x="650" y="105" width="200" height="40" fill="#1e40af" rx="4" class="timeline-bar delay-bar-2"/>
     <text x="660" y="130" font-size="13" fill="white" font-weight="600">🟧 자체 브랜드 D2C (5년)</text>
     <text x="660" y="155" font-size="11" fill="#fb923c" font-weight="500">더에이블·오라팜·라이프앤바이오·아이디플라</text>
 
@@ -152,9 +262,9 @@
     <text x="860" y="85" font-size="11" fill="white" font-weight="600">🟩 SaaS·CMO</text>
     <text x="860" y="50" font-size="10" fill="#86efac" font-weight="500">루나·에스오씨</text>
 
-    <line x1="180" y1="60" x2="180" y2="190" stroke="#2c5282" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
-    <line x1="650" y1="60" x2="650" y2="190" stroke="#2c5282" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
-    <text x="370" y="180" font-size="14" fill="#2c5282" font-weight="700">⭐ NHN커머스 7년 — 핵심 트랙</text>
+    <line x1="180" y1="60" x2="180" y2="190" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+    <line x1="650" y1="60" x2="650" y2="190" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+    <text x="370" y="180" font-size="14" fill="#3b82f6" font-weight="700">⭐ NHN커머스 7년 — 핵심 트랙</text>
   </svg>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
@@ -745,7 +855,7 @@
     .scroll-top-btn {
       position: fixed; bottom: 28px; right: 28px;
       width: 52px; height: 52px;
-      background: #2c5282; color: white;
+      background: #3b82f6; color: white;
       border: none; border-radius: 50%;
       font-size: 22pt; font-weight: 700;
       cursor: pointer; opacity: 0; pointer-events: none;
@@ -757,7 +867,7 @@
     }
     .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
     .scroll-top-btn:hover {
-      background: #1e3a5f; transform: translateY(-4px);
+      background: #1e40af; transform: translateY(-4px);
       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
     }
     .scroll-top-btn:active { transform: translateY(0); }

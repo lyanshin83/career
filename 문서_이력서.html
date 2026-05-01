@@ -30,20 +30,20 @@
     body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   }
 
-  .accent { color: #2c5282; }
-  .accent-bg { background-color: #2c5282; }
-  .accent-border { border-color: #2c5282; }
+  .accent { color: #3b82f6; }
+  .accent-bg { background-color: #3b82f6; }
+  .accent-border { border-color: #3b82f6; }
 
   /* Print guide */
   .print-guide {
-    background: #ebf2fa;
-    border: 1px solid #a8c4dc;
+    background: #dbeafe;
+    border: 1px solid #93c5fd;
     padding: 14px 18px;
     border-radius: 8px;
     margin: 0 auto 20px;
     max-width: 210mm;
     font-size: 10pt;
-    color: #1e3a5f;
+    color: #1e40af;
   }
 
   /* Header */
@@ -52,7 +52,7 @@
     gap: 24px;
     align-items: stretch;
     padding-bottom: 20px;
-    border-bottom: 3px solid #2c5282;
+    border-bottom: 3px solid #3b82f6;
     margin-bottom: 24px;
   }
   .photo {
@@ -73,18 +73,18 @@
   }
   .header-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .name { font-size: 28pt; font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
-  .name span { color: #2c5282; }
+  .name span { color: #3b82f6; }
   .tagline { font-size: 12pt; color: #374151; font-weight: 500; margin-bottom: 12px; line-height: 1.4; }
   .contact { font-size: 9.5pt; color: #6b7280; }
   .contact span { margin-right: 14px; }
-  .contact .label { color: #2c5282; font-weight: 600; margin-right: 4px; }
+  .contact .label { color: #3b82f6; font-weight: 600; margin-right: 4px; }
 
   /* Section */
   section { margin-top: 18px; page-break-inside: avoid; }
   h2 {
     font-size: 11pt;
     font-weight: 700;
-    color: #2c5282;
+    color: #3b82f6;
     letter-spacing: 0.15em;
     margin-bottom: 10px;
     padding-bottom: 4px;
@@ -93,7 +93,7 @@
 
   /* Summary */
   .summary { font-size: 10.5pt; color: #1f2937; line-height: 1.65; }
-  .summary strong { color: #2c5282; }
+  .summary strong { color: #3b82f6; }
 
   /* Highlights */
   .highlights ul { list-style: none; padding: 0; }
@@ -107,7 +107,7 @@
     content: '▸';
     position: absolute;
     left: 0;
-    color: #2c5282;
+    color: #3b82f6;
     font-weight: bold;
   }
   .highlights li strong { color: #111; font-weight: 700; }
@@ -119,7 +119,7 @@
   .career-table .period { color: #6b7280; white-space: nowrap; width: 130px; font-size: 9pt; }
   .career-table .company { font-weight: 600; color: #111; width: 200px; }
   .career-table .role { color: #374151; }
-  .career-table .role strong { color: #2c5282; font-weight: 600; }
+  .career-table .role strong { color: #3b82f6; font-weight: 600; }
 
   /* Skills grid */
   .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
@@ -127,7 +127,7 @@
   .skill-row .label {
     display: inline-block;
     width: 90px;
-    color: #2c5282;
+    color: #3b82f6;
     font-weight: 700;
     font-size: 9pt;
     letter-spacing: 0.05em;
@@ -137,7 +137,7 @@
   /* Education */
   .edu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
   .edu-item { font-size: 9.5pt; }
-  .edu-item .edu-label { font-size: 8.5pt; color: #2c5282; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .edu-item .edu-label { font-size: 8.5pt; color: #3b82f6; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
   .edu-item .edu-name { font-weight: 600; color: #111; margin-bottom: 2px; }
   .edu-item .edu-detail { color: #6b7280; font-size: 9pt; }
 
@@ -145,8 +145,8 @@
   .ai-tag {
     display: inline-block;
     padding: 2px 8px;
-    background: #f0f5fa;
-    color: #1e3a5f;
+    background: #eff6ff;
+    color: #1e40af;
     border-radius: 3px;
     font-size: 8.5pt;
     font-weight: 600;
@@ -159,9 +159,9 @@
 <style>
   .doc-nav { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 1000; background: white; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
   .doc-nav a, .doc-nav button { padding: 8px 14px; background: white; color: #111; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 9.5pt; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: inherit; }
-  .doc-nav a:hover, .doc-nav button:hover { background: #2c5282; color: white; border-color: #2c5282; }
-  .doc-nav .nav-home { background: #2c5282; color: white; border-color: #2c5282; }
-  .doc-nav .nav-home:hover { background: #1e3a5f; }
+  .doc-nav a:hover, .doc-nav button:hover { background: #3b82f6; color: white; border-color: #3b82f6; }
+  .doc-nav .nav-home { background: #3b82f6; color: white; border-color: #3b82f6; }
+  .doc-nav .nav-home:hover { background: #1e40af; }
   @media print { .doc-nav { display: none !important; } }
 </style>
 
@@ -253,9 +253,9 @@
         <td class="company">㈜더에이블랩</td>
         <td class="role"><strong>마케팅팀장</strong> · 월 5억 예산·닥터미라클 런칭 7.7억 (4명 팀)</td>
       </tr>
-      <tr style="background: #ebf2fa;">
+      <tr style="background: #dbeafe;">
         <td class="period"><strong>2012.11 — 2019.11</strong></td>
-        <td class="company"><strong style="color:#2c5282;">⭐ ㈜NHN커머스</strong></td>
+        <td class="company"><strong style="color:#3b82f6;">⭐ ㈜NHN커머스</strong></td>
         <td class="role"><strong>마케팅1팀 팀장</strong> · 자사 솔루션 광고주 50+ 신규 수주·VT코스메틱 20배 견인 (9명 팀)</td>
       </tr>
       <tr>
@@ -339,27 +339,27 @@
 <style>
   .cover-letter section { margin-top: 26px; }
   .cover-letter h2 { font-size: 14pt; font-weight: 700; color: #111; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #111; }
-  .cover-letter h2 .num { color: #2c5282; margin-right: 8px; }
+  .cover-letter h2 .num { color: #3b82f6; margin-right: 8px; }
   .cover-letter p { font-size: 10.5pt; line-height: 1.7; margin-bottom: 14px; text-align: justify; color: #111; }
   .cover-letter p strong { color: #111; font-weight: 700; }
-  .cover-letter p em { font-style: normal; color: #2c5282; font-weight: 600; }
-  .cover-letter .cl-header { padding-bottom: 18px; border-bottom: 3px solid #2c5282; margin-bottom: 22px; }
-  .cover-letter .cl-doc-type { font-size: 9pt; color: #2c5282; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 6px; }
+  .cover-letter p em { font-style: normal; color: #3b82f6; font-weight: 600; }
+  .cover-letter .cl-header { padding-bottom: 18px; border-bottom: 3px solid #3b82f6; margin-bottom: 22px; }
+  .cover-letter .cl-doc-type { font-size: 9pt; color: #3b82f6; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 6px; }
   .cover-letter .cl-name { font-size: 22pt; font-weight: 700; }
-  .cover-letter .cl-name span { color: #2c5282; }
-  .cover-letter .cl-target { margin-top: 10px; padding: 8px 14px; background: #ebf2fa; border-left: 3px solid #2c5282; border-radius: 0 4px 4px 0; font-size: 9.5pt; }
-  .cover-letter .cl-target strong { color: #2c5282; }
-  .cover-letter .plan-box { background: #fafafa; border-left: 4px solid #2c5282; padding: 16px 20px; border-radius: 0 6px 6px 0; margin: 14px 0; }
-  .cover-letter .plan-box h3 { font-size: 11pt; color: #2c5282; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .cover-letter .cl-name span { color: #3b82f6; }
+  .cover-letter .cl-target { margin-top: 10px; padding: 8px 14px; background: #dbeafe; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 9.5pt; }
+  .cover-letter .cl-target strong { color: #3b82f6; }
+  .cover-letter .plan-box { background: #fafafa; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: 0 6px 6px 0; margin: 14px 0; }
+  .cover-letter .plan-box h3 { font-size: 11pt; color: #3b82f6; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px; }
   .cover-letter .plan-box .plan-item { margin-bottom: 10px; }
   .cover-letter .plan-box .plan-item:last-child { margin-bottom: 0; }
   .cover-letter .plan-box .plan-item strong { color: #111; display: block; margin-bottom: 4px; font-size: 10pt; }
   .cover-letter .plan-box .plan-item p { font-size: 9.5pt; line-height: 1.6; margin-bottom: 0; color: #374151; text-align: left; }
-  .cover-letter .ai-vision { background: linear-gradient(135deg, #ebf2fa 0%, #7da5cf 100%); padding: 16px 20px; border-radius: 6px; margin: 14px 0; }
-  .cover-letter .ai-vision .ai-label { font-size: 9pt; color: #1e3a5f; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .cover-letter .ai-vision { background: linear-gradient(135deg, #dbeafe 0%, #60a5fa 100%); padding: 16px 20px; border-radius: 6px; margin: 14px 0; }
+  .cover-letter .ai-vision .ai-label { font-size: 9pt; color: #1e40af; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 8px; }
   .cover-letter .ai-vision p { font-size: 10pt; line-height: 1.65; margin-bottom: 0; color: #1f2937; text-align: left; }
-  .cover-letter .ai-vision strong { color: #1e3a5f; }
-  .cover-letter .cl-final { text-align: center; font-size: 12pt; font-weight: 700; color: #2c5282; margin-top: 20px; }
+  .cover-letter .ai-vision strong { color: #1e40af; }
+  .cover-letter .cl-final { text-align: center; font-size: 12pt; font-weight: 700; color: #3b82f6; margin-top: 20px; }
 </style>
 
 <div class="page cover-letter">
