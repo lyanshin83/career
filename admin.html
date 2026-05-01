@@ -372,28 +372,45 @@
     <!-- ===== TAB: 자료 다운로드 ===== -->
     <section id="tab-docs" class="tab-content hidden">
       <h2 class="text-2xl font-bold mb-2">📄 자료 다운로드</h2>
-      <p class="text-xs text-gray-500 mb-6">표준 자료 — 회사별 변형은 공고 상세에서 "AI 자료 변형"</p>
+      <p class="text-xs text-gray-500 mb-2">표준 자료 — 새 탭 열기·HTML·DOC(워드) 다운로드 / 회사별 AI 변형은 공고 상세에서 "📦 회사별 풀 변형"</p>
+      <p class="text-xs text-orange-400 mb-6">💡 DOC 저장 = 워드에서 직접 편집 가능. AI 비용 ❌, 본인이 자유롭게 수정.</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="문서_이력서.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
           <div class="text-3xl mb-3">📄</div>
           <h3 class="font-bold mb-1">이력서·자소서 통합</h3>
-          <p class="text-xs text-gray-500">A4 3장 + 사진 + AI 도구 강조</p>
-        </a>
-        <a href="문서_경력기술서.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <p class="text-xs text-gray-500 mb-3">A4 3장 + 사진 + AI 도구 강조</p>
+          <div class="flex flex-col gap-2">
+            <a href="문서_이력서.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
+            <button onclick="downloadAsDoc('문서_이력서.html', '이력서_자소서.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          </div>
+        </div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
           <div class="text-3xl mb-3">📋</div>
           <h3 class="font-bold mb-1">경력기술서</h3>
-          <p class="text-xs text-gray-500">A4 2장 + 시각화 풀</p>
-        </a>
-        <a href="문서_포트폴리오.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <p class="text-xs text-gray-500 mb-3">A4 2장 + 시각화 풀</p>
+          <div class="flex flex-col gap-2">
+            <a href="문서_경력기술서.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
+            <button onclick="downloadAsDoc('문서_경력기술서.html', '경력기술서.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          </div>
+        </div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
           <div class="text-3xl mb-3">🎨</div>
           <h3 class="font-bold mb-1">포트폴리오</h3>
-          <p class="text-xs text-gray-500">A4 4장 + 케이스 스터디</p>
-        </a>
-        <a href="index.html" target="_blank" class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
+          <p class="text-xs text-gray-500 mb-3">A4 4장 + 케이스 스터디</p>
+          <div class="flex flex-col gap-2">
+            <a href="문서_포트폴리오.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
+            <button onclick="downloadAsDoc('문서_포트폴리오.html', '포트폴리오.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          </div>
+        </div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
           <div class="text-3xl mb-3">🌐</div>
           <h3 class="font-bold mb-1">메인 사이트</h3>
-          <p class="text-xs text-gray-500">인터랙티브 + 애니메이션</p>
-        </a>
+          <p class="text-xs text-gray-500 mb-3">인터랙티브 + 애니메이션</p>
+          <div class="flex flex-col gap-2">
+            <a href="index.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
+            <button onclick="downloadAsDoc('index.html', '메인사이트.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -779,7 +796,12 @@ function showRecommendModal(data) {
           </ul>
         </div>` : ''}
 
-      <p class="text-sm text-gray-400 italic">${escapeHtml(data.summary || '')}</p>
+      <p class="text-sm text-gray-400 italic mb-4">${escapeHtml(data.summary || '')}</p>
+
+      <div class="border-t border-gray-800 pt-4 mt-4 flex flex-wrap gap-2 justify-end">
+        <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-gray-500">닫기</button>
+        <button onclick="this.closest('.fixed').remove(); document.querySelector('[data-tab=jobs]')?.click(); window.scrollTo({top:0, behavior:'smooth'}); setTimeout(() => document.querySelector('input[placeholder*=회사], input[name=company], #companyInput')?.focus(), 300);" class="px-4 py-2 accent-bg text-white rounded text-sm font-bold">+ 새 공고 추가하기로 이동</button>
+      </div>
     </div>
   `;
   document.body.appendChild(modal);
@@ -1120,12 +1142,16 @@ async function callClaude(prompt, maxTokens = 4096) {
 }
 
 function showLoading(text) {
-  document.getElementById('loadingText').textContent = text;
-  document.getElementById('loadingOverlay').classList.remove('hidden');
+  const textEl = document.getElementById('loadingText');
+  const overlay = document.getElementById('loadingOverlay');
+  if (textEl) textEl.textContent = text;
+  if (overlay) overlay.classList.remove('hidden');
+  if (!textEl || !overlay) console.warn('showLoading: element missing', { textEl: !!textEl, overlay: !!overlay });
 }
 
 function hideLoading() {
-  document.getElementById('loadingOverlay').classList.add('hidden');
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) overlay.classList.add('hidden');
 }
 
 // ============ JOBS ============
@@ -1600,8 +1626,15 @@ async function transformAllDocsForJob(jobId) {
   if (!job) return;
   if (!job.analysis) return alert('먼저 AI 분석부터 실행하세요');
 
-  const sanitizedCompany = (job.company || 'company').replace(/[\\/:*?"<>|]/g, '').trim();
-  if (!confirm(`${sanitizedCompany} 회사 맞춤으로 5개 자료 (메인·이력서·경력·자소서·포폴) 일괄 변형합니다.\n\n비용 약 1,000원 (Claude API).\n\n계속?`)) return;
+  const sanitizedCompany = (() => {
+    const raw = (job.company || 'company').trim();
+    // 영문·숫자·하이픈·언더스코어만 추출 (한글·괄호·특수문자 제거)
+    const ascii = raw.replace(/[^a-zA-Z0-9\-_]/g, '');
+    if (ascii.length >= 3) return ascii.toLowerCase();
+    // 한글 회사명 등으로 영문이 부족하면 jobId 활용 (Vercel·GitHub 라우팅 호환)
+    return `company-${(job.id || Date.now().toString()).toString().slice(-8)}`;
+  })();
+  if (!confirm(`회사 맞춤으로 5개 자료 (메인·이력서·경력·자소서·포폴) 일괄 변형합니다.\n\n폴더: companies/${sanitizedCompany}/\n비용: 약 1,000원 (Claude API)\n\n계속?`)) return;
 
   // GitHub 저장 옵션
   const useGithub = confirm('변형된 자료를 GitHub에 자동 저장하시겠습니까?\n\n[확인] = companies/' + sanitizedCompany + '/ 폴더에 자동 commit\n[취소] = ZIP 다운로드');
@@ -1720,6 +1753,87 @@ ${snippet}
   }
 }
 
+// ============ HTML → DOC 변환 다운로드 (워드에서 깔끔히 직접 편집 가능) ============
+// 디자인 박스·그리드·플렉스 다 풀고 텍스트·제목·표·리스트·이미지만 살림
+async function downloadAsDoc(htmlPath, filename) {
+  try {
+    const res = await fetch(htmlPath);
+    if (!res.ok) throw new Error('파일 로드 실패: HTTP ' + res.status);
+    const html = await res.text();
+
+    // <body> 추출
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    let body = bodyMatch ? bodyMatch[1] : html;
+
+    // 1. 인터랙티브·스크립트 요소 제거
+    body = body.replace(/<script[\s\S]*?<\/script>/gi, '');
+    body = body.replace(/<style[\s\S]*?<\/style>/gi, '');
+    body = body.replace(/<button[^>]*>[\s\S]*?<\/button>/gi, '');
+    body = body.replace(/<input[^>]*\/?>/gi, '');
+    body = body.replace(/<select[\s\S]*?<\/select>/gi, '');
+    body = body.replace(/<form[\s\S]*?<\/form>/gi, '');
+    body = body.replace(/<svg[\s\S]*?<\/svg>/gi, '');
+    body = body.replace(/<canvas[\s\S]*?<\/canvas>/gi, '');
+    body = body.replace(/<iframe[\s\S]*?<\/iframe>/gi, '');
+
+    // 2. 모든 inline style·class·id·data 속성 제거 (디자인 박스·그리드 제거)
+    body = body.replace(/\s+style="[^"]*"/gi, '');
+    body = body.replace(/\s+style='[^']*'/gi, '');
+    body = body.replace(/\s+class="[^"]*"/gi, '');
+    body = body.replace(/\s+class='[^']*'/gi, '');
+    body = body.replace(/\s+id="[^"]*"/gi, '');
+    body = body.replace(/\s+id='[^']*'/gi, '');
+    body = body.replace(/\s+data-[a-z-]+="[^"]*"/gi, '');
+    body = body.replace(/\s+on[a-z]+="[^"]*"/gi, '');
+
+    // 3. <a> 태그는 텍스트만 살리기 (링크 → 텍스트)
+    body = body.replace(/<a[^>]*>([\s\S]*?)<\/a>/gi, '$1');
+
+    // 4. <details>, <summary> 풀어서 평문으로
+    body = body.replace(/<details[^>]*>/gi, '<div>');
+    body = body.replace(/<\/details>/gi, '</div>');
+    body = body.replace(/<summary[^>]*>([\s\S]*?)<\/summary>/gi, '<h3>$1</h3>');
+
+    // 5. 의미 없는 div·span 정리 (속성 다 빠진 빈 태그)
+    body = body.replace(/<div>\s*<\/div>/gi, '');
+    body = body.replace(/<span>\s*<\/span>/gi, '');
+
+    // 워드 친화적 기본 스타일 (맑은 고딕 + 단정한 본문 양식)
+    const wordStyles = `<style>
+      body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 11pt; line-height: 1.6; color: #222; }
+      h1 { font-size: 20pt; font-weight: bold; margin: 24pt 0 12pt; border-bottom: 2px solid #333; padding-bottom: 6pt; }
+      h2 { font-size: 15pt; font-weight: bold; margin: 18pt 0 10pt; border-bottom: 1px solid #999; padding-bottom: 4pt; }
+      h3 { font-size: 13pt; font-weight: bold; margin: 14pt 0 8pt; }
+      h4 { font-size: 11pt; font-weight: bold; margin: 12pt 0 6pt; }
+      p { margin: 8pt 0; }
+      table { border-collapse: collapse; width: 100%; margin: 10pt 0; }
+      th, td { border: 1px solid #888; padding: 6pt 8pt; text-align: left; vertical-align: top; }
+      th { background-color: #f0f0f0; font-weight: bold; }
+      ul, ol { margin: 8pt 0; padding-left: 24pt; }
+      li { margin: 4pt 0; }
+      strong, b { font-weight: bold; }
+      em, i { font-style: italic; }
+      hr { border: none; border-top: 1px solid #ccc; margin: 12pt 0; }
+      blockquote { margin: 8pt 16pt; padding-left: 12pt; border-left: 3px solid #ccc; color: #555; }
+    </style>`;
+
+    const docContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->${wordStyles}</head><body>${body}</body></html>`;
+
+    // BOM 추가해서 UTF-8 한글 깨짐 방지
+    const blob = new Blob(['﻿', docContent], { type: 'application/msword;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  } catch (err) {
+    alert('DOC 다운로드 실패: ' + err.message);
+  }
+}
+
 function viewCompanyDocs(jobId) {
   const job = state.jobs.find(j => j.id === jobId);
   if (!job) return;
@@ -1758,7 +1872,8 @@ function viewCompanyDocs(jobId) {
               </div>
               <div class="flex gap-2">
                 <a href="${baseUrl}/${encodeURIComponent(d.file)}" target="_blank" class="px-3 py-1 accent-bg text-white text-xs rounded font-bold">새 탭 열기</a>
-                <button onclick="downloadCompanyDoc('${escapeHtml(company)}', '${escapeHtml(d.file)}')" class="px-3 py-1 border border-gray-700 hover:border-orange-500 text-xs rounded">다운로드</button>
+                <button onclick="downloadCompanyDoc('${escapeHtml(company)}', '${escapeHtml(d.file)}')" class="px-3 py-1 border border-gray-700 hover:border-orange-500 text-xs rounded">HTML</button>
+                <button onclick="downloadAsDoc('${baseUrl}/${encodeURIComponent(d.file)}', '${escapeHtml(company)}_${escapeHtml(d.file).replace('.html', '.doc')}')" class="px-3 py-1 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC</button>
               </div>
             </div>
           </div>
