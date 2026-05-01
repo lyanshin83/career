@@ -24,38 +24,60 @@ export default async function handler(req, res) {
   const errors = [];
   const sourcesAttempted = [];
 
-  // ============ 1. 원티드 GraphQL 시도 (가장 안정) ============
+  // ============ 1. 원티드 시도 — 여러 endpoint fallback ============
+  // 비공식 API라 변경 잦음. 여러 endpoint 시도해서 작동하는 거 사용
+  const wantedEndpointBuilders = [
+    (kw) => `https://www.wanted.co.kr/api/chaos/navigation/v1/results?country=kr&job_sort=job.latest_order&years=10&limit=15&offset=0&keyword=${encodeURIComponent(kw)}`,
+    (kw) => `https://www.wanted.co.kr/api/v4/jobs?country=kr&keyword=${encodeURIComponent(kw)}&years=10&limit=15`,
+    (kw) => `https://www.wanted.co.kr/api/chaos/search/v1/results?country=kr&keyword=${encodeURIComponent(kw)}&limit=15`,
+  ];
+
   for (const kw of keywords.slice(0, 3)) {
     sourcesAttempted.push(`원티드 [${kw}]`);
-    try {
-      const url = `https://www.wanted.co.kr/api/chaos/jobs/v4/jobs?country=kr&keyword=${encodeURIComponent(kw)}&years=10&limit=15&offset=0&job_sort=job.latest_order`;
-      const r = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/json',
-          'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8'
+    let foundForKw = false;
+    let lastErr = '';
+    for (const buildUrl of wantedEndpointBuilders) {
+      if (foundForKw) break;
+      try {
+        const url = buildUrl(kw);
+        const r = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8',
+            'Referer': 'https://www.wanted.co.kr/'
+          }
+        });
+        if (!r.ok) {
+          lastErr = `HTTP ${r.status}`;
+          continue;
         }
-      });
-      if (r.ok) {
         const data = await r.json();
-        const items = data?.data || [];
+        // 응답 구조 다양 처리
+        const items = data?.data || data?.jobs || data?.results || data?.data?.jobs || [];
+        if (!Array.isArray(items) || items.length === 0) {
+          lastErr = '결과 0개';
+          continue;
+        }
         for (const j of items) {
           allJobs.push({
             source: '원티드',
-            company: j.company?.name || j.company_name || '미상',
-            position: j.position || j.title || '',
+            company: j.company?.name || j.company_name || j.companyName || '미상',
+            position: j.position || j.title || j.name || '',
             url: j.id ? `https://www.wanted.co.kr/wd/${j.id}` : (j.url || ''),
-            jdText: j.intro || j.description || j.summary || '',
-            deadline: j.due_time || '',
-            location: j.address?.location || '',
+            jdText: j.intro || j.description || j.summary || j.body || '',
+            deadline: j.due_time || j.deadline || '',
+            location: j.address?.location || j.location || '',
             keyword: kw
           });
         }
-      } else {
-        errors.push(`원티드 [${kw}]: HTTP ${r.status}`);
+        foundForKw = true;
+      } catch (e) {
+        lastErr = e.message;
       }
-    } catch (e) {
-      errors.push(`원티드 [${kw}] 에러: ${e.message}`);
+    }
+    if (!foundForKw) {
+      errors.push(`원티드 [${kw}]: 모든 endpoint 실패 (마지막: ${lastErr})`);
     }
   }
 

@@ -150,7 +150,11 @@
           <h2 class="text-2xl font-bold">📡 자동 채용 검색</h2>
           <p class="text-xs text-gray-500 mt-1">매일 9시 자동 (GitHub Actions Cron) · 8개 사이트 검색 키워드·URL 추천</p>
         </div>
-        <button onclick="runAutoSearch()" class="accent-bg text-white px-4 py-2 rounded font-bold hover:opacity-90 transition">🔍 지금 검색</button>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="runRealJobSearch()" class="bg-orange-700 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition">🔥 실제 공고 자동 등록 (60점+)</button>
+          <button onclick="bulkAddJobsByUrls()" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded font-bold transition">📋 URL 일괄 등록 (검색 결과 복붙)</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">💡 비슷한 공고 찾을 사이트·키워드 추천이 필요하면 채용공고 탭의 "📡 유사 공고 추천" 사용 (기존 등록 공고 기반 개인화)</p>
       </div>
 
       <div id="autoSearchStatus" class="mb-4"></div>
@@ -831,6 +835,99 @@ function showRecommendModal(data) {
     </div>
   `;
   document.body.appendChild(modal);
+}
+
+// ============ URL 일괄 등록 (검색 결과 복붙 → 자동 분석 → 일괄 등록) ============
+async function bulkAddJobsByUrls() {
+  const apiKey = localStorage.getItem('claudeApiKey');
+  if (!apiKey) {
+    return alert('Claude API 키가 없습니다.\n\n공고 URL 자동 분석은 Claude API 사용. 설정 탭에서 키 입력하세요.');
+  }
+
+  const urlsText = prompt(
+    '검색 결과에서 본 공고 URL을 한 줄에 1개씩 붙여넣기 (최대 20개)\n\n' +
+    '예시:\n' +
+    'https://www.saramin.co.kr/zf_user/jobs/...\n' +
+    'https://www.wanted.co.kr/wd/12345\n' +
+    'https://www.jobkorea.co.kr/...\n\n' +
+    '※ 각 URL마다 자동으로 회사·포지션·JD 추출하여 등록\n' +
+    '※ Claude API 사용 (URL 1개당 약 30원)'
+  );
+  if (!urlsText) return;
+
+  const urls = urlsText
+    .split(/\n+/)
+    .map(u => u.trim())
+    .filter(u => u.startsWith('http'))
+    .slice(0, 20);
+
+  if (urls.length === 0) {
+    return alert('유효한 URL이 없습니다 (http 또는 https로 시작해야 함)');
+  }
+
+  if (!confirm(`${urls.length}개 URL 자동 분석 + 등록 시작합니다.\n\n비용 약 ${urls.length * 30}원 (Claude API)\n예상 시간 ${urls.length * 5}초\n\n계속?`)) return;
+
+  showLoading(`${urls.length}개 URL 분석 + 등록 중... (1/${urls.length})`);
+
+  let added = 0;
+  let skipped = 0;
+  const errors = [];
+
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    showLoading(`${urls.length}개 URL 분석 + 등록 중... (${i + 1}/${urls.length})`);
+
+    // 중복 URL 스킵
+    if (state.jobs.find(j => j.url && j.url === url)) {
+      skipped++;
+      continue;
+    }
+
+    try {
+      const r = await fetch('/api/fetch-job', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+        body: JSON.stringify({ url })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        errors.push(`${url.slice(0, 50)}...: ${data.error || r.status}`);
+        continue;
+      }
+
+      const id = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 8);
+      state.jobs.push({
+        id,
+        company: data.company || '미상',
+        position: data.position || '',
+        url,
+        jdText: data.jdText || '',
+        source: data.source || 'URL 일괄',
+        deadline: data.deadline || '',
+        status: '검토중',
+        matchScore: '?',
+        analysis: '',
+        createdAt: Date.now()
+      });
+      added++;
+    } catch (e) {
+      errors.push(`${url.slice(0, 50)}...: ${e.message}`);
+    }
+  }
+
+  saveToStorage();
+  renderAll();
+  hideLoading();
+
+  const errorsText = errors.slice(0, 5).join('\n');
+  alert(
+    `✅ URL 일괄 등록 결과\n\n` +
+    `• 등록 성공: ${added}개\n` +
+    `${skipped > 0 ? `• 중복 스킵: ${skipped}개\n` : ''}` +
+    `• 실패: ${errors.length}개\n\n` +
+    `${errorsText ? '실패 사유 (처음 5개):\n' + errorsText + '\n\n' : ''}` +
+    `등록된 공고는 채용공고 탭에서 확인. 마음에 드는 건 카드 클릭 → "🔄 AI 재분석"으로 적합도 점수 받기.`
+  );
 }
 
 // ============ REAL JOB SEARCH (실제 공고 fetch + AI 적합도 + 60점+ 자동 등록) ============
@@ -2169,6 +2266,29 @@ async function generateInterviewQA(id) {
   try {
     job.interviewQA = await callClaude(prompt, 8192);
     saveToStorage();
+
+    // 면접 관리 탭에 자동 등록 (중복 체크)
+    const existsInterview = state.interviews.find(iv => iv.jobId === id);
+    if (!existsInterview) {
+      const interviewId = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 8);
+      state.interviews.push({
+        id: interviewId,
+        jobId: id,
+        company: job.company,
+        position: job.position,
+        stage: '준비중',
+        date: '',
+        memo: '🤖 AI 답변풀 자동 생성됨',
+        result: '예정',
+        createdAt: Date.now()
+      });
+      saveToStorage();
+      renderAll();
+      alert(`✅ 답변풀 생성 완료!\n\n📋 면접 관리 탭에 자동 등록됨 (단계: 준비중)\n→ 나중에 면접 일정 잡히면 단계·날짜 업데이트하세요.`);
+    } else {
+      alert(`✅ 답변풀 갱신 완료!\n\n면접 관리 탭에 이미 등록된 항목이 있어 추가 등록은 안 됨.`);
+    }
+
     openJobDetail(id);
   } catch (err) {
     alert('면접 답변풀 생성 실패: ' + err.message);
