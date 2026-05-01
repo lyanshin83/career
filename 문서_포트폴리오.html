@@ -130,12 +130,12 @@
   .brand-preview {
     position: absolute;
     top: calc(100% + 6px);
-    left: -2px;
-    right: -2px;
+    left: 10%;
+    right: 10%;
     background: white;
     border: 2px solid #3b82f6;
     border-radius: 8px;
-    padding: 8px;
+    padding: 7px;
     box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 0 1px rgba(59,130,246,0.15);
     opacity: 0;
     pointer-events: none;
@@ -148,10 +148,10 @@
   /* 2행(4,5,6번)은 위로 펼침 */
   .brand-card:nth-child(n+4) .brand-preview { top: auto; bottom: calc(100% + 6px); transform: translateY(8px) scale(0.97); }
   .brand-card:nth-child(n+4):hover .brand-preview { transform: translateY(0) scale(1); }
-  .brand-preview img { width: 100%; display: block; border-radius: 4px; aspect-ratio: 4 / 3; object-fit: cover; background: #f3f4f6; }
-  .brand-preview .preview-label { font-size: 8pt; color: #6b7280; margin-top: 6px; text-align: center; line-height: 1.4; }
-  .brand-preview .preview-cta { display: block; font-size: 8pt; color: #3b82f6; font-weight: 700; margin-top: 4px; text-align: center; }
-  .brand-preview .preview-text-only { padding: 22px 10px; text-align: center; color: #6b7280; font-size: 9pt; line-height: 1.6; background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 100%); border-radius: 4px; }
+  .brand-preview img { width: 100%; display: block; border-radius: 4px; aspect-ratio: 16 / 9; object-fit: cover; background: #f3f4f6; }
+  .brand-preview .preview-label { font-size: 7.5pt; color: #6b7280; margin-top: 5px; text-align: center; line-height: 1.4; }
+  .brand-preview .preview-cta { display: block; font-size: 7.5pt; color: #3b82f6; font-weight: 700; margin-top: 3px; text-align: center; }
+  .brand-preview .preview-text-only { padding: 16px 10px; text-align: center; color: #6b7280; font-size: 8.5pt; line-height: 1.5; background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 100%); border-radius: 4px; }
   @media print { .brand-preview { display: none !important; } .brand-card { box-shadow: none !important; transform: none !important; } }
 
   /* Index of cases */
