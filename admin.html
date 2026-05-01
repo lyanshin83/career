@@ -932,7 +932,18 @@ async function bulkAddJobsByUrls() {
 
 // ============ REAL JOB SEARCH (실제 공고 fetch + AI 적합도 + 60점+ 자동 등록) ============
 async function runRealJobSearch() {
-  if (!confirm('실제 공고 자동 검색 + AI 적합도 평가합니다.\n\n• 사이트: 원티드(우선), 사람인(시도)\n• 평가: Gemini 2.5 Flash (무료 티어 / 매우 저렴)\n• 비용: 검색 1회 거의 무료~3원\n• 결과: 60점 이상만 채용공고 탭에 자동 등록\n\n계속?')) return;
+  const minScoreInput = prompt(
+    '적합도 기준 점수 입력 (0-100점, 그 점수 이상만 자동 등록)\n\n' +
+    '• 추천: 50점 (균형) / 40점 (많이 보고 싶을 때) / 60점 (엄격)\n' +
+    '• 60점 이상 매칭 0개로 나오면 50 또는 40으로 낮춰보세요\n\n' +
+    '기본값: 50',
+    '50'
+  );
+  if (minScoreInput === null) return;
+  const minScore = parseInt(minScoreInput, 10) || 50;
+  if (minScore < 0 || minScore > 100) return alert('0~100 사이 숫자로 입력하세요');
+
+  if (!confirm(`실제 공고 자동 검색 + AI 적합도 평가합니다.\n\n• 사이트: 원티드(우선), 사람인(시도)\n• 평가: Gemini 2.5 Flash (무료 티어 / 매우 저렴)\n• 비용: 검색 1회 거의 무료~3원\n• 결과: ${minScore}점 이상만 채용공고 탭에 자동 등록\n\n계속?`)) return;
 
   showLoading('실제 공고 fetch + AI 적합도 평가 중 (30초~1분)...');
   try {
@@ -950,7 +961,7 @@ async function runRealJobSearch() {
       headers: { 'content-type': 'application/json', 'x-gemini-key': geminiKey },
       body: JSON.stringify({
         keywords: ['마케팅 본부장', '퍼포먼스 마케팅 팀장', '브랜드 마케팅 본부장'],
-        minScore: 60,
+        minScore: minScore,
         maxJobs: 30
       })
     });
@@ -1795,6 +1806,33 @@ async function reanalyzeJob(id) {
   const job = state.jobs.find(j => j.id === id);
   if (!job) return;
   try {
+    // jdText가 placeholder만 있거나 너무 짧으면 → URL에서 본문 자동 보충
+    const isPlaceholder = job.jdText && (job.jdText.includes('자동 검색 결과') || job.jdText.includes('원본 URL에서 본문'));
+    const tooShort = !job.jdText || job.jdText.length < 200;
+    if (job.url && (isPlaceholder || tooShort)) {
+      const apiKey = localStorage.getItem('claudeApiKey');
+      if (apiKey) {
+        showLoading('공고 본문 재 fetch 중...');
+        try {
+          const r = await fetch('/api/fetch-job', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ url: job.url })
+          });
+          const data = await r.json();
+          if (r.ok) {
+            if (data.jdText && data.jdText.length > 100) job.jdText = data.jdText;
+            if (data.company && (job.company === '미상' || !job.company)) job.company = data.company;
+            if (data.position && !job.position) job.position = data.position;
+            if (data.deadline && !job.deadline) job.deadline = data.deadline;
+            saveToStorage();
+          }
+        } catch (e) {
+          console.warn('본문 보충 실패, 분석 계속 진행:', e.message);
+        }
+      }
+    }
+
     const prompt = buildJobAnalysisPrompt(job);
     job.analysis = await callClaude(prompt, 8192);
     job.matchScore = extractScore(job.analysis);
@@ -1802,6 +1840,7 @@ async function reanalyzeJob(id) {
     openJobDetail(id);
     renderJobs();
   } catch (err) {
+    hideLoading();
     alert('실패: ' + err.message);
   }
 }
