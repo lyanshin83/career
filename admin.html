@@ -89,7 +89,7 @@
   <header class="border-b border-gray-800 px-6 py-4 flex flex-wrap justify-between items-center gap-3">
     <div>
       <h1 class="text-xl font-bold">취준 관리자 <span class="accent">·</span> Dashboard</h1>
-      <p class="text-xs text-gray-500">디지털 광고 × 브랜드 마케팅 시니어 (16년)</p>
+      <p class="text-xs text-gray-500">디지털 광고 × 브랜드 마케팅 시니어 (15년)</p>
     </div>
     <div class="flex gap-2">
       <a href="index.html" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-orange-500 transition">← 메인 사이트</a>
@@ -1618,10 +1618,10 @@ async function addJob() {
 }
 
 function buildJobAnalysisPrompt(job) {
-  return `다음 채용공고를 마케팅 시니어 본부장(16년 경력) 기준으로 분석해줘.
+  return `다음 채용공고를 마케팅 시니어 본부장(15년 경력) 기준으로 분석해줘.
 
 [지원자 프로필]
-- 광고대행사 광고주 영업·운영 10년 + 자체 브랜드 D2C 5년+ (16년 시니어)
+- 광고대행사 광고주 영업·운영 10년 + 자체 브랜드 D2C 5년+ (15년 시니어)
 - NHN커머스 7년 광고주 50+ 신규 수주, 월 영업매출 1.5-2억
 - VT코스메틱 1억→20억 (20배), 닥터미라클 런칭 7.7억
 - 시즈노프 IMC 7채널, 푸드케어 광고비 50% 절감
@@ -1959,7 +1959,7 @@ async function generateCoverLetter(id) {
 
   const prompt = `다음 채용공고에 맞춰서 자소서를 작성해줘. 마케팅 시니어 본부장 표준 양식 (3섹션).
 
-[지원자 프로필 — 16년 시니어 마케터]
+[지원자 프로필 — 15년 시니어 마케터]
 - NHN커머스 7년 광고주 50+ 수주, 월 영업매출 1.5-2억
 - VT코스메틱 1억→20억 견인, 이지함 ROI 250배
 - 더에이블랩 닥터미라클 런칭 7.7억 (목표 5억 초과 / 메타 Advantage+ + 머신러닝)
@@ -1978,7 +1978,7 @@ ${job.analysis}
 [자소서 양식 — 3섹션]
 
 ## 1. 업무경험
-- 16년 경력 정체성 한 줄
+- 15년 경력 정체성 한 줄
 - 4-5단락: 회사별 시기 강조 (NHN 7년 = 핵심 / 자체 브랜드 4사 = 다양성)
 - 시그니처 임팩트 수치 명확히
 - 정체성 마무리 한 줄
@@ -2380,7 +2380,7 @@ async function generateInterviewQA(id) {
   if (!job) return;
   if (!job.analysis) return alert('먼저 AI 분석부터 실행하세요');
 
-  const prompt = `다음 회사 면접에 대한 답변풀을 만들어줘. 마케팅 시니어 본부장(16년) 기준.
+  const prompt = `다음 회사 면접에 대한 답변풀을 만들어줘. 마케팅 시니어 본부장(15년) 기준.
 
 회사: ${job.company} · ${job.position}
 공고: ${job.jdText.slice(0, 1500)}
