@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>신현식 | 신현식 포트폴리오 - 디지털 마케터</title>
+<title>포트폴리오 — 김OO | 디지털 광고 × 브랜드 마케팅 시니어 (16년)</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
 <style>
   @page { size: A4; margin: 1.2cm; }
@@ -116,10 +116,45 @@
     padding: 10px 12px;
     border-radius: 4px;
     background: white;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.18s;
   }
+  .brand-card.linkable { cursor: pointer; }
+  .brand-card.linkable:hover { border-color: #3b82f6; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,130,246,0.18); }
   .brand-card .brand-year { font-size: 7.5pt; color: #3b82f6; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 3px; }
   .brand-card .brand-name { font-size: 11pt; font-weight: 700; margin-bottom: 2px; }
   .brand-card .brand-company { font-size: 8.5pt; color: #6b7280; }
+
+  /* Hover preview — 세로(상하) 방향으로 펼쳐서 인접 컬럼 안 가림 */
+  .brand-preview {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: -2px;
+    right: -2px;
+    background: white;
+    border: 2px solid #3b82f6;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 0 1px rgba(59,130,246,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.97);
+    transition: opacity 0.18s, transform 0.18s;
+    z-index: 100;
+  }
+  .brand-card:hover { z-index: 50; }
+  .brand-card:hover .brand-preview { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  /* 2행(4,5,6번)은 위로 펼침 */
+  .brand-card:nth-child(n+4) .brand-preview { top: auto; bottom: calc(100% + 6px); transform: translateY(8px) scale(0.97); }
+  .brand-card:nth-child(n+4):hover .brand-preview { transform: translateY(0) scale(1); }
+  .brand-preview img { width: 100%; display: block; border-radius: 4px; aspect-ratio: 4 / 3; object-fit: cover; background: #f3f4f6; }
+  .brand-preview .preview-label { font-size: 8pt; color: #6b7280; margin-top: 6px; text-align: center; line-height: 1.4; }
+  .brand-preview .preview-cta { display: block; font-size: 8pt; color: #3b82f6; font-weight: 700; margin-top: 4px; text-align: center; }
+  .brand-preview .preview-text-only { padding: 22px 10px; text-align: center; color: #6b7280; font-size: 9pt; line-height: 1.6; background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 100%); border-radius: 4px; }
+  @media print { .brand-preview { display: none !important; } .brand-card { box-shadow: none !important; transform: none !important; } }
 
   /* Index of cases */
   .case-index {
@@ -296,14 +331,14 @@
   <div class="cover-hero">
     <p class="hero-tag">PORTFOLIO · MARKETING SENIOR</p>
     <h1 class="hero-title">디지털 광고와 <span class="gradient">브랜드 마케팅을 양립한</span> 16년차 시니어 마케터</h1>
-    <p class="hero-name"><strong class="accent" style="font-weight:700;">신현식</strong></p>
+    <p class="hero-name">김<span>OO</span></p>
     <p class="hero-sub">광고대행사 광고주 영업·매체 운영 10년 × 자체 브랜드 D2C·IMC·런칭 5년+ — 매출과 브랜드 둘 다 책임지는 본부장 트랙</p>
 
     <div class="kpi-grid">
-      <div><div class="kpi-value"><span class="gradient">50+</span></div><div class="kpi-label">신규 광고주 수주<br>NHN커머스 7년</div></div>
-      <div><div class="kpi-value"><span class="gradient">20×</span></div><div class="kpi-label">VT코스메틱 매출<br>1억 → 20억</div></div>
-      <div><div class="kpi-value"><span class="gradient">7.7억</span></div><div class="kpi-label">닥터미라클 런칭<br>3개월차 매출</div></div>
-      <div><div class="kpi-value"><span class="gradient">5억</span></div><div class="kpi-label">월 광고예산<br>통합 운영</div></div>
+      <div><div class="kpi-value"><span class="gradient">20×</span></div><div class="kpi-label">VT코스메틱 매출 견인<br>월 1억 → 20억</div></div>
+      <div><div class="kpi-value"><span class="gradient">7.7억</span></div><div class="kpi-label">닥터미라클 런칭<br>3개월차 월매출</div></div>
+      <div><div class="kpi-value"><span class="gradient">3,233%</span></div><div class="kpi-label">푸드케어 평균 ROAS<br>광고기여도 34%</div></div>
+      <div><div class="kpi-value"><span class="gradient">50+</span></div><div class="kpi-label">NHN 신규 광고주 수주<br>7년 누적</div></div>
     </div>
   </div>
 
@@ -311,34 +346,61 @@
     <h2>🚀 BRAND LAUNCH — 직접 콘셉 설정·런칭한 브랜드 (6건)</h2>
     <div class="brand-grid">
       <div class="brand-card">
+        <div class="brand-year">2023</div>
+        <div class="brand-name">로우티 리듀스앤드</div>
+        <div class="brand-company">라이프앤바이오 · 이너뷰티</div>
+        <div class="brand-preview">
+          <img src="img/로우티1-2.jpg" alt="로우티 리듀스앤드 — 3종 스틱" onerror="this.style.display='none'">
+          <p class="preview-label">이너뷰티 신제품 런칭<br>유튜버 6명 협업 (6,000만)<br>부진재고 5,000개 소진</p>
+        </div>
+      </div>
+      <a class="brand-card linkable" href="#case-seasnoff">
+        <div class="brand-year">2023-03</div>
+        <div class="brand-name">시즈노프</div>
+        <div class="brand-company">라이프앤바이오 · 액티브웨어</div>
+        <div class="brand-preview">
+          <img src="img/시즈노프.png" alt="시즈노프 RUN AND·FORCE AND IP" onerror="this.style.display='none'">
+          <p class="preview-label">7채널 IMC · 700+ 매장 + 무신사·29CM<br>운동크루 + 메타 + 라이브</p>
+          <span class="preview-cta">→ Case Study 02 보기</span>
+        </div>
+      </a>
+      <a class="brand-card linkable" href="#case-foodcare">
+        <div class="brand-year">2022</div>
+        <div class="brand-name">푸드케어 신제품</div>
+        <div class="brand-company">라이프앤바이오 · 이유식</div>
+        <div class="brand-preview">
+          <img src="img/클레2.png" alt="클레 한우퓨레·닭가슴살퓨레·병아리콩퓨레 3종" onerror="this.style.display='none'">
+          <p class="preview-label">광고매출 29.9억 · ROAS 3,233%<br>광고비 50% 절감 · AI 통합 운영</p>
+          <span class="preview-cta">→ Case Study 03 보기</span>
+        </div>
+      </a>
+      <a class="brand-card linkable" href="#case-drmiracle">
         <div class="brand-year">2020-05</div>
         <div class="brand-name">닥터미라클</div>
         <div class="brand-company">더에이블랩 · 화장품</div>
-      </div>
+        <div class="brand-preview">
+          <img src="img/닥터미라클1.jpg" alt="닥터미라클 SLIMIX PPC Cream EX" onerror="this.style.display='none'">
+          <p class="preview-label">메타 영상 캠페인 · 셀룰라이트 15.66%↓<br>3개월차 월 7.7억 (목표 5억 초과)</p>
+          <span class="preview-cta">→ Case Study 01 보기</span>
+        </div>
+      </a>
       <div class="brand-card">
         <div class="brand-year">2019-2021</div>
         <div class="brand-name">더레브</div>
         <div class="brand-company">더에이블랩 · 화장품</div>
-      </div>
-      <div class="brand-card">
-        <div class="brand-year">2023-03</div>
-        <div class="brand-name">시즈노프</div>
-        <div class="brand-company">라이프앤바이오 · 액티브웨어</div>
-      </div>
-      <div class="brand-card">
-        <div class="brand-year">2023</div>
-        <div class="brand-name">로우티 리듀스앤드</div>
-        <div class="brand-company">라이프앤바이오 · 이너뷰티</div>
-      </div>
-      <div class="brand-card">
-        <div class="brand-year">2022</div>
-        <div class="brand-name">푸드케어 신제품</div>
-        <div class="brand-company">라이프앤바이오 · 이유식</div>
+        <div class="brand-preview">
+          <img src="img/더레브.jpg" alt="더레브 NATURAL WHITE LIP BALM" onerror="this.style.display='none'">
+          <p class="preview-label">립밤·립케어 라인<br>D2C + 입점몰 운영</p>
+        </div>
       </div>
       <div class="brand-card">
         <div class="brand-year">2011</div>
         <div class="brand-name">미채움오리지널</div>
         <div class="brand-company">오리지널 · 한방화장품</div>
+        <div class="brand-preview">
+          <img src="img/미채움2.jpg" alt="ORIGINAL SOAP 3종" onerror="this.style.display='none'">
+          <p class="preview-label">한방화장품 브랜드 런칭<br>광고기획·매체운영 통합</p>
+        </div>
       </div>
     </div>
   </section>
@@ -346,26 +408,25 @@
   <div class="case-index">
     <div class="index-label">CASE STUDIES INDEX</div>
     <ol>
-      <li><strong>닥터미라클 신규 브랜드·쇼핑몰 런칭</strong><span class="case-page">Page 2</span><br><span style="color:#6b7280;font-size:8.5pt;">더에이블랩 · 2020-05 · 메타 Advantage+ + 머신러닝 / 3개월차 7.7억 (140%)</span></li>
+      <li><strong>닥터미라클 신규 브랜드·쇼핑몰 런칭</strong><span class="case-page">Page 2</span><br><span style="color:#6b7280;font-size:8.5pt;">더에이블랩 · 2020-05 · 메타 Advantage+ + 머신러닝 / 3개월차 7.7억 (목표 5억 초과)</span></li>
       <li><strong>시즈노프 IMC 7채널 통합 캠페인</strong><span class="case-page">Page 3</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2023-03 · 700+ 매장 + 무신사·29CM + 운동크루 + 메타</span></li>
       <li><strong>푸드케어 광고비 50% 절감 + AI 도구 통합 운영</strong><span class="case-page">Page 4</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2022-2023 · 메타 Advantage+ 직접운영 / 네이버 자동입찰·AI / GA4 AI 인사이트</span></li>
     </ol>
   </div>
 
   <div class="footer">
-    <p>© 신현식 · 16년 트랙 · Page 1 of 4</p>
-    <p>bloodba@naver.com · www.linkedin.com/in/%ED%98%84%EC%8B%9D-%EC%8B%A0-b7731a204/</p>
+    <p>© 김OO · 16년 트랙 · Page 1 of 4</p>
   </div>
 
 </div>
 
 <!-- ============ PAGE 2: 닥터미라클 ============ -->
-<div class="page">
+<div class="page" id="case-drmiracle">
 
   <div class="case-header">
     <div class="case-cat">CASE STUDY · 01 · 신규 브랜드 런칭</div>
-    <div class="case-name">닥터미라클 신규 브랜드 · 쇼핑몰 런칭</div>
-    <div class="case-summary">2020년 5월 신규 브랜드 런칭 TFT 책임 — 메타 Advantage+ + 머신러닝 영상 최적화로 3개월차에 월 매출 7.7억 달성 (목표 5억 초과 140%)</div>
+    <div class="case-name">닥터미라클 — 런칭 3개월 매출 2.4 → 7.7억</div>
+    <div class="case-summary">2020년 5월 신규 브랜드 런칭 TFT 책임 — 메타 Advantage+ + 머신러닝 영상 최적화로 <strong>3개월 만에 월 매출 7.7억</strong> (목표 5억 초과 140%). <strong>광고 영상 디렉팅·스토리보드 직접 기획</strong>.</div>
     <div class="case-tags">
       <span class="tag tag-period">2020.05 — 2021.03 · 런칭 3개월</span>
       <span class="tag tag-role">더에이블랩 마케팅팀장 (4명)</span>
@@ -374,19 +435,54 @@
     </div>
   </div>
 
-  <div class="gallery-main">
-    <div>
-      <strong>닥터미라클 캠페인 메인 비주얼</strong><br>
-      Facebook 영상 캠페인 / 자사몰 메인 / 광고 소재<br>
-      <small style="font-size:8pt;">(이미지 파일 교체: drmiracle_main.jpg 등)</small>
+  <!-- 매출 그래프 — 한눈에 임팩트 -->
+  <div style="margin: 16px 0; padding: 18px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 8px;">
+    <p style="font-size: 9pt; font-weight: 700; color: #1e40af; margin-bottom: 12px;">📈 런칭 3개월 매출 추이 (목표 5억 → 7.7억 달성, 140%)</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: end;">
+      <div style="text-align: center;">
+        <div style="height: 40px; background: linear-gradient(180deg, #93c5fd 0%, #60a5fa 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;">
+          <span style="color: white; font-weight: 700; font-size: 11pt;">2.4억</span>
+        </div>
+        <div style="font-size: 8pt; color: #6b7280; margin-top: 6px; font-weight: 600;">2020.05 (런칭월)</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="height: 90px; background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;">
+          <span style="color: white; font-weight: 700; font-size: 12pt;">5.6억</span>
+        </div>
+        <div style="font-size: 8pt; color: #6b7280; margin-top: 6px; font-weight: 600;">2020.06 (2개월차)</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="height: 130px; background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%); border-radius: 4px 4px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-shadow: 0 4px 12px rgba(59,130,246,0.3);">
+          <span style="color: white; font-weight: 700; font-size: 14pt;">7.7억</span>
+        </div>
+        <div style="font-size: 8pt; color: #1e40af; margin-top: 6px; font-weight: 700;">2020.07 (3개월차) ⭐</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #93c5fd;">
+      <div style="text-align: center;"><div style="font-size: 9pt; color: #1e40af; font-weight: 700;">매출 3.2배 ↑</div><div style="font-size: 7pt; color: #6b7280;">2.4 → 7.7억</div></div>
+      <div style="text-align: center;"><div style="font-size: 9pt; color: #1e40af; font-weight: 700;">목표 초과 140%</div><div style="font-size: 7pt; color: #6b7280;">목표 5억 → 실적 7.7억</div></div>
+      <div style="text-align: center;"><div style="font-size: 9pt; color: #1e40af; font-weight: 700;">셀룰라이트 15.66%↓</div><div style="font-size: 7pt; color: #6b7280;">자체 임상 결과</div></div>
     </div>
   </div>
 
-  <div class="gallery-thumbs">
-    <div class="gallery-thumb"><div><strong>FB 영상</strong>광고 소재</div></div>
-    <div class="gallery-thumb"><div><strong>자사몰</strong>drmiracle.co.kr</div></div>
-    <div class="gallery-thumb"><div><strong>상세페이지</strong>주력 상품</div></div>
-    <div class="gallery-thumb"><div><strong>매출 차트</strong>3개월 추이</div></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0;">
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #000;">
+      <video controls style="width: 100%; display: block;">
+        <source src="assets/닥터미라클.mp4" type="video/mp4">
+      </video>
+      <p style="font-size: 8pt; color: #d1d5db; padding: 6px 10px; background: #1f2937; margin: 0;">🎬 닥터미라클 광고 영상 — 직접 디렉팅</p>
+    </div>
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+      <div style="font-size: 32pt; margin-bottom: 8px;">📋</div>
+      <p style="font-weight: 700; color: #1e40af; margin-bottom: 4px;">스토리보드 (기획안)</p>
+      <p style="font-size: 8pt; color: #6b7280; margin-bottom: 10px;">광고 영상 기획·인서트·후킹·CTA 구조</p>
+      <a href="assets/닥터미라클_스토리보드.pdf" target="_blank" style="display: inline-block; padding: 8px 14px; background: #3b82f6; color: white; border-radius: 4px; font-size: 9pt; font-weight: 600; text-decoration: none;">PDF 보기 →</a>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+    <a href="http://www.drmiracle.co.kr/index.html" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🌐 메인 사이트</strong><br><span style="color: #6b7280; font-size: 7.5pt;">drmiracle.co.kr</span></a>
+    <a href="http://www.drmiracle.co.kr/shop/shopdetail.html?branduid=3581055" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">📢 광고 콘텐츠</strong><br><span style="color: #6b7280; font-size: 7.5pt;">셀룰라이트 15.66% 개선</span></a>
+    <a href="http://www.drmiracle.co.kr/shop/shopdetail.html?branduid=3581305" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">📄 상세페이지</strong><br><span style="color: #6b7280; font-size: 7.5pt;">주력 상품 LP</span></a>
   </div>
 
   <div class="case-body">
@@ -436,32 +532,49 @@
   </div>
 
   <div class="footer">
-    <p>© 신현식 · Case Study 01 · Page 2 of 4</p>
-    <p>bloodba@naver.com · www.linkedin.com/in/%ED%98%84%EC%8B%9D-%EC%8B%A0-b7731a204/</p>
+    <p>© 김OO · Case Study 01 · Page 2 of 4</p>
   </div>
 
 </div>
 
 <!-- ============ PAGE 3: 시즈노프 IMC ============ -->
-<div class="page">
+<div class="page" id="case-seasnoff">
 
   <div class="case-header">
     <div class="case-cat">CASE STUDY · 02 · IMC 통합 캠페인</div>
-    <div class="case-name">시즈노프 런칭 IMC — 7개 채널 동시 운영</div>
-    <div class="case-summary">2023년 3월 액티브웨어 신규 브랜드 런칭 — 전국 700+ 매장 디스플레이 + 무신사·29CM 입점 + 운동크루 협업 + 디지털 광고 7개 채널 통합 운영</div>
+    <div class="case-name">시즈노프 — 운동 분말 보조제 7채널 IMC 런칭</div>
+    <div class="case-summary">2023년 3월 <strong>운동 분말 보조제</strong> 신규 브랜드 런칭 (포스앤드 = 근육개선 / 런앤드 = 지구력). 전국 700+ 매장 + 무신사·29CM + 운동크루 협업 + 메타 + 라이브 + UGC 인플루언서 — <strong>7채널 동시 가동</strong>.</div>
     <div class="case-tags">
       <span class="tag tag-period">2023.03 런칭</span>
       <span class="tag tag-role">라이프앤바이오 실장 (5명)</span>
-      <span class="tag">액티브웨어</span>
+      <span class="tag">스포츠 영양</span>
+      <span class="tag">UGC 인플루언서</span>
       <span class="tag">IMC 통합</span>
     </div>
   </div>
 
-  <div class="gallery-main">
-    <div>
-      <strong>시즈노프 매장 디스플레이 + 캠페인 비주얼</strong><br>
-      700+ 매장 POP / 무신사·29CM 입점 페이지 / 운동크루 협업 콘텐츠<br>
-      <small style="font-size:8pt;">(이미지 파일 교체: seasnoff_store.jpg 등)</small>
+  <!-- 두 제품 라인 -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
+    <div style="padding: 14px 16px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 8px;">
+      <p style="font-size: 8pt; color: #92400e; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 4px;">PRODUCT 01</p>
+      <p style="font-size: 14pt; font-weight: 700; color: #78350f; margin-bottom: 4px;">🏋️ 포스앤드</p>
+      <p style="font-size: 9pt; color: #92400e;">근육개선 · 식약처 인정 건강기능식품 · 분말</p>
+    </div>
+    <div style="padding: 14px 16px; background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%); border-radius: 8px;">
+      <p style="font-size: 8pt; color: #1e40af; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 4px;">PRODUCT 02</p>
+      <p style="font-size: 14pt; font-weight: 700; color: #1e3a5f; margin-bottom: 4px;">🏃 런앤드 (RUN AND...)</p>
+      <p style="font-size: 9pt; color: #1e40af;">지구력 향상 · 운동 트로피컬 블루마 · 분말</p>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0;">
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="assets/시즈노프1.jpg" alt="시즈노프 포스앤드 캠페인" style="width: 100%; display: block;">
+      <p style="font-size: 8pt; color: #6b7280; padding: 6px 10px; background: #f9fafb; margin: 0;">🏋️ 포스앤드 — 인플루언서 UGC + 운동 라이프스타일 캠페인</p>
+    </div>
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="assets/시즈노프2.jpg" alt="시즈노프 런앤드 캠페인" style="width: 100%; display: block;">
+      <p style="font-size: 8pt; color: #6b7280; padding: 6px 10px; background: #f9fafb; margin: 0;">🏃 런앤드 — 운동 트로피컬 블루마 + 7채널 IMC</p>
     </div>
   </div>
 
@@ -475,11 +588,9 @@
     <div class="imc-channel">바이럴<br>SNS·체험단</div>
   </div>
 
-  <div class="gallery-thumbs">
-    <div class="gallery-thumb"><div><strong>매장 POP</strong>700+ 디스플레이</div></div>
-    <div class="gallery-thumb"><div><strong>무신사</strong>입점 페이지</div></div>
-    <div class="gallery-thumb"><div><strong>29CM</strong>입점 페이지</div></div>
-    <div class="gallery-thumb"><div><strong>운동크루</strong>협업 콘텐츠</div></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+    <a href="https://www.seasnoff.com/" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🌐 메인 사이트</strong><br><span style="color: #6b7280; font-size: 7.5pt;">seasnoff.com</span></a>
+    <a href="https://www.seasnoff.com/goods/goods_view.php?goodsNo=1000000003" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">📄 상세페이지</strong><br><span style="color: #6b7280; font-size: 7.5pt;">축구단 협업 + 운동크루</span></a>
   </div>
 
   <div class="case-body">
@@ -517,19 +628,18 @@
   </div>
 
   <div class="footer">
-    <p>© 신현식 · Case Study 02 · Page 3 of 4</p>
-    <p>bloodba@naver.com · www.linkedin.com/in/%ED%98%84%EC%8B%9D-%EC%8B%A0-b7731a204/</p>
+    <p>© 김OO · Case Study 02 · Page 3 of 4</p>
   </div>
 
 </div>
 
 <!-- ============ PAGE 4: 푸드케어 + AI ============ -->
-<div class="page">
+<div class="page" id="case-foodcare">
 
   <div class="case-header">
-    <div class="case-cat">CASE STUDY · 03 · 운영 효율 + AI 도구</div>
-    <div class="case-name">푸드케어 광고비 50% 절감 + AI 도구 통합 운영</div>
-    <div class="case-summary">메타 Advantage+ 직접운영 전환 + 네이버 자동입찰·AI 타겟팅 + GA4 AI 인사이트 통합 — 월 광고비 50% 절감 + 대행 수수료 15% 추가 절감 + 블로그 방문 20배</div>
+    <div class="case-cat">CASE STUDY · 03 · 매출·ROAS 극대화</div>
+    <div class="case-name">푸드케어 광고매출 29.9억 / ROAS 3,233% — AI 통합 운영</div>
+    <div class="case-summary">23년 상반기(1-5월) 5개월간 광고매출 <strong>29.9억</strong> · 평균 ROAS <strong>3,233%</strong> · 광고기여도 <strong>34%</strong>. 22년 하반기 대비 <strong>광고비 3,160만 절감 + ROAS 1,018% 상승</strong>. 메타 Advantage+ 직접운영 + 네이버 자동입찰·AI + GA4 AI 인사이트 통합.</div>
     <div class="case-tags">
       <span class="tag tag-period">2022.07 — 2023.10</span>
       <span class="tag tag-role">라이프앤바이오 실장 (5명)</span>
@@ -538,19 +648,52 @@
     </div>
   </div>
 
-  <div class="gallery-main">
-    <div>
-      <strong>푸드케어 운영 효율 대시보드</strong><br>
-      메타 Advantage+ / 네이버 자동입찰 / GA4 AI 인사이트 화면<br>
-      <small style="font-size:8pt;">(이미지 파일 교체: foodcare_dashboard.jpg 등)</small>
+  <!-- 핵심 KPI 4개 — 한눈에 임팩트 -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; padding: 16px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 8px;">
+    <div style="text-align: center;">
+      <div style="font-size: 22pt; font-weight: 700; color: #1e40af; line-height: 1;">29.9<span style="font-size: 14pt;">억</span></div>
+      <div style="font-size: 8pt; color: #1e3a5f; margin-top: 4px; font-weight: 600;">광고매출</div>
+      <div style="font-size: 7pt; color: #6b7280;">23년 1-5월</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 22pt; font-weight: 700; color: #1e40af; line-height: 1;">3,233<span style="font-size: 14pt;">%</span></div>
+      <div style="font-size: 8pt; color: #1e3a5f; margin-top: 4px; font-weight: 600;">평균 ROAS</div>
+      <div style="font-size: 7pt; color: #6b7280;">광고기여도 34%</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 22pt; font-weight: 700; color: #1e40af; line-height: 1;">3,896<span style="font-size: 14pt;">%</span></div>
+      <div style="font-size: 8pt; color: #1e3a5f; margin-top: 4px; font-weight: 600;">메타 ROAS</div>
+      <div style="font-size: 7pt; color: #6b7280;">CTR 1.46%</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 22pt; font-weight: 700; color: #1e40af; line-height: 1;">7,534<span style="font-size: 14pt;">%</span></div>
+      <div style="font-size: 8pt; color: #1e3a5f; margin-top: 4px; font-weight: 600;">네이버 브랜드검색 ROAS</div>
+      <div style="font-size: 7pt; color: #6b7280;">CTR 62.84%</div>
     </div>
   </div>
 
-  <div class="gallery-thumbs">
-    <div class="gallery-thumb"><div><strong>메타 광고</strong>Advantage+ 캠페인</div></div>
-    <div class="gallery-thumb"><div><strong>네이버 광고</strong>자동입찰</div></div>
-    <div class="gallery-thumb"><div><strong>GA4 대시보드</strong>AI 인사이트</div></div>
-    <div class="gallery-thumb"><div><strong>블로그 트래픽</strong>20배 그래프</div></div>
+  <!-- 22년 대비 23년 상반기 비교 -->
+  <div style="margin: 14px 0; padding: 12px 16px; background: #f9fafb; border-left: 4px solid #3b82f6; border-radius: 0 6px 6px 0;">
+    <p style="font-size: 9pt; font-weight: 700; color: #1e40af; margin-bottom: 6px;">📈 22년 하반기 → 23년 상반기 (네이버)</p>
+    <p style="font-size: 9pt; color: #1f2937;">광고비 <strong>1억→7,125만</strong> (3,160만 절감 ↓) · ROAS <strong>2,016% → 3,034%</strong> (1,018% 상승 ↑) · 구매전환수 <strong>17,793→31,656</strong> (1.78배 ↑)</p>
+  </div>
+
+  <!-- 클레 신제품 라이프스타일 비주얼 -->
+  <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin: 14px 0;">
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="img/클레1.png" alt="클레 이유식 단계별 (초기·중기·후기·마무리)" style="width: 100%; display: block;">
+      <p style="font-size: 8pt; color: #6b7280; padding: 6px 10px; background: #f9fafb; margin: 0;">🥣 클레 이유식 — 단계별(초기·중기·후기·마무리) 라인업</p>
+    </div>
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="img/클레2.png" alt="클레 퓨레 3종 (한우·닭가슴살·병아리콩)" style="width: 100%; display: block;">
+      <p style="font-size: 8pt; color: #6b7280; padding: 6px 10px; background: #f9fafb; margin: 0;">🍯 클레 퓨레 3종 — 22년 신제품 SKU 확장</p>
+    </div>
+  </div>
+
+  <!-- 사이트 링크 + 자료 PDF -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0;">
+    <a href="https://www.foodcare-cle.com/" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🌐 메인 사이트</strong><br><span style="color: #6b7280; font-size: 7.5pt;">foodcare-cle.com</span></a>
+    <a href="https://www.foodcare-cle.com/shop/goodsView/0000010673" target="_blank" style="padding: 10px 12px; background: #eff6ff; border-left: 3px solid #1e40af; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🍯 클레 퓨레 상세페이지</strong><br><span style="color: #6b7280; font-size: 7.5pt;">신제품 SKU 확장 (한우·닭가슴살·병아리콩)</span></a>
   </div>
 
   <div class="case-body">
@@ -606,8 +749,7 @@
   </div>
 
   <div class="footer">
-    <p>© 신현식 · Case Study 03 · Page 4 of 4</p>
-    <p>bloodba@naver.com · www.linkedin.com/in/%ED%98%84%EC%8B%9D-%EC%8B%A0-b7731a204/</p>
+    <p>© 김OO · Case Study 03 · Page 4 of 4</p>
   </div>
 
 </div>
