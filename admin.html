@@ -63,11 +63,11 @@
         class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
       <p class="text-xs text-orange-400 mb-3">⚠️ 1234·생일·password 같은 약한 PIN ❌. 본인만 아는 6자+ 권장</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Claude API Key</label>
-      <input id="apiKeySet" type="password" placeholder="sk-ant-..."
+      <label class="block text-sm text-gray-400 mb-2">Claude API Key <span class="text-orange-400">(선택)</span></label>
+      <input id="apiKeySet" type="password" placeholder="sk-ant-... (Vercel 환경변수 박았으면 비워두기 OK)"
         class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
       <p class="text-xs text-gray-500 mb-3">
-        💡 <a href="https://console.anthropic.com" target="_blank" class="accent underline">console.anthropic.com</a>에서 발급 (5분, 본인 계정)
+        💡 Vercel 환경변수 <code class="text-orange-400">CLAUDE_API_KEY</code> 박혀 있으면 비워두면 됨. 없으면 <a href="https://console.anthropic.com" target="_blank" class="accent underline">console.anthropic.com</a>에서 발급 (5분)
       </p>
 
       <p class="text-xs text-orange-400 mb-6">💡 비용 안전: console에서 <strong>월 한도 $5</strong> 설정 권장 (약 6,500원, 자동 차단)</p>
@@ -726,9 +726,10 @@ function setupComplete() {
   const apiKey = document.getElementById('apiKeySet').value;
   const check = isStrongPin(pin);
   if (!check.ok) return alert(check.reason);
-  if (!apiKey.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다');
+  // Claude API 키는 선택사항 — 비어 있으면 Vercel 환경변수(CLAUDE_API_KEY) 사용
+  if (apiKey && !apiKey.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다 (또는 Vercel 환경변수 사용 시 비워두기)');
   localStorage.setItem('pin', pin);
-  localStorage.setItem('claudeApiKey', apiKey);
+  if (apiKey) localStorage.setItem('claudeApiKey', apiKey);
   enterDashboard();
 }
 
