@@ -820,9 +820,13 @@ function showRecommendModal(data) {
 
       <p class="text-sm text-gray-400 italic mb-4">${escapeHtml(data.summary || '')}</p>
 
-      <div class="border-t border-gray-800 pt-4 mt-4 flex flex-wrap gap-2 justify-end">
-        <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-gray-500">닫기</button>
-        <button onclick="this.closest('.fixed').remove(); document.querySelector('[data-tab=jobs]')?.click(); window.scrollTo({top:0, behavior:'smooth'}); setTimeout(() => document.querySelector('input[placeholder*=회사], input[name=company], #companyInput')?.focus(), 300);" class="px-4 py-2 accent-bg text-white rounded text-sm font-bold">+ 새 공고 추가하기로 이동</button>
+      <div class="border-t border-gray-800 pt-4 mt-4 space-y-2">
+        <p class="text-xs text-gray-500 mb-2">💡 위 추천 = "어디 가서 찾을지" 가이드. 실제 공고 자동 등록은 아래 버튼 사용:</p>
+        <div class="flex flex-wrap gap-2 justify-end">
+          <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 border border-gray-700 rounded text-sm hover:border-gray-500">닫기</button>
+          <button onclick="this.closest('.fixed').remove(); openAddJob();" class="px-4 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500/10 rounded text-sm font-bold">+ 빈 폼에 직접 추가</button>
+          <button onclick="this.closest('.fixed').remove(); runRealJobSearch();" class="px-4 py-2 bg-orange-700 text-white hover:bg-orange-600 rounded text-sm font-bold">🔥 실제 공고 자동 등록 시작</button>
+        </div>
       </div>
     </div>
   `;
