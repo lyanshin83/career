@@ -801,12 +801,13 @@ async function recommendSimilarJobs() {
 
   showLoading('AI가 패턴 분석 중...');
   try {
-    const apiKey = localStorage.getItem('claudeApiKey');
-    if (!apiKey) throw new Error('Claude API 키가 없습니다');
+    const apiKey = localStorage.getItem('claudeApiKey') || '';
+    const headers = { 'content-type': 'application/json' };
+    if (apiKey) headers['x-api-key'] = apiKey;
 
     const res = await fetch('/api/recommend-jobs', {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+      headers,
       body: JSON.stringify({ jobs: state.jobs })
     });
     const data = await res.json();
@@ -891,10 +892,8 @@ function showRecommendModal(data) {
 
 // ============ URL 일괄 등록 (검색 결과 복붙 → 자동 분석 → 일괄 등록) ============
 async function bulkAddJobsByUrls() {
-  const apiKey = localStorage.getItem('claudeApiKey');
-  if (!apiKey) {
-    return alert('Claude API 키가 없습니다.\n\n공고 URL 자동 분석은 Claude API 사용. 설정 탭에서 키 입력하세요.');
-  }
+  const apiKey = localStorage.getItem('claudeApiKey') || '';
+  // 키 없어도 진행 — Vercel 환경변수(CLAUDE_API_KEY) fallback 시도
 
   const urlsText = prompt(
     '검색 결과에서 본 공고 URL을 한 줄에 1개씩 붙여넣기 (최대 20개)\n\n' +
@@ -999,18 +998,14 @@ async function runRealJobSearch() {
 
   showLoading('실제 공고 fetch + AI 적합도 평가 중 (30초~1분)...');
   try {
-    const geminiKey = localStorage.getItem('geminiApiKey');
-    if (!geminiKey) {
-      hideLoading();
-      if (confirm('Gemini API 키가 없습니다.\n\n무료 발급: https://aistudio.google.com/apikey\n(Google 계정만 있으면 1분 안에 발급 가능)\n\n발급 페이지를 새 탭에서 열까요?')) {
-        window.open('https://aistudio.google.com/apikey', '_blank');
-      }
-      return;
-    }
+    const geminiKey = localStorage.getItem('geminiApiKey') || '';
+    // 키 없어도 진행 — Vercel 환경변수(GEMINI_API_KEY) fallback 시도
+    const headers = { 'content-type': 'application/json' };
+    if (geminiKey) headers['x-gemini-key'] = geminiKey;
 
     const r = await fetch('/api/job-search', {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-gemini-key': geminiKey },
+      headers,
       body: JSON.stringify({
         keywords: ['마케팅 본부장', '퍼포먼스 마케팅 팀장', '브랜드 마케팅 본부장'],
         minScore: minScore,
@@ -1439,15 +1434,14 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 async function callClaude(prompt, maxTokens = 4096) {
   showLoading('AI 분석 중...');
   try {
-    const apiKey = localStorage.getItem('claudeApiKey');
-    if (!apiKey) throw new Error('API 키가 없습니다. 설정 탭에서 입력하세요');
+    const apiKey = localStorage.getItem('claudeApiKey') || '';
+    // 키 없어도 호출 — Vercel 환경변수(CLAUDE_API_KEY) fallback 사용
+    const headers = { 'content-type': 'application/json' };
+    if (apiKey) headers['x-api-key'] = apiKey;
 
     const response = await fetch('/api/claude', {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey
-      },
+      headers,
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: maxTokens,
@@ -1496,12 +1490,13 @@ async function fetchJobFromUrl() {
 
   showLoading('URL에서 공고 정보 추출 중...');
   try {
-    const apiKey = localStorage.getItem('claudeApiKey');
-    if (!apiKey) throw new Error('Claude API 키가 없습니다');
+    const apiKey = localStorage.getItem('claudeApiKey') || '';
+    const headers = { 'content-type': 'application/json' };
+    if (apiKey) headers['x-api-key'] = apiKey;
 
     const res = await fetch('/api/fetch-job', {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
+      headers,
       body: JSON.stringify({ url })
     });
 
@@ -1869,26 +1864,27 @@ async function reanalyzeJob(id) {
     const isPlaceholder = job.jdText && (job.jdText.includes('자동 검색 결과') || job.jdText.includes('원본 URL에서 본문'));
     const tooShort = !job.jdText || job.jdText.length < 200;
     if (job.url && (isPlaceholder || tooShort)) {
-      const apiKey = localStorage.getItem('claudeApiKey');
-      if (apiKey) {
-        showLoading('공고 본문 재 fetch 중...');
-        try {
-          const r = await fetch('/api/fetch-job', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({ url: job.url })
-          });
-          const data = await r.json();
-          if (r.ok) {
-            if (data.jdText && data.jdText.length > 100) job.jdText = data.jdText;
-            if (data.company && (job.company === '미상' || !job.company)) job.company = data.company;
-            if (data.position && !job.position) job.position = data.position;
-            if (data.deadline && !job.deadline) job.deadline = data.deadline;
-            saveToStorage();
-          }
-        } catch (e) {
-          console.warn('본문 보충 실패, 분석 계속 진행:', e.message);
+      const apiKey = localStorage.getItem('claudeApiKey') || '';
+      // 키 없어도 시도 — Vercel 환경변수 fallback
+      showLoading('공고 본문 재 fetch 중...');
+      try {
+        const headers = { 'content-type': 'application/json' };
+        if (apiKey) headers['x-api-key'] = apiKey;
+        const r = await fetch('/api/fetch-job', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ url: job.url })
+        });
+        const data = await r.json();
+        if (r.ok) {
+          if (data.jdText && data.jdText.length > 100) job.jdText = data.jdText;
+          if (data.company && (job.company === '미상' || !job.company)) job.company = data.company;
+          if (data.position && !job.position) job.position = data.position;
+          if (data.deadline && !job.deadline) job.deadline = data.deadline;
+          saveToStorage();
         }
+      } catch (e) {
+        console.warn('본문 보충 실패, 분석 계속 진행:', e.message);
       }
     }
 
