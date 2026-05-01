@@ -674,6 +674,9 @@ function init() {
   loadFromStorage();
   if (!localStorage.getItem('pin')) {
     showFirstSetup();
+  } else if (sessionStorage.getItem('loggedIn') === '1') {
+    // 같은 탭에서 새로고침 = PIN 안 묻고 자동 진입 (탭 닫으면 다시 PIN)
+    enterDashboard();
   } else {
     showLogin();
   }
@@ -722,10 +725,13 @@ function login() {
 }
 
 function enterDashboard() {
+  sessionStorage.setItem('loggedIn', '1');
   document.getElementById('loginGate').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
   renderAll();
   document.getElementById('apiKeyEdit').value = localStorage.getItem('claudeApiKey') || '';
+  const geminiEl = document.getElementById('geminiKeyEdit');
+  if (geminiEl) geminiEl.value = localStorage.getItem('geminiApiKey') || '';
   loadProfile();
   loadGithubSettings();
   updateApplyButtons();
@@ -1231,6 +1237,7 @@ async function updateAllFiles() {
 }
 
 function logout() {
+  sessionStorage.removeItem('loggedIn');
   document.getElementById('loginGate').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('pinLogin').value = '';
