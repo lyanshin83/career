@@ -63,14 +63,8 @@
         class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
       <p class="text-xs text-orange-400 mb-3">⚠️ 1234·생일·password 같은 약한 PIN ❌. 본인만 아는 6자+ 권장</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Claude API Key <span class="text-orange-400">(선택)</span></label>
-      <input id="apiKeySet" type="password" placeholder="sk-ant-... (Vercel 환경변수 박았으면 비워두기 OK)"
-        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
-      <p class="text-xs text-gray-500 mb-3">
-        💡 Vercel 환경변수 <code class="text-orange-400">CLAUDE_API_KEY</code> 박혀 있으면 비워두면 됨. 없으면 <a href="https://console.anthropic.com" target="_blank" class="accent underline">console.anthropic.com</a>에서 발급 (5분)
-      </p>
-
-      <p class="text-xs text-orange-400 mb-6">💡 비용 안전: console에서 <strong>월 한도 $5</strong> 설정 권장 (약 6,500원, 자동 차단)</p>
+      <input id="apiKeySet" type="hidden" value="">
+      <p class="text-xs text-gray-500 mb-6">💡 API 키는 Vercel 환경변수에 자동 사용됨 (서버측 보호). 클라이언트 입력 ❌</p>
 
       <button onclick="setupComplete()" class="w-full accent-bg text-white font-bold py-3 rounded hover:opacity-90 transition">시작 →</button>
     </div>
@@ -434,17 +428,24 @@
       <h2 class="text-2xl font-bold mb-6">⚙️ 설정</h2>
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
-        <h3 class="font-bold mb-3 accent">Claude API 키</h3>
-        <p class="text-xs text-gray-500 mb-2">정식 AI 분석·자소서·면접답변풀 (Sonnet 4.6)</p>
-        <input id="apiKeyEdit" type="password" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
-        <button onclick="saveApiKey()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
-      </div>
-
-      <div class="border border-gray-800 rounded-lg p-6 mb-4">
-        <h3 class="font-bold mb-3 accent">Gemini API 키 (실제 공고 자동 검색용)</h3>
-        <p class="text-xs text-gray-500 mb-2">실제 공고 자동 검색의 빠른 적합도 평가 (Gemini 2.5 Flash · <a href="https://aistudio.google.com/apikey" target="_blank" class="accent underline">무료 발급</a>)</p>
-        <input id="geminiKeyEdit" type="password" placeholder="AIza..." class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
-        <button onclick="saveGeminiKey()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
+        <h3 class="font-bold mb-3 accent">🔑 API 키</h3>
+        <p class="text-xs text-gray-400 mb-2">✅ Vercel 환경변수(<code class="text-orange-400">CLAUDE_API_KEY</code>, <code class="text-orange-400">GEMINI_API_KEY</code>)에 박혀 있어 자동 사용 중</p>
+        <p class="text-xs text-gray-500 mb-3">키 변경은 Vercel 대시보드 → Settings → Environment Variables에서 직접</p>
+        <details class="mt-3">
+          <summary class="text-xs text-gray-500 cursor-pointer hover:text-orange-500">⚙️ 고급: 클라이언트에 키 직접 입력 (환경변수 무시)</summary>
+          <div class="mt-3 space-y-3">
+            <div>
+              <label class="text-xs text-gray-400 block mb-1">Claude API 키 (sk-ant-...)</label>
+              <input id="apiKeyEdit" type="password" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+              <button onclick="saveApiKey()" class="mt-2 px-3 py-1 border border-gray-700 hover:border-orange-500 rounded text-xs">Claude 저장</button>
+            </div>
+            <div>
+              <label class="text-xs text-gray-400 block mb-1">Gemini API 키 (AIza...)</label>
+              <input id="geminiKeyEdit" type="password" class="w-full bg-gray-900 border border-gray-700 rounded p-2 outline-none focus:border-orange-500 text-sm">
+              <button onclick="saveGeminiKey()" class="mt-2 px-3 py-1 border border-gray-700 hover:border-orange-500 rounded text-xs">Gemini 저장</button>
+            </div>
+          </div>
+        </details>
       </div>
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
