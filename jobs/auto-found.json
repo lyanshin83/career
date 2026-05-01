@@ -1,1 +1,71 @@
-{"lastUpdated":"","jobs":[]}
+{
+  "lastUpdated": "2026-05-01T04:15:14.764Z",
+  "searchedAt": "2026-05-01T04:14:25.009Z",
+  "keywords": [
+    "마케팅 본부장",
+    "디지털 마케팅 팀장 IMC",
+    "퍼포먼스 마케팅 팀장",
+    "브랜드 마케팅 본부장 D2C",
+    "광고대행사 본부장",
+    "그로스 마케팅 헤드",
+    "건기식 마케팅 팀장",
+    "CMO 시니어"
+  ],
+  "sites": [
+    {
+      "name": "사람인",
+      "searchUrl": "https://www.saramin.co.kr/zf_user/jobs/list/job-category?cat_mcls=14&loc_mcd=101000&sal_min=7000&career_min=15&career_max=20&job_type=1",
+      "recommendedFilter": "직무 카테고리: 마케팅·홍보·조사 → 경력 15~20년 → 연봉 7,000만원 이상 → '본부장·임원급' 체크",
+      "keywordSearchUrl": "https://www.saramin.co.kr/zf_user/jobs/list/job-category?searchword=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&cat_mcls=14"
+    },
+    {
+      "name": "잡코리아",
+      "searchUrl": "https://www.jobkorea.co.kr/Search/?stext=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&careerType=2&careerFrom=15&careerTo=20&jobType=1",
+      "recommendedFilter": "검색어: '마케팅 본부장' OR 'CMO' → 경력직 → 15~20년 → 직종: 마케팅/광고/홍보 → 직위: 팀장·임원 선택",
+      "keywordSearchUrl": "https://www.jobkorea.co.kr/Search/?stext=%EA%B7%B8%EB%A1%9C%EC%8A%A4+%EB%A7%88%EC%BC%80%ED%8C%85+%ED%97%A4%EB%93%9C&careerType=2"
+    },
+    {
+      "name": "리멤버",
+      "searchUrl": "https://career.rememberapp.co.kr/jobs?keyword=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&category=marketing&level=head",
+      "recommendedFilter": "포지션 레벨: Head·본부장·이사급 → 직군: 마케팅 → '스카우트 제안 받기' 프로필 ON → AI 매칭 추천 활성화",
+      "note": "헤드헌터 및 기업 HR 담당자 직접 접근 비율이 높아 시니어급에 특히 유리"
+    },
+    {
+      "name": "원티드",
+      "searchUrl": "https://www.wanted.co.kr/wdlist/518?country=kr&job_sort=job.latest_order&years=15&salary=7000",
+      "recommendedFilter": "직군: 마케팅 → 경력: 15년 이상 → 연봉: 7,000만원 이상 → 키워드: 'D2C', 'Performance', 'CMO' → 포지션: 리드·헤드·본부장",
+      "keywordSearchUrl": "https://www.wanted.co.kr/search?query=%ED%8D%BC%ED%8F%AC%EB%A8%BC%EC%8A%A4+%EB%A7%88%EC%BC%80%ED%8C%85+%ED%8C%80%EC%9E%A5&job_sort=job.latest_order"
+    },
+    {
+      "name": "링크드인",
+      "searchUrl": "https://www.linkedin.com/jobs/search/?keywords=Marketing+Head+CMO+D2C+Korea&location=%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD&f_E=5%2C6&f_JT=F&f_WT=1%2C2&sortBy=DD",
+      "recommendedFilter": "키워드: 'Marketing Head' OR 'CMO' OR 'Performance Marketing Lead' → 경험수준: Director·Executive(5,6단계) → 정규직 → 최신순 정렬 → 한국 위치 필터",
+      "note": "영문 프로필 최신화 필수. '#오픈투워크' 비공개 설정 권장 (현직장 노출 방지)"
+    },
+    {
+      "name": "잡플래닛",
+      "searchUrl": "https://www.jobplanet.co.kr/job/search?q=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&career=senior&category=marketing",
+      "recommendedFilter": "검색어: '마케팅 본부장' → 경력: 시니어 → 평점 3.5점 이상 기업 필터 → '기업문화·리더십' 리뷰 확인 후 지원 결정",
+      "note": "기업 내부 리뷰와 면접 후기를 지원 전 반드시 교차 검증"
+    },
+    {
+      "name": "워크넷",
+      "searchUrl": "https://www.work.go.kr/empInfo/empInfoSrch/list/dtlEmpSrch.do?careerTo=20&careerFrom=15&occupation=0702&region=&joTermFrom=&joTermTo=&payType=&payFrom=&payTo=&keyword=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&sortFieldInfo=DATE",
+      "recommendedFilter": "직종코드: 0702(광고·마케팅) → 경력: 15~20년 → 직위: 부장·이사급 → 고용형태: 정규직 → 최신 등록순",
+      "note": "공공·대기업·공기업 마케팅 임원직 공고 비율 높음. 중소기업 공고 다수이므로 기업 규모 필터 필수"
+    },
+    {
+      "name": "인크루트",
+      "searchUrl": "https://job.incruit.com/jobdb_list/searchjob.asp?occ1=8&career=2&careermin=15&careermax=20&col=1&kw=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5",
+      "recommendedFilter": "직종: 마케팅·홍보(8) → 경력직 15~20년 → 직급: 부장·이사·본부장 → 키워드: '마케팅 본부장' OR '광고대행 본부장' → 등록일 3일 이내",
+      "note": "헤드헌팅 연계 공고('HR파트너' 태그) 별도 확인 권장"
+    }
+  ],
+  "tips": [
+    "🔑 오늘의 추천 키워드 TOP 2: ① '브랜드 마케팅 본부장 D2C' — 뷰티·건기식·패션 이커머스 기업의 수요가 집중되는 포지션으로 경쟁공고 대비 지원자 수가 적음. ② '그로스 마케팅 헤드' — 스타트업·스케일업 기업이 선호하는 영문혼용 키워드로 메타 Advantage+·PMax 직접 운영 경험을 강조하면 서류 통과율 향상 기대",
+    "⚠️ 주의사항 ① — 직함 인플레이션 필터링: '팀장=본부장' 으로 표기한 중소기업 공고가 다수 혼재. 공고 내 '조직 규모(팀원 수)·보고 라인(대표 or C레벨 직보)·예산 권한' 3가지를 반드시 확인 후 지원",
+    "⚠️ 주의사항 ② — 연봉 역제안 리스크: 시니어 본부장급은 공고 제시 연봉이 실제보다 낮게 기재되는 경우 多. 서류 합격 후 첫 HR 인터뷰 전에 '현 연봉 + 기대 연봉' 범위를 명확히 설정하고, 희망 연봉을 리멤버·링크드인 프로필에 비공개로 입력해 헤드헌터 필터링에 활용",
+    "📅 채용 사이클 팁: 5월은 상반기 채용 마감과 하반기 예산 확정 사이 구간. 대기업·중견기업은 5~6월 임원급 수시채용 공고가 증가하므로 리멤버 '스카우트 제안 받기' 및 링크드인 '오픈 투 워크(채용담당자 공개)' 동시 활성화 권장"
+  ],
+  "summary": "16년 마케팅 시니어·본부장급 지원자는 리멤버·링크드인(헤드헌터 스카우트)을 메인 채널로 삼고, 원티드·잡코리아를 보조 채널로 병행하며, '그로스 마케팅 헤드'·'브랜드 마케팅 본부장 D2C' 키워드로 검색해 메타·구글·AI 직접 운영 역량을 이력서에 전면 부각하는 전략이 가장 효과적"
+}
