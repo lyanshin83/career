@@ -57,9 +57,11 @@
     <div id="firstSetup" class="hidden">
       <h2 class="text-xl font-bold mb-4">첫 방문 — 셋업 (1분)</h2>
 
-      <label class="block text-sm text-gray-400 mb-2">PIN (4자리)</label>
-      <input id="pinSet" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
-        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-4 text-white focus:border-orange-500 outline-none">
+      <label class="block text-sm text-gray-400 mb-2">PIN (6-12자리, 문자+숫자 혼합 권장)</label>
+      <input id="pinSet" type="password" maxlength="12" minlength="6"
+        placeholder="예: m1ar25k (외우기 쉬운 본인만의 조합)"
+        class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-2 text-white focus:border-orange-500 outline-none">
+      <p class="text-xs text-orange-400 mb-3">⚠️ 1234·생일·password 같은 약한 PIN ❌. 본인만 아는 6자+ 권장</p>
 
       <label class="block text-sm text-gray-400 mb-2">Claude API Key</label>
       <input id="apiKeySet" type="password" placeholder="sk-ant-..."
@@ -76,11 +78,12 @@
     <!-- 로그인 -->
     <div id="loginForm" class="hidden">
       <label class="block text-sm text-gray-400 mb-2">PIN</label>
-      <input id="pinLogin" type="password" maxlength="4" pattern="[0-9]*" inputmode="numeric"
+      <input id="pinLogin" type="password" maxlength="12"
         class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-4 text-white focus:border-orange-500 outline-none"
         onkeypress="if(event.key==='Enter') login()">
       <button onclick="login()" class="w-full accent-bg text-white font-bold py-3 rounded hover:opacity-90 transition">로그인</button>
       <p id="loginError" class="text-red-400 text-sm mt-2 hidden">PIN이 일치하지 않습니다</p>
+      <p id="loginLockMsg" class="text-yellow-400 text-xs mt-2 hidden"></p>
     </div>
   </div>
 </div>
@@ -446,7 +449,7 @@
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
         <h3 class="font-bold mb-3 accent">PIN 변경</h3>
-        <input id="pinEdit" type="password" maxlength="4" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
+        <input id="pinEdit" type="password" maxlength="12" minlength="6" placeholder="새 PIN (6-12자, 문자+숫자 권장)" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
         <button onclick="savePin()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
       </div>
 
@@ -707,10 +710,22 @@ function showLogin() {
   document.getElementById('loginForm').classList.remove('hidden');
 }
 
+function isStrongPin(pin) {
+  if (pin.length < 6) return { ok: false, reason: 'PIN은 6자 이상이어야 합니다' };
+  if (pin.length > 12) return { ok: false, reason: 'PIN은 12자 이하여야 합니다' };
+  // 너무 약한 패턴 거부
+  const weak = ['123456', '12345678', '111111', '000000', 'password', 'qwerty', 'abc123', '1234567', 'admin1'];
+  if (weak.includes(pin.toLowerCase())) return { ok: false, reason: '너무 약한 PIN입니다 (1234·생일·password 등 ❌). 본인만 아는 조합으로' };
+  // 같은 문자 반복만 (예: aaaaaa) 거부
+  if (/^(.)\1+$/.test(pin)) return { ok: false, reason: '같은 문자 반복 PIN 사용 불가' };
+  return { ok: true };
+}
+
 function setupComplete() {
   const pin = document.getElementById('pinSet').value;
   const apiKey = document.getElementById('apiKeySet').value;
-  if (pin.length !== 4) return alert('PIN 4자리 입력');
+  const check = isStrongPin(pin);
+  if (!check.ok) return alert(check.reason);
   if (!apiKey.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다');
   localStorage.setItem('pin', pin);
   localStorage.setItem('claudeApiKey', apiKey);
@@ -719,11 +734,47 @@ function setupComplete() {
 
 function login() {
   const pin = document.getElementById('pinLogin').value;
+  const lockUntil = parseInt(localStorage.getItem('loginLockUntil') || '0', 10);
+  const now = Date.now();
+
+  // 잠금 중이면 거부
+  if (lockUntil > now) {
+    const secLeft = Math.ceil((lockUntil - now) / 1000);
+    const msgEl = document.getElementById('loginLockMsg');
+    if (msgEl) {
+      msgEl.textContent = `🔒 잠금 중 — ${secLeft}초 후 다시 시도하세요 (5회 실패 시 자동 잠금)`;
+      msgEl.classList.remove('hidden');
+    }
+    document.getElementById('pinLogin').value = '';
+    return;
+  }
+
   if (pin === localStorage.getItem('pin')) {
+    // 성공 — 시도 횟수 리셋
+    localStorage.removeItem('loginAttempts');
+    localStorage.removeItem('loginLockUntil');
     document.getElementById('loginError').classList.add('hidden');
+    document.getElementById('loginLockMsg')?.classList.add('hidden');
     enterDashboard();
   } else {
-    document.getElementById('loginError').classList.remove('hidden');
+    // 실패 — 시도 횟수 증가
+    const attempts = parseInt(localStorage.getItem('loginAttempts') || '0', 10) + 1;
+    localStorage.setItem('loginAttempts', String(attempts));
+
+    if (attempts >= 5) {
+      // 5회 실패 → 30초 잠금
+      const lockTime = 30 * 1000;
+      localStorage.setItem('loginLockUntil', String(now + lockTime));
+      localStorage.setItem('loginAttempts', '0');
+      const msgEl = document.getElementById('loginLockMsg');
+      if (msgEl) {
+        msgEl.textContent = `🔒 5회 실패 — 30초간 잠금. 잠시 후 다시 시도하세요`;
+        msgEl.classList.remove('hidden');
+      }
+    } else {
+      document.getElementById('loginError').classList.remove('hidden');
+      document.getElementById('loginError').textContent = `PIN이 일치하지 않습니다 (${attempts}/5회)`;
+    }
     document.getElementById('pinLogin').value = '';
   }
 }
@@ -971,18 +1022,25 @@ async function runRealJobSearch() {
     hideLoading();
 
     if (data.matched === 0) {
-      alert(`검색 결과: 60점 이상 매칭 0개\n\n• 시도한 사이트: ${(data.sourcesAttempted || []).join(', ')}\n• fetch한 공고: ${data.totalFetched}개\n• 평가한 공고: ${data.totalEvaluated}개\n\n에러 ${(data.errors || []).length}개:\n${(data.errors || []).slice(0, 5).join('\n')}`);
+      alert(`검색 결과: ${minScore}점 이상 매칭 0개\n\n• 시도한 사이트: ${(data.sourcesAttempted || []).join(', ')}\n• fetch한 공고: ${data.totalFetched}개\n• 평가한 공고: ${data.totalEvaluated}개\n\n💡 매칭 0개면 점수 기준 더 낮춰서 (30, 20) 다시 시도하세요.\n\n에러 ${(data.errors || []).length}개:\n${(data.errors || []).slice(0, 5).join('\n')}`);
       return;
     }
 
-    const previewList = data.jobs.slice(0, 5).map(j => `• [${j.matchScore}점] ${j.company} — ${j.position} (${j.source})`).join('\n');
-    if (!confirm(`✅ ${data.matched}개 공고가 60점 이상 매칭!\n\n총 ${data.totalFetched}개 fetch / ${data.totalEvaluated}개 평가\n\n상위 5개 미리보기:\n${previewList}\n\n채용공고 탭에 자동 등록할까요?`)) return;
+    // 미리보기 단계에서 이미 등록된 공고(URL 중복) 제외
+    const newJobs = data.jobs.filter(j => !state.jobs.find(x => x.url && j.url && x.url === j.url));
+    const dupePreCount = data.jobs.length - newJobs.length;
+
+    if (newJobs.length === 0) {
+      alert(`✅ ${minScore}점 이상 매칭 ${data.matched}개\n⚠️ 단 모두 이미 채용공고 탭에 등록된 공고\n\n새로 등록할 공고 없음.\n\n💡 기준 점수 더 낮추거나, 다른 키워드로 검색하세요.`);
+      return;
+    }
+
+    const previewList = newJobs.slice(0, 5).map(j => `• [${j.matchScore}점] ${j.company} — ${j.position} (${j.source})`).join('\n');
+    if (!confirm(`✅ ${newJobs.length}개 새 공고가 ${minScore}점 이상 매칭!\n${dupePreCount > 0 ? `(이미 등록된 ${dupePreCount}개 제외)\n` : ''}\n총 ${data.totalFetched}개 fetch / ${data.totalEvaluated}개 평가\n\n상위 5개 미리보기:\n${previewList}\n\n채용공고 탭에 자동 등록할까요?`)) return;
 
     let added = 0;
-    let skipped = 0;
-    for (const j of data.jobs) {
-      const dupe = state.jobs.find(x => x.url && j.url && x.url === j.url);
-      if (dupe) { skipped++; continue; }
+    let skipped = dupePreCount;
+    for (const j of newJobs) {
       const id = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 8);
       state.jobs.push({
         id,
@@ -1033,7 +1091,7 @@ function showJobSearchResultModal(added, skipped, data) {
         <ul class="text-sm space-y-1 text-gray-300">
           <li>• 채용공고 탭에 ${added}개 자동 등록 (검토중 상태)</li>
           ${skipped > 0 ? `<li>• 중복 ${skipped}개 스킵</li>` : ''}
-          <li>• fetch ${data.totalFetched || 0}개 / 평가 ${data.totalEvaluated || 0}개 / 60점+ ${data.matched || 0}개</li>
+          <li>• fetch ${data.totalFetched || 0}개 / 평가 ${data.totalEvaluated || 0}개 / ${data.minScore || 60}점+ ${data.matched || 0}개</li>
           <li>• 시도 사이트: ${(data.sourcesAttempted || []).join(', ')}</li>
         </ul>
         <p class="text-xs text-gray-500 mt-3">⚡ = 빠른 적합도 (Gemini). 마음에 드는 공고는 카드 클릭 → "🔄 AI 재분석"으로 정식 분석 (Claude Sonnet)</p>
@@ -2820,9 +2878,14 @@ function saveGeminiKey() {
 
 function savePin() {
   const v = document.getElementById('pinEdit').value;
-  if (v.length !== 4) return alert('PIN 4자리');
+  const check = isStrongPin(v);
+  if (!check.ok) return alert(check.reason);
   localStorage.setItem('pin', v);
-  alert('저장됨');
+  // 시도 횟수·잠금 초기화 (PIN 변경 시 새로 시작)
+  localStorage.removeItem('loginAttempts');
+  localStorage.removeItem('loginLockUntil');
+  document.getElementById('pinEdit').value = '';
+  alert('✅ PIN 변경 완료\n\n다음 로그인부터 새 PIN 사용. 잊지 마세요!');
 }
 
 function exportData() {
