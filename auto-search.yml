@@ -1,0 +1,36 @@
+name: Auto Job Search (매일 9시 KST)
+
+on:
+  schedule:
+    # KST 9시 = UTC 0시 (매일)
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 수동 실행 가능 (Actions 탭에서 클릭)
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel auto-search function
+        run: |
+          curl -X POST "https://${{ secrets.VERCEL_DOMAIN }}/api/auto-search" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.CLAUDE_API_KEY }}" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "x-github-token: ${{ secrets.GITHUB_PAT }}" \
+            -H "x-github-owner: ${{ secrets.GH_OWNER }}" \
+            -H "x-github-repo: ${{ secrets.GH_REPO }}" \
+            -d '{}'
+
+      - name: Notify (선택 — 결과 issue 생성)
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().split('T')[0];
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔍 자동 채용 검색 ${today}`,
+              body: `매일 9시 자동 검색 완료. \n\n📡 결과 확인: jobs/auto-found.json\n🌐 사이트: https://${{ secrets.VERCEL_DOMAIN }}/admin.html → 자동 검색 결과 탭\n\n시간: ${new Date().toISOString()}`,
+              labels: ['auto-search']
+            });

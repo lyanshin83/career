@@ -372,43 +372,51 @@
     <!-- ===== TAB: 자료 다운로드 ===== -->
     <section id="tab-docs" class="tab-content hidden">
       <h2 class="text-2xl font-bold mb-2">📄 자료 다운로드</h2>
-      <p class="text-xs text-gray-500 mb-2">표준 자료 — 새 탭 열기·HTML·DOC(워드) 다운로드 / 회사별 AI 변형은 공고 상세에서 "📦 회사별 풀 변형"</p>
-      <p class="text-xs text-orange-400 mb-6">💡 DOC 저장 = 워드에서 직접 편집 가능. AI 비용 ❌, 본인이 자유롭게 수정.</p>
+      <p class="text-xs text-gray-500 mb-2">새 탭·HTML·DOC·PDF 4가지 형식 / 회사별 AI 변형은 공고 상세에서 "📦 회사별 풀 변형"</p>
+      <p class="text-xs text-orange-400 mb-6">💡 DOC = 워드에서 직접 편집 / PDF = PPT·인쇄용 / HTML = 원본 파일 / 새 탭 = 브라우저 보기</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
-          <div class="text-3xl mb-3">📄</div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-5 transition">
+          <div class="text-3xl mb-2">📄</div>
           <h3 class="font-bold mb-1">이력서·자소서 통합</h3>
           <p class="text-xs text-gray-500 mb-3">A4 3장 + 사진 + AI 도구 강조</p>
-          <div class="flex flex-col gap-2">
-            <a href="문서_이력서.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
-            <button onclick="downloadAsDoc('문서_이력서.html', '이력서_자소서.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="문서_이력서.html" target="_blank" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded text-center transition">🔗 새 탭</a>
+            <button onclick="downloadAsHtml('문서_이력서.html', '이력서_자소서.html')" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded transition">📁 HTML</button>
+            <button onclick="downloadAsDoc('문서_이력서.html', '이력서_자소서.doc')" class="px-2 py-2 accent-bg hover:opacity-90 text-white text-xs rounded font-bold transition">📝 DOC</button>
+            <button onclick="downloadAsPdf('문서_이력서.html')" class="px-2 py-2 bg-blue-700 hover:bg-blue-600 text-white text-xs rounded font-bold transition">📄 PDF</button>
           </div>
         </div>
-        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
-          <div class="text-3xl mb-3">📋</div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-5 transition">
+          <div class="text-3xl mb-2">📋</div>
           <h3 class="font-bold mb-1">경력기술서</h3>
           <p class="text-xs text-gray-500 mb-3">A4 2장 + 시각화 풀</p>
-          <div class="flex flex-col gap-2">
-            <a href="문서_경력기술서.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
-            <button onclick="downloadAsDoc('문서_경력기술서.html', '경력기술서.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="문서_경력기술서.html" target="_blank" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded text-center transition">🔗 새 탭</a>
+            <button onclick="downloadAsHtml('문서_경력기술서.html', '경력기술서.html')" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded transition">📁 HTML</button>
+            <button onclick="downloadAsDoc('문서_경력기술서.html', '경력기술서.doc')" class="px-2 py-2 accent-bg hover:opacity-90 text-white text-xs rounded font-bold transition">📝 DOC</button>
+            <button onclick="downloadAsPdf('문서_경력기술서.html')" class="px-2 py-2 bg-blue-700 hover:bg-blue-600 text-white text-xs rounded font-bold transition">📄 PDF</button>
           </div>
         </div>
-        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
-          <div class="text-3xl mb-3">🎨</div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-5 transition">
+          <div class="text-3xl mb-2">🎨</div>
           <h3 class="font-bold mb-1">포트폴리오</h3>
           <p class="text-xs text-gray-500 mb-3">A4 4장 + 케이스 스터디</p>
-          <div class="flex flex-col gap-2">
-            <a href="문서_포트폴리오.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
-            <button onclick="downloadAsDoc('문서_포트폴리오.html', '포트폴리오.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="문서_포트폴리오.html" target="_blank" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded text-center transition">🔗 새 탭</a>
+            <button onclick="downloadAsHtml('문서_포트폴리오.html', '포트폴리오.html')" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded transition">📁 HTML</button>
+            <button onclick="downloadAsDoc('문서_포트폴리오.html', '포트폴리오.doc')" class="px-2 py-2 accent-bg hover:opacity-90 text-white text-xs rounded font-bold transition">📝 DOC</button>
+            <button onclick="downloadAsPdf('문서_포트폴리오.html')" class="px-2 py-2 bg-blue-700 hover:bg-blue-600 text-white text-xs rounded font-bold transition">📄 PDF</button>
           </div>
         </div>
-        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-6 transition">
-          <div class="text-3xl mb-3">🌐</div>
+        <div class="border border-gray-800 hover:border-orange-500 rounded-lg p-5 transition">
+          <div class="text-3xl mb-2">🌐</div>
           <h3 class="font-bold mb-1">메인 사이트</h3>
           <p class="text-xs text-gray-500 mb-3">인터랙티브 + 애니메이션</p>
-          <div class="flex flex-col gap-2">
-            <a href="index.html" target="_blank" class="px-3 py-2 accent-bg text-white text-xs rounded font-bold text-center">🔗 새 탭 열기</a>
-            <button onclick="downloadAsDoc('index.html', '메인사이트.doc')" class="px-3 py-2 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC 저장 (워드)</button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="index.html" target="_blank" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded text-center transition">🔗 새 탭</a>
+            <button onclick="downloadAsHtml('index.html', '메인사이트.html')" class="px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded transition">📁 HTML</button>
+            <button onclick="downloadAsDoc('index.html', '메인사이트.doc')" class="px-2 py-2 accent-bg hover:opacity-90 text-white text-xs rounded font-bold transition">📝 DOC</button>
+            <button onclick="downloadAsPdf('index.html')" class="px-2 py-2 bg-blue-700 hover:bg-blue-600 text-white text-xs rounded font-bold transition">📄 PDF</button>
           </div>
         </div>
       </div>
@@ -420,8 +428,16 @@
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
         <h3 class="font-bold mb-3 accent">Claude API 키</h3>
+        <p class="text-xs text-gray-500 mb-2">정식 AI 분석·자소서·면접답변풀 (Sonnet 4.6)</p>
         <input id="apiKeyEdit" type="password" class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
         <button onclick="saveApiKey()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
+      </div>
+
+      <div class="border border-gray-800 rounded-lg p-6 mb-4">
+        <h3 class="font-bold mb-3 accent">Gemini API 키 (실제 공고 자동 검색용)</h3>
+        <p class="text-xs text-gray-500 mb-2">실제 공고 자동 검색의 빠른 적합도 평가 (Gemini 2.5 Flash · <a href="https://aistudio.google.com/apikey" target="_blank" class="accent underline">무료 발급</a>)</p>
+        <input id="geminiKeyEdit" type="password" placeholder="AIza..." class="w-full bg-gray-900 border border-gray-700 rounded p-3 mb-3 outline-none focus:border-orange-500">
+        <button onclick="saveGeminiKey()" class="accent-bg text-white px-4 py-2 rounded">저장</button>
       </div>
 
       <div class="border border-gray-800 rounded-lg p-6 mb-4">
@@ -807,7 +823,135 @@ function showRecommendModal(data) {
   document.body.appendChild(modal);
 }
 
-// ============ AUTO SEARCH ============
+// ============ REAL JOB SEARCH (실제 공고 fetch + AI 적합도 + 60점+ 자동 등록) ============
+async function runRealJobSearch() {
+  if (!confirm('실제 공고 자동 검색 + AI 적합도 평가합니다.\n\n• 사이트: 원티드(우선), 사람인(시도)\n• 평가: Gemini 2.5 Flash (무료 티어 / 매우 저렴)\n• 비용: 검색 1회 거의 무료~3원\n• 결과: 60점 이상만 채용공고 탭에 자동 등록\n\n계속?')) return;
+
+  showLoading('실제 공고 fetch + AI 적합도 평가 중 (30초~1분)...');
+  try {
+    const geminiKey = localStorage.getItem('geminiApiKey');
+    if (!geminiKey) {
+      hideLoading();
+      if (confirm('Gemini API 키가 없습니다.\n\n무료 발급: https://aistudio.google.com/apikey\n(Google 계정만 있으면 1분 안에 발급 가능)\n\n발급 페이지를 새 탭에서 열까요?')) {
+        window.open('https://aistudio.google.com/apikey', '_blank');
+      }
+      return;
+    }
+
+    const r = await fetch('/api/job-search', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-gemini-key': geminiKey },
+      body: JSON.stringify({
+        keywords: ['마케팅 본부장', '퍼포먼스 마케팅 팀장', '브랜드 마케팅 본부장'],
+        minScore: 60,
+        maxJobs: 30
+      })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'API 호출 실패');
+
+    hideLoading();
+
+    if (data.matched === 0) {
+      alert(`검색 결과: 60점 이상 매칭 0개\n\n• 시도한 사이트: ${(data.sourcesAttempted || []).join(', ')}\n• fetch한 공고: ${data.totalFetched}개\n• 평가한 공고: ${data.totalEvaluated}개\n\n에러 ${(data.errors || []).length}개:\n${(data.errors || []).slice(0, 5).join('\n')}`);
+      return;
+    }
+
+    const previewList = data.jobs.slice(0, 5).map(j => `• [${j.matchScore}점] ${j.company} — ${j.position} (${j.source})`).join('\n');
+    if (!confirm(`✅ ${data.matched}개 공고가 60점 이상 매칭!\n\n총 ${data.totalFetched}개 fetch / ${data.totalEvaluated}개 평가\n\n상위 5개 미리보기:\n${previewList}\n\n채용공고 탭에 자동 등록할까요?`)) return;
+
+    let added = 0;
+    let skipped = 0;
+    for (const j of data.jobs) {
+      const dupe = state.jobs.find(x => x.url && j.url && x.url === j.url);
+      if (dupe) { skipped++; continue; }
+      const id = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 8);
+      state.jobs.push({
+        id,
+        company: j.company || '미상',
+        position: j.position || '',
+        url: j.url || '',
+        jdText: j.jdText || `[자동 검색 결과 - ${j.source}]\n원본 URL에서 본문 확인 후 정식 AI 분석 권장`,
+        source: j.source || '자동검색',
+        deadline: j.deadline || '',
+        status: '검토중',
+        matchScore: j.matchScore + ' ⚡',
+        analysis: '',
+        createdAt: Date.now()
+      });
+      added++;
+    }
+    saveToStorage();
+    renderAll();
+    showJobSearchResultModal(added, skipped, data);
+  } catch (err) {
+    hideLoading();
+    alert('실제 공고 검색 실패: ' + err.message);
+  }
+}
+
+// 자동 검색 결과 모달 (등록 결과 + 안 됨 사이트 URL)
+function showJobSearchResultModal(added, skipped, data) {
+  const fallbackSites = [
+    { name: '리멤버', icon: '💎', url: 'https://career.rememberapp.co.kr/jobs?keyword=%EB%A7%88%EC%BC%80%ED%8C%85%20%EB%B3%B8%EB%B6%80%EC%9E%A5', note: '시니어 헤드헌터 추천 강력 — 가입·로그인 후 활용' },
+    { name: '링크드인', icon: '🔗', url: 'https://www.linkedin.com/jobs/search/?keywords=%EB%A7%88%EC%BC%80%ED%8C%85%20%EB%B3%B8%EB%B6%80%EC%9E%A5%20OR%20CMO%20OR%20Marketing%20Director&location=Seoul%2C%20South%20Korea&f_E=5%2C6', note: 'Director·VP급 우선 / 영문·한국어 혼합 검색' },
+    { name: '잡플래닛', icon: '⭐', url: 'https://www.jobplanet.co.kr/job/search?q=%EB%A7%88%EC%BC%80%ED%8C%85%20%EB%B3%B8%EB%B6%80%EC%9E%A5', note: '회사 평점·연봉 정보 같이 보기' },
+    { name: '잡코리아', icon: '🏢', url: 'https://www.jobkorea.co.kr/Search/?stext=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5&careerType=2&careerMin=15', note: '경력 15년+ 필터' },
+    { name: '인크루트', icon: '📋', url: 'https://job.incruit.com/jobdb_list/searchjob.asp?col=job&kw=%EB%A7%88%EC%BC%80%ED%8C%85+%EB%B3%B8%EB%B6%80%EC%9E%A5', note: '광고대행사 본부장 다수' }
+  ];
+
+  const errorsText = (data.errors || []).slice(0, 5).join('\n');
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
+  modal.innerHTML = `
+    <div class="bg-gray-950 border border-gray-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold accent">🔥 실제 공고 자동 검색 결과</h2>
+        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="border border-orange-900 bg-orange-950/10 rounded p-4 mb-4">
+        <p class="font-bold accent mb-2">✅ 자동 등록 완료</p>
+        <ul class="text-sm space-y-1 text-gray-300">
+          <li>• 채용공고 탭에 ${added}개 자동 등록 (검토중 상태)</li>
+          ${skipped > 0 ? `<li>• 중복 ${skipped}개 스킵</li>` : ''}
+          <li>• fetch ${data.totalFetched || 0}개 / 평가 ${data.totalEvaluated || 0}개 / 60점+ ${data.matched || 0}개</li>
+          <li>• 시도 사이트: ${(data.sourcesAttempted || []).join(', ')}</li>
+        </ul>
+        <p class="text-xs text-gray-500 mt-3">⚡ = 빠른 적합도 (Gemini). 마음에 드는 공고는 카드 클릭 → "🔄 AI 재분석"으로 정식 분석 (Claude Sonnet)</p>
+      </div>
+
+      <div class="border border-gray-800 rounded p-4 mb-4">
+        <p class="font-bold accent mb-3">🔍 자동 안 되는 사이트 — 직접 들어가서 공고 보기</p>
+        <p class="text-xs text-gray-500 mb-3">본 공고 URL 복사 → admin "공고 추가" → "🔗 URL 자동" 누르면 회사·포지션·JD 자동 분석</p>
+        <div class="space-y-2">
+          ${fallbackSites.map(s => `
+            <a href="${s.url}" target="_blank" class="block border border-gray-800 hover:border-orange-500 rounded p-3 transition">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="font-bold">${s.icon} ${escapeHtml(s.name)}</p>
+                  <p class="text-xs text-gray-500 mt-1">${escapeHtml(s.note)}</p>
+                </div>
+                <span class="text-xs accent">새 탭 열기 →</span>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+      ${errorsText ? `
+        <details class="border border-yellow-900 bg-yellow-950/10 rounded p-3 mb-4">
+          <summary class="cursor-pointer text-sm text-yellow-400 font-bold">⚠️ 에러 ${(data.errors || []).length}개 (펼치기)</summary>
+          <pre class="text-xs text-gray-400 whitespace-pre-wrap mt-2">${escapeHtml(errorsText)}</pre>
+        </details>` : ''}
+
+      <button onclick="this.closest('.fixed').remove()" class="w-full px-4 py-2 accent-bg text-white rounded font-bold">확인</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+// ============ AUTO SEARCH (기존 사이트·키워드 추천) ============
 async function runAutoSearch() {
   showLoading('자동 검색 실행 중 (8개 사이트)...');
   try {
@@ -1753,6 +1897,49 @@ ${snippet}
   }
 }
 
+// ============ HTML 원본 그대로 다운로드 ============
+async function downloadAsHtml(htmlPath, filename) {
+  try {
+    const res = await fetch(htmlPath);
+    if (!res.ok) throw new Error('파일 로드 실패: HTTP ' + res.status);
+    const html = await res.text();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  } catch (err) {
+    alert('HTML 다운로드 실패: ' + err.message);
+  }
+}
+
+// ============ PDF 저장 (새 탭 → 자동 인쇄 다이얼로그 → "PDF로 저장" 선택) ============
+function downloadAsPdf(htmlPath) {
+  const w = window.open(htmlPath, '_blank');
+  if (!w) {
+    alert('팝업이 차단됐습니다.\n\n주소창 옆 팝업 차단 아이콘 → "허용" → 다시 시도하세요.\n\n또는 직접 새 탭에서 Ctrl+P → "PDF로 저장" 선택해도 됩니다.');
+    return;
+  }
+  const tryPrint = () => {
+    try {
+      w.focus();
+      w.print();
+    } catch (e) {
+      console.warn('print 호출 실패:', e);
+    }
+  };
+  // 페이지 로드 완료 대기
+  if (w.document && w.document.readyState === 'complete') {
+    setTimeout(tryPrint, 800);
+  } else {
+    w.addEventListener('load', () => setTimeout(tryPrint, 500));
+  }
+}
+
 // ============ HTML → DOC 변환 다운로드 (워드에서 깔끔히 직접 편집 가능) ============
 // 디자인 박스·그리드·플렉스 다 풀고 텍스트·제목·표·리스트·이미지만 살림
 async function downloadAsDoc(htmlPath, filename) {
@@ -1870,10 +2057,11 @@ function viewCompanyDocs(jobId) {
                 <p class="font-bold">${d.icon} ${escapeHtml(d.name)}</p>
                 <p class="text-xs text-gray-500">${escapeHtml(d.file)}</p>
               </div>
-              <div class="flex gap-2">
-                <a href="${baseUrl}/${encodeURIComponent(d.file)}" target="_blank" class="px-3 py-1 accent-bg text-white text-xs rounded font-bold">새 탭 열기</a>
-                <button onclick="downloadCompanyDoc('${escapeHtml(company)}', '${escapeHtml(d.file)}')" class="px-3 py-1 border border-gray-700 hover:border-orange-500 text-xs rounded">HTML</button>
-                <button onclick="downloadAsDoc('${baseUrl}/${encodeURIComponent(d.file)}', '${escapeHtml(company)}_${escapeHtml(d.file).replace('.html', '.doc')}')" class="px-3 py-1 border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white text-xs rounded font-bold transition">📝 DOC</button>
+              <div class="grid grid-cols-2 gap-1">
+                <a href="${baseUrl}/${encodeURIComponent(d.file)}" target="_blank" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded text-center transition">🔗 새 탭</a>
+                <button onclick="downloadAsHtml('${baseUrl}/${encodeURIComponent(d.file)}', '${escapeHtml(company)}_${escapeHtml(d.file)}')" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-white text-xs rounded transition">📁 HTML</button>
+                <button onclick="downloadAsDoc('${baseUrl}/${encodeURIComponent(d.file)}', '${escapeHtml(company)}_${escapeHtml(d.file).replace('.html', '.doc')}')" class="px-2 py-1 accent-bg text-white text-xs rounded font-bold">📝 DOC</button>
+                <button onclick="downloadAsPdf('${baseUrl}/${encodeURIComponent(d.file)}')" class="px-2 py-1 bg-blue-700 hover:bg-blue-600 text-white text-xs rounded font-bold">📄 PDF</button>
               </div>
             </div>
           </div>
@@ -2450,6 +2638,14 @@ function saveApiKey() {
   if (!v.startsWith('sk-')) return alert('Claude API 키는 "sk-ant-..."로 시작합니다');
   localStorage.setItem('claudeApiKey', v);
   alert('저장됨');
+}
+
+function saveGeminiKey() {
+  const v = document.getElementById('geminiKeyEdit').value;
+  if (!v) return alert('값을 입력하세요');
+  if (!v.startsWith('AIza')) return alert('Gemini API 키는 "AIza..."로 시작합니다 (https://aistudio.google.com/apikey)');
+  localStorage.setItem('geminiApiKey', v);
+  alert('Gemini API 키 저장됨');
 }
 
 function savePin() {
