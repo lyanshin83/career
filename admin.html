@@ -1229,6 +1229,11 @@ function saveProfileOnly() {
   if (!profile.name || !profile.email || !profile.phone) {
     return alert('이름·이메일·전화는 필수입니다');
   }
+  // 이전 프로필을 prevProfile로 보존 (재수정 시 find-replace 매칭용)
+  const oldProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  if (oldProfile.name && oldProfile.name !== profile.name) {
+    localStorage.setItem('prevProfile', JSON.stringify(oldProfile));
+  }
   localStorage.setItem('userProfile', JSON.stringify(profile));
   alert('브라우저에 저장됐습니다.\n\n5개 파일에 적용하려면 "📦 일괄 적용 + ZIP 다운로드" 버튼을 눌러주세요.');
 }
@@ -1278,6 +1283,9 @@ async function updateAllFiles() {
 
   showLoading('5개 파일 처리 중...');
 
+  // 이전 프로필 (재수정 시 매칭용)
+  const prev = JSON.parse(localStorage.getItem('prevProfile') || '{}');
+
   const files = [
     'index.html',
     '문서_이력서.html',
@@ -1300,6 +1308,49 @@ async function updateAllFiles() {
       }
       let html = await res.text();
       const original = html;
+
+      // ============ 자동 detect → 새 값 교체 (자료 → 사용자 입력) ============
+      // 1) 이메일 자동 detect (정규식)
+      if (profile.email) {
+        const emails = [...html.matchAll(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)];
+        const uniqEmails = [...new Set(emails.map(m => m[0]))];
+        for (const oldEmail of uniqEmails) {
+          if (oldEmail !== profile.email) {
+            html = html.split(oldEmail).join(profile.email);
+          }
+        }
+      }
+      // 2) 전화번호 자동 detect (010-XXXX-XXXX 또는 010XXXXXXXX)
+      if (profile.phone) {
+        const phones = [...html.matchAll(/01[0-9][-\s]?\d{3,4}[-\s]?\d{4}/g)];
+        const uniqPhones = [...new Set(phones.map(m => m[0]))];
+        for (const oldPhone of uniqPhones) {
+          if (oldPhone !== profile.phone) {
+            html = html.split(oldPhone).join(profile.phone);
+          }
+        }
+      }
+      // 3) LinkedIn URL 자동 detect
+      if (profile.linkedin) {
+        const linkedinPattern = /(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9가-힣%_-]+\/?/g;
+        const links = [...html.matchAll(linkedinPattern)];
+        const uniqLinks = [...new Set(links.map(m => m[0]))];
+        const newLink = profile.linkedin.startsWith('http') ? profile.linkedin : 'https://' + profile.linkedin.replace(/^\/+/, '');
+        for (const oldLink of uniqLinks) {
+          if (oldLink !== newLink && oldLink !== profile.linkedin) {
+            html = html.split(oldLink).join(newLink);
+          }
+        }
+      }
+      // 4) 이름 — prev 우선, 없으면 김OO 같은 placeholder 매칭
+      if (profile.name) {
+        if (prev.name && prev.name !== profile.name) {
+          html = html.split(prev.name).join(profile.name);
+        }
+      }
+      if (prev.siteTitle && prev.siteTitle !== profile.siteTitle) {
+        html = html.split(prev.siteTitle).join(profile.siteTitle);
+      }
 
       // 이름 = 전체 주황·볼드 (HTML 영역만)
       const formattedName = `<strong class="accent" style="font-weight:700;">${profile.name}</strong>`;
@@ -2049,12 +2100,17 @@ ${snippet}
       const result = await callClaude(prompt, 4096);
       let edits = [];
       try {
+        // 마크다운 코드블록 + 앞뒤 설명 텍스트 제거 후 JSON 부분만 추출
         let cleaned = result.trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```\s*$/, '').trim();
+        // [ 부터 ] 까지 JSON 배열 부분만 추출 (앞뒤 설명 무시)
+        const arrayMatch = cleaned.match(/\[[\s\S]*\]/);
+        if (arrayMatch) cleaned = arrayMatch[0];
         edits = JSON.parse(cleaned);
         if (!Array.isArray(edits)) edits = [];
-      } catch {
-        reports.push(`⚠️ ${file}: AI 응답 파싱 실패`);
-        continue;
+      } catch (parseErr) {
+        // 파싱 실패 시 변형 없이 진행 (마스터 그대로 사용)
+        reports.push(`⚠️ ${file}: AI 응답 파싱 실패 (마스터 그대로 사용)`);
+        edits = []; // 빈 배열로 처리해서 다음 단계 계속
       }
 
       let changes = 0;
@@ -2143,73 +2199,63 @@ function downloadAsPdf(htmlPath) {
   }
 }
 
-// ============ HTML → DOC 변환 다운로드 (워드에서 깔끔히 직접 편집 가능) ============
-// 디자인 박스·그리드·플렉스 다 풀고 텍스트·제목·표·리스트·이미지만 살림
+// ============ HTML → DOC 변환 (디자인 보존 + 이미지 base64 자동 첨부) ============
 async function downloadAsDoc(htmlPath, filename) {
   try {
+    showLoading('DOC 변환 중 (이미지 base64 변환 포함)...');
     const res = await fetch(htmlPath);
     if (!res.ok) throw new Error('파일 로드 실패: HTTP ' + res.status);
     const html = await res.text();
+
+    // <head> <style> 추출 (디자인 보존)
+    const styleMatches = html.match(/<style[^>]*>[\s\S]*?<\/style>/gi) || [];
+    const stylesPreserved = styleMatches.join('\n');
 
     // <body> 추출
     const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
     let body = bodyMatch ? bodyMatch[1] : html;
 
-    // 1. 인터랙티브·스크립트 요소 제거
+    // 인터랙티브 요소만 제거 (디자인은 보존)
     body = body.replace(/<script[\s\S]*?<\/script>/gi, '');
-    body = body.replace(/<style[\s\S]*?<\/style>/gi, '');
     body = body.replace(/<button[^>]*>[\s\S]*?<\/button>/gi, '');
     body = body.replace(/<input[^>]*\/?>/gi, '');
-    body = body.replace(/<select[\s\S]*?<\/select>/gi, '');
     body = body.replace(/<form[\s\S]*?<\/form>/gi, '');
-    body = body.replace(/<svg[\s\S]*?<\/svg>/gi, '');
-    body = body.replace(/<canvas[\s\S]*?<\/canvas>/gi, '');
     body = body.replace(/<iframe[\s\S]*?<\/iframe>/gi, '');
+    body = body.replace(/<nav[^>]*class="[^"]*no-print[^"]*"[^>]*>[\s\S]*?<\/nav>/gi, '');
+    body = body.replace(/<div[^>]*class="[^"]*no-print[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
 
-    // 2. 모든 inline style·class·id·data 속성 제거 (디자인 박스·그리드 제거)
-    body = body.replace(/\s+style="[^"]*"/gi, '');
-    body = body.replace(/\s+style='[^']*'/gi, '');
-    body = body.replace(/\s+class="[^"]*"/gi, '');
-    body = body.replace(/\s+class='[^']*'/gi, '');
-    body = body.replace(/\s+id="[^"]*"/gi, '');
-    body = body.replace(/\s+id='[^']*'/gi, '');
-    body = body.replace(/\s+data-[a-z-]+="[^"]*"/gi, '');
-    body = body.replace(/\s+on[a-z]+="[^"]*"/gi, '');
-
-    // 3. <a> 태그는 텍스트만 살리기 (링크 → 텍스트)
+    // <a> 태그는 텍스트만 살리기 (링크 → 텍스트)
     body = body.replace(/<a[^>]*>([\s\S]*?)<\/a>/gi, '$1');
 
-    // 4. <details>, <summary> 풀어서 평문으로
-    body = body.replace(/<details[^>]*>/gi, '<div>');
-    body = body.replace(/<\/details>/gi, '</div>');
-    body = body.replace(/<summary[^>]*>([\s\S]*?)<\/summary>/gi, '<h3>$1</h3>');
+    // 이미지 base64 변환 (사진 첨부 자동)
+    const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*\/?>/gi;
+    const imgMatches = [...body.matchAll(imgRegex)];
+    for (const m of imgMatches) {
+      const originalTag = m[0];
+      const src = m[1];
+      if (src.startsWith('data:')) continue; // 이미 base64면 스킵
+      try {
+        const absoluteUrl = new URL(src, htmlPath).href;
+        const imgRes = await fetch(absoluteUrl);
+        if (!imgRes.ok) continue;
+        const blob = await imgRes.blob();
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        const newTag = originalTag.replace(src, base64);
+        body = body.split(originalTag).join(newTag);
+      } catch (e) {
+        console.warn('이미지 변환 실패:', src, e.message);
+      }
+    }
 
-    // 5. 의미 없는 div·span 정리 (속성 다 빠진 빈 태그)
-    body = body.replace(/<div>\s*<\/div>/gi, '');
-    body = body.replace(/<span>\s*<\/span>/gi, '');
+    // 워드 호환 HTML — 원본 디자인 보존 + 이미지 base64 박힘
+    const docContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->${stylesPreserved}</head><body>${body}</body></html>`;
 
-    // 워드 친화적 기본 스타일 (맑은 고딕 + 단정한 본문 양식)
-    const wordStyles = `<style>
-      body { font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; font-size: 11pt; line-height: 1.6; color: #222; }
-      h1 { font-size: 20pt; font-weight: bold; margin: 24pt 0 12pt; border-bottom: 2px solid #333; padding-bottom: 6pt; }
-      h2 { font-size: 15pt; font-weight: bold; margin: 18pt 0 10pt; border-bottom: 1px solid #999; padding-bottom: 4pt; }
-      h3 { font-size: 13pt; font-weight: bold; margin: 14pt 0 8pt; }
-      h4 { font-size: 11pt; font-weight: bold; margin: 12pt 0 6pt; }
-      p { margin: 8pt 0; }
-      table { border-collapse: collapse; width: 100%; margin: 10pt 0; }
-      th, td { border: 1px solid #888; padding: 6pt 8pt; text-align: left; vertical-align: top; }
-      th { background-color: #f0f0f0; font-weight: bold; }
-      ul, ol { margin: 8pt 0; padding-left: 24pt; }
-      li { margin: 4pt 0; }
-      strong, b { font-weight: bold; }
-      em, i { font-style: italic; }
-      hr { border: none; border-top: 1px solid #ccc; margin: 12pt 0; }
-      blockquote { margin: 8pt 16pt; padding-left: 12pt; border-left: 3px solid #ccc; color: #555; }
-    </style>`;
-
-    const docContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->${wordStyles}</head><body>${body}</body></html>`;
-
-    // BOM 추가해서 UTF-8 한글 깨짐 방지
+    // BOM 추가 (한글 깨짐 방지)
     const blob = new Blob(['﻿', docContent], { type: 'application/msword;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2219,7 +2265,9 @@ async function downloadAsDoc(htmlPath, filename) {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 100);
+    hideLoading();
   } catch (err) {
+    hideLoading();
     alert('DOC 다운로드 실패: ' + err.message);
   }
 }
@@ -2227,7 +2275,13 @@ async function downloadAsDoc(htmlPath, filename) {
 function viewCompanyDocs(jobId) {
   const job = state.jobs.find(j => j.id === jobId);
   if (!job) return;
-  const company = (job.company || '').replace(/[\\/:*?"<>|]/g, '').trim();
+  // transformAllDocsForJob과 동일한 영문 sanitize 로직 사용
+  const company = (() => {
+    const raw = (job.company || 'company').trim();
+    const ascii = raw.replace(/[^a-zA-Z0-9\-_]/g, '');
+    if (ascii.length >= 3) return ascii.toLowerCase();
+    return `company-${(job.id || Date.now().toString()).toString().slice(-8)}`;
+  })();
   if (!company) return alert('회사명이 없습니다');
 
   const docs = [

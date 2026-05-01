@@ -76,10 +76,9 @@
   .hero-tag { font-size: 8pt; letter-spacing: 0.3em; color: #9ca3af; margin-bottom: 12px; position: relative; }
   .hero-title { font-size: 26pt; font-weight: 700; line-height: 1.15; margin-bottom: 10px; position: relative; }
   .hero-title .gradient {
-    background: linear-gradient(135deg, #3b82f6 0%, #FFA559 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #60a5fa;
+    -webkit-text-fill-color: #60a5fa;
+    background: none;
   }
   .hero-name { font-size: 11pt; color: #d1d5db; margin-bottom: 6px; position: relative; }
   .hero-name span { color: #3b82f6; }
@@ -89,10 +88,9 @@
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 22px 0 0; position: relative; }
   .kpi-value { font-size: 28pt; font-weight: 700; line-height: 1; }
   .kpi-value .gradient {
-    background: linear-gradient(135deg, #3b82f6 0%, #FFA559 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #60a5fa;
+    -webkit-text-fill-color: #60a5fa;
+    background: none;
   }
   .kpi-label { font-size: 8pt; color: #9ca3af; margin-top: 4px; line-height: 1.3; }
 
@@ -321,8 +319,7 @@
 </nav>
 
 <div class="print-guide no-print">
-  💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택 → 저장<br>
-  🖼️ <strong>이미지 교체</strong>: 점선 박스(.gallery-main / .gallery-thumb)를 <code>&lt;img src="..."&gt;</code>로 교체
+  💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택 → 저장
 </div>
 
 <!-- ============ PAGE 1: COVER ============ -->
@@ -330,7 +327,7 @@
 
   <div class="cover-hero">
     <p class="hero-tag">PORTFOLIO · MARKETING SENIOR</p>
-    <h1 class="hero-title">디지털 광고와 <span class="gradient">브랜드 마케팅을 양립한</span> 16년차 시니어 마케터</h1>
+    <h1 class="hero-title">디지털 광고와 <span class="gradient">브랜드 마케팅을 양립한</span><br>16년차 시니어 마케터</h1>
     <p class="hero-name">김<span>OO</span></p>
     <p class="hero-sub">광고대행사 광고주 영업·매체 운영 10년 × 자체 브랜드 D2C·IMC·런칭 5년+ — 매출과 브랜드 둘 다 책임지는 본부장 트랙</p>
 
@@ -345,15 +342,16 @@
   <section class="block">
     <h2>🚀 BRAND LAUNCH — 직접 콘셉 설정·런칭한 브랜드 (6건)</h2>
     <div class="brand-grid">
-      <div class="brand-card">
-        <div class="brand-year">2023</div>
-        <div class="brand-name">로우티 리듀스앤드</div>
-        <div class="brand-company">라이프앤바이오 · 이너뷰티</div>
+      <a class="brand-card linkable" href="#case-drmiracle">
+        <div class="brand-year">2020-05</div>
+        <div class="brand-name">닥터미라클</div>
+        <div class="brand-company">더에이블랩 · 화장품</div>
         <div class="brand-preview">
-          <img src="img/로우티1-2.jpg" alt="로우티 리듀스앤드 — 3종 스틱" onerror="this.style.display='none'">
-          <p class="preview-label">이너뷰티 신제품 런칭<br>유튜버 6명 협업 (6,000만)<br>부진재고 5,000개 소진</p>
+          <img src="img/닥터미라클1.jpg" alt="닥터미라클 SLIMIX PPC Cream EX" onerror="this.style.display='none'">
+          <p class="preview-label">메타 영상 캠페인 · 셀룰라이트 15.66%↓<br>3개월차 월 7.7억 (목표 5억 초과)</p>
+          <span class="preview-cta">→ Case Study 01 보기</span>
         </div>
-      </div>
+      </a>
       <a class="brand-card linkable" href="#case-seasnoff">
         <div class="brand-year">2023-03</div>
         <div class="brand-name">시즈노프</div>
@@ -374,16 +372,15 @@
           <span class="preview-cta">→ Case Study 03 보기</span>
         </div>
       </a>
-      <a class="brand-card linkable" href="#case-drmiracle">
-        <div class="brand-year">2020-05</div>
-        <div class="brand-name">닥터미라클</div>
-        <div class="brand-company">더에이블랩 · 화장품</div>
+      <div class="brand-card">
+        <div class="brand-year">2023</div>
+        <div class="brand-name">로우티 리듀스앤드</div>
+        <div class="brand-company">라이프앤바이오 · 이너뷰티</div>
         <div class="brand-preview">
-          <img src="img/닥터미라클1.jpg" alt="닥터미라클 SLIMIX PPC Cream EX" onerror="this.style.display='none'">
-          <p class="preview-label">메타 영상 캠페인 · 셀룰라이트 15.66%↓<br>3개월차 월 7.7억 (목표 5억 초과)</p>
-          <span class="preview-cta">→ Case Study 01 보기</span>
+          <img src="img/로우티1-2.jpg" alt="로우티 리듀스앤드 — 3종 스틱" onerror="this.style.display='none'">
+          <p class="preview-label">이너뷰티 신제품 런칭<br>유튜버 6명 협업 (6,000만)<br>부진재고 5,000개 소진</p>
         </div>
-      </a>
+      </div>
       <div class="brand-card">
         <div class="brand-year">2019-2021</div>
         <div class="brand-name">더레브</div>
