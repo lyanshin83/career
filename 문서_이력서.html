@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>신현식 | 신현식 포트폴리오 - 디지털 마케터</title>
+<title>이력서·자소서 — 김OO | 디지털 광고 × 브랜드 마케팅 시니어 (15년)</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
 <style>
   @page { size: A4; margin: 1.5cm; }
@@ -162,6 +162,67 @@
     font-weight: 600;
     margin: 2px 2px;
   }
+
+  /* ============ MOBILE (screen only — doesn't affect PDF print) ============ */
+  @media screen and (max-width: 768px) {
+    body { font-size: 13px; line-height: 1.6; }
+    .page {
+      max-width: 100%;
+      min-height: auto;
+      margin: 0;
+      padding: 16px;
+      box-shadow: none;
+    }
+
+    /* Header — photo smaller, contact stacks */
+    .header { gap: 14px; padding-bottom: 14px; margin-bottom: 18px; }
+    .photo { width: 80px; min-width: 80px; height: 100px; }
+    .name { font-size: 22pt; }
+    .tagline { font-size: 11pt; line-height: 1.35; margin-bottom: 10px; }
+    .contact { font-size: 9pt; line-height: 1.7; }
+    .contact span { display: block; margin-right: 0; margin-bottom: 2px; }
+
+    section { margin-top: 16px; }
+    h2 { font-size: 10.5pt; margin-bottom: 8px; }
+    .summary { font-size: 10.5pt; line-height: 1.6; }
+    .highlights li { font-size: 10pt; padding: 5px 0 5px 16px; line-height: 1.5; }
+
+    /* Career table → block stack (each row becomes a card) */
+    .career-table, .career-table tbody, .career-table tr, .career-table td { display: block; width: 100%; }
+    .career-table tr { padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+    .career-table tr:last-child { border-bottom: none; }
+    .career-table td { padding: 0; }
+    .career-table .period { width: auto; font-size: 9pt; color: #6b7280; margin-bottom: 3px; }
+    .career-table .company { width: auto; font-size: 11pt; font-weight: 700; margin-bottom: 3px; }
+    .career-table .role { font-size: 10pt; line-height: 1.5; }
+
+    /* Skills grid → single column, label on top of value */
+    .skills-grid { grid-template-columns: 1fr; gap: 0; }
+    .skill-row { padding: 8px 0; min-height: auto; }
+    .skill-row .label { position: static; display: block; width: auto; top: auto; margin-bottom: 4px; }
+    .skill-row .value { display: block; line-height: 1.65; }
+    .ai-tag { font-size: 8.5pt; }
+
+    /* Education grid → single column */
+    .edu-grid { grid-template-columns: 1fr; gap: 14px; }
+
+    /* Doc nav — float to static so it doesn't cover content */
+    .doc-nav {
+      position: static; top: auto; right: auto;
+      margin: 12px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .print-guide { margin: 12px; max-width: none; font-size: 9.5pt; padding: 12px 14px; }
+
+    /* Cover letter mobile */
+    .cover-letter h2 { font-size: 13pt; margin-bottom: 12px; }
+    .cover-letter .cl-name { font-size: 18pt; }
+    .cover-letter .cl-doc-type { font-size: 8.5pt; }
+    .cover-letter p { font-size: 10pt; line-height: 1.65; margin-bottom: 12px; }
+    .cover-letter .plan-box { padding: 12px 14px; }
+    .cover-letter .plan-box h3 { font-size: 10pt; }
+    .cover-letter .ai-vision { padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>
@@ -191,15 +252,15 @@
   <!-- ============ HEADER ============ -->
   <div class="header">
     <div class="photo">
-      <img src="증명사진.png" alt="신현식 프로필 사진">
+      <img src="증명사진.png" alt="김OO 프로필 사진">
     </div>
     <div class="header-info">
-      <div class="name"><strong class="accent" style="font-weight:700;">신현식</strong></div>
+      <div class="name">김<span>OO</span></div>
       <div class="tagline">디지털 광고와 브랜드 마케팅을 양립한 15년차 시니어 마케터</div>
       <div class="contact">
-        <span><span class="label">EMAIL</span>bloodba@naver.com</span>
-        <span><span class="label">PHONE</span>010-3463-0200</span>
-        <span><span class="label">LINKEDIN</span>https://bit.ly/48uc31O</span>
+        <span><span class="label">EMAIL</span>your@email.com</span>
+        <span><span class="label">PHONE</span>010-XXXX-XXXX</span>
+        <span><span class="label">LINKEDIN</span>linkedin.com/in/yourid</span>
       </div>
     </div>
   </div>
@@ -376,7 +437,7 @@
 
   <div class="cl-header">
     <div class="cl-doc-type">자기소개서 · COVER LETTER</div>
-    <div class="cl-name"><strong class="accent" style="font-weight:700;">신현식</strong></div>
+    <div class="cl-name">김<span>OO</span></div>
     <div class="cl-target" style="display: none;">지원: <strong class="target-company"></strong> · <span class="target-position"></span></div>
   </div>
 
