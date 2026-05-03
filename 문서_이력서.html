@@ -294,28 +294,50 @@ function convertGridsToTables(root) {
     el.parentNode.replaceChild(table, el);
   });
 }
-function downloadAsWord(filename) {
+function imgToBase64(img) {
+  return new Promise(function(resolve){
+    var src = img.getAttribute('src');
+    if (!src || src.indexOf('data:') === 0) { resolve(); return; }
+    fetch(src).then(function(r){
+      if (!r.ok) { resolve(); return; }
+      return r.blob();
+    }).then(function(blob){
+      if (!blob) { resolve(); return; }
+      var reader = new FileReader();
+      reader.onloadend = function(){ img.setAttribute('src', reader.result); resolve(); };
+      reader.onerror = function(){ resolve(); };
+      reader.readAsDataURL(blob);
+    }).catch(function(){ resolve(); });
+  });
+}
+async function downloadAsWord(filename) {
   if (typeof htmlDocx === 'undefined') {
     alert('Word 변환 라이브러리 로드 실패. 새로고침 후 다시 시도해주세요.');
     return;
   }
-  var baseURL = window.location.href.replace(/[^/]*$/, '');
-  var bodyClone = document.body.cloneNode(true);
-  bodyClone.querySelectorAll('.no-print, script, video').forEach(function(el){ el.remove(); });
-  bodyClone.querySelectorAll('img').forEach(function(img){
-    var src = img.getAttribute('src');
-    if (src && !/^(https?:|\/\/|data:)/.test(src)) img.setAttribute('src', baseURL + src);
-    img.removeAttribute('onerror');
-  });
-  bodyClone.querySelectorAll('a').forEach(function(a){
-    var href = a.getAttribute('href');
-    if (href && href.charAt(0) === '#') a.removeAttribute('href');
-    else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
-  });
-  convertGridsToTables(bodyClone);
-  var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
-  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
+  var btn = event && event.target;
+  var origText = btn ? btn.textContent : null;
+  if (btn) { btn.textContent = '⏳ 생성 중...'; btn.disabled = true; }
   try {
+    var baseURL = window.location.href.replace(/[^/]*$/, '');
+    var bodyClone = document.body.cloneNode(true);
+    bodyClone.querySelectorAll('.no-print, script, video').forEach(function(el){ el.remove(); });
+    bodyClone.querySelectorAll('img').forEach(function(img){
+      var src = img.getAttribute('src');
+      if (src && !/^(https?:|\/\/|data:)/.test(src)) img.setAttribute('src', baseURL + src);
+      img.removeAttribute('onerror');
+    });
+    bodyClone.querySelectorAll('a').forEach(function(a){
+      var href = a.getAttribute('href');
+      if (href && href.charAt(0) === '#') a.removeAttribute('href');
+      else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
+    });
+    convertGridsToTables(bodyClone);
+    // Convert images to base64 so they're embedded in .docx (works offline)
+    var imgs = Array.from(bodyClone.querySelectorAll('img'));
+    await Promise.all(imgs.map(imgToBase64));
+    var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
+    var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
     var converted = htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
     var url = URL.createObjectURL(converted);
     var link = document.createElement('a');
@@ -324,6 +346,8 @@ function downloadAsWord(filename) {
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   } catch(e) {
     alert('Word 변환 실패: ' + e.message + '\nPDF 저장을 사용해주세요.');
+  } finally {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
   }
 }
 </script>

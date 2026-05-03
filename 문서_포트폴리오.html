@@ -378,28 +378,49 @@ function convertGridsToTables(root) {
     el.parentNode.replaceChild(table, el);
   });
 }
-function downloadAsWord(filename) {
+function imgToBase64(img) {
+  return new Promise(function(resolve){
+    var src = img.getAttribute('src');
+    if (!src || src.indexOf('data:') === 0) { resolve(); return; }
+    fetch(src).then(function(r){
+      if (!r.ok) { resolve(); return; }
+      return r.blob();
+    }).then(function(blob){
+      if (!blob) { resolve(); return; }
+      var reader = new FileReader();
+      reader.onloadend = function(){ img.setAttribute('src', reader.result); resolve(); };
+      reader.onerror = function(){ resolve(); };
+      reader.readAsDataURL(blob);
+    }).catch(function(){ resolve(); });
+  });
+}
+async function downloadAsWord(filename) {
   if (typeof htmlDocx === 'undefined') {
     alert('Word 변환 라이브러리 로드 실패. 새로고침 후 다시 시도해주세요.');
     return;
   }
-  var baseURL = window.location.href.replace(/[^/]*$/, '');
-  var bodyClone = document.body.cloneNode(true);
-  bodyClone.querySelectorAll('.no-print, script, video').forEach(function(el){ el.remove(); });
-  bodyClone.querySelectorAll('img').forEach(function(img){
-    var src = img.getAttribute('src');
-    if (src && !/^(https?:|\/\/|data:)/.test(src)) img.setAttribute('src', baseURL + src);
-    img.removeAttribute('onerror');
-  });
-  bodyClone.querySelectorAll('a').forEach(function(a){
-    var href = a.getAttribute('href');
-    if (href && href.charAt(0) === '#') a.removeAttribute('href');
-    else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
-  });
-  convertGridsToTables(bodyClone);
-  var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
-  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
+  var btn = event && event.target;
+  var origText = btn ? btn.textContent : null;
+  if (btn) { btn.textContent = '⏳ 생성 중...'; btn.disabled = true; }
   try {
+    var baseURL = window.location.href.replace(/[^/]*$/, '');
+    var bodyClone = document.body.cloneNode(true);
+    bodyClone.querySelectorAll('.no-print, script, video').forEach(function(el){ el.remove(); });
+    bodyClone.querySelectorAll('img').forEach(function(img){
+      var src = img.getAttribute('src');
+      if (src && !/^(https?:|\/\/|data:)/.test(src)) img.setAttribute('src', baseURL + src);
+      img.removeAttribute('onerror');
+    });
+    bodyClone.querySelectorAll('a').forEach(function(a){
+      var href = a.getAttribute('href');
+      if (href && href.charAt(0) === '#') a.removeAttribute('href');
+      else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
+    });
+    convertGridsToTables(bodyClone);
+    var imgs = Array.from(bodyClone.querySelectorAll('img'));
+    await Promise.all(imgs.map(imgToBase64));
+    var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
+    var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
     var converted = htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
     var url = URL.createObjectURL(converted);
     var link = document.createElement('a');
@@ -408,6 +429,8 @@ function downloadAsWord(filename) {
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   } catch(e) {
     alert('Word 변환 실패: ' + e.message + '\nPDF 저장을 사용해주세요.');
+  } finally {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
   }
 }
 </script>
@@ -891,7 +914,7 @@ function downloadAsWord(filename) {
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
     <a href="https://idplacosmetics.com/" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🌐 자사몰</strong><br><span style="color: #6b7280; font-size: 7.5pt;">idplacosmetics.com</span></a>
     <a href="https://www.instagram.com/idplacosmetics_official/" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">📷 공식 인스타</strong><br><span style="color: #6b7280; font-size: 7.5pt;">@idplacosmetics_official</span></a>
-    <a href="https://shoppinglive.naver.com/channels/83151" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🎥 네이버 라이브</strong><br><span style="color: #6b7280; font-size: 7.5pt;">쇼핑라이브 채널 83151</span></a>
+    <a href="https://idplacosmetics.com/product/%ED%8E%98%EC%9D%B4%EC%8A%A4%ED%95%8F-%ED%94%8C%EB%9D%BC%EC%8A%A4%ED%84%B0-%EB%A7%88%EC%8A%A4%ED%81%AC4%EB%A7%A4/328/category/156/display/1/" target="_blank" style="padding: 10px 12px; background: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; font-size: 8.5pt; text-decoration: none; color: #111;"><strong style="color: #1e40af;">🎭 페이스핏 플라스터 마스크</strong><br><span style="color: #6b7280; font-size: 7.5pt;">석고팩 대표 SKU 상세페이지</span></a>
   </div>
 
   <!-- 3-레이어 IMC 구조 -->
