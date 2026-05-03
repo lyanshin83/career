@@ -174,7 +174,35 @@
   <a href="index.html" class="nav-home">← 메인</a>
   <button onclick="window.print()">🖨️ 인쇄</button>
   <button onclick="window.print()">💾 PDF 저장</button>
+  <button onclick="downloadAsWord('신현식_경력기술서')">📝 Word 저장</button>
 </nav>
+
+<script>
+function downloadAsWord(filename) {
+  var baseURL = window.location.href.replace(/[^/]*$/, '');
+  var bodyClone = document.body.cloneNode(true);
+  bodyClone.querySelectorAll('.no-print').forEach(function(el){ el.remove(); });
+  bodyClone.querySelectorAll('script').forEach(function(el){ el.remove(); });
+  bodyClone.querySelectorAll('img').forEach(function(img){
+    var src = img.getAttribute('src');
+    if (src && !/^(https?:|\/\/|data:)/.test(src)) img.setAttribute('src', baseURL + src);
+    img.removeAttribute('onerror');
+  });
+  bodyClone.querySelectorAll('a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (href && href.charAt(0) === '#') a.removeAttribute('href');
+    else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
+  });
+  var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
+  var wordHTML = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>' + document.title + '</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>' + styles + '\n@page WordSection1 { size: 21cm 29.7cm; margin: 1.3cm; }\ndiv.WordSection1 { page: WordSection1; }\nbody { background: white !important; }\n.page { box-shadow: none !important; margin: 0 0 8mm 0 !important; }\n</style></head><body><div class="WordSection1">' + bodyClone.innerHTML + '</div></body></html>';
+  var blob = new Blob(['﻿', wordHTML], { type: 'application/msword' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url; link.download = filename + '.doc';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+</script>
 
 <div class="print-guide no-print">
   💡 <strong>PDF 저장</strong>: 우측 상단 "PDF 저장" 또는 Ctrl/Cmd + P → "PDF로 저장" 선택 → 저장
