@@ -199,6 +199,46 @@ function detectGridCols(el) {
   return 0;
 }
 function convertGridsToTables(root) {
+  // 1) Special: .header (photo + header-info) → 2-col table
+  Array.from(root.querySelectorAll('.header')).forEach(function(header) {
+    var photo = header.querySelector('.photo');
+    var info = header.querySelector('.header-info');
+    if (!photo || !info) return;
+    var table = document.createElement('table');
+    table.setAttribute('cellspacing', '0');
+    table.setAttribute('cellpadding', '0');
+    table.style.cssText = 'width:100%;border-collapse:collapse;border-bottom:3px solid #3b82f6;margin-bottom:24px;';
+    var tr = document.createElement('tr');
+    var photoTd = document.createElement('td');
+    photoTd.style.cssText = 'width:130px;vertical-align:top;padding:0 24px 20px 0;';
+    photoTd.appendChild(photo);
+    tr.appendChild(photoTd);
+    var infoTd = document.createElement('td');
+    infoTd.style.cssText = 'vertical-align:middle;padding:0 0 20px 0;';
+    infoTd.appendChild(info);
+    tr.appendChild(infoTd);
+    table.appendChild(tr);
+    header.parentNode.replaceChild(table, header);
+  });
+
+  // 2) Fix .contact label spacing
+  root.querySelectorAll('.contact .label').forEach(function(label) {
+    if (label.nextSibling && label.nextSibling.nodeType === 3) {
+      label.nextSibling.textContent = ' ' + label.nextSibling.textContent;
+    } else {
+      label.parentNode.insertBefore(document.createTextNode(' '), label.nextSibling);
+    }
+  });
+  root.querySelectorAll('.contact').forEach(function(contact){
+    var spans = Array.from(contact.children);
+    spans.forEach(function(s, idx){
+      if (idx < spans.length - 1) {
+        contact.insertBefore(document.createTextNode('   '), s.nextSibling);
+      }
+    });
+  });
+
+  // 3) Generic grid → table
   var grids = [];
   var all = root.querySelectorAll('*');
   for (var i = 0; i < all.length; i++) {
@@ -277,7 +317,7 @@ async function downloadAsWord(filename) {
     var converted = htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
     var url = URL.createObjectURL(converted);
     var link = document.createElement('a');
-    link.href = url; link.download = filename + '.docx';
+    link.href = url; link.download = filename + '.doc';
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   } catch(e) {
