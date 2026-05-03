@@ -179,6 +179,58 @@
 
 <script src="https://unpkg.com/html-docx-js@0.3.1/dist/html-docx.js"></script>
 <script>
+function detectGridCols(el) {
+  var style = el.getAttribute('style') || '';
+  var className = (typeof el.className === 'string') ? el.className : '';
+  var inlineMatch = style.match(/grid-template-columns\s*:\s*([^;]+)/);
+  if (inlineMatch) {
+    var cs = inlineMatch[1].trim();
+    var rep = cs.match(/repeat\s*\(\s*(\d+)/);
+    if (rep) return parseInt(rep[1]);
+    return cs.split(/\s+/).filter(Boolean).length;
+  }
+  var classMap = {
+    'ba-grid': 2, 'scale-grid': 4, 'skills-grid': 2, 'edu-grid': 3,
+    'brand-grid': 3, 'case-body': 2, 'gallery-thumbs': 4, 'imc-grid': 7, 'kpi-grid': 4
+  };
+  for (var cls in classMap) {
+    if (new RegExp('\\b' + cls + '\\b').test(className)) return classMap[cls];
+  }
+  return 0;
+}
+function convertGridsToTables(root) {
+  var grids = [];
+  var all = root.querySelectorAll('*');
+  for (var i = 0; i < all.length; i++) {
+    var el = all[i];
+    var style = el.getAttribute('style') || '';
+    var className = (typeof el.className === 'string') ? el.className : '';
+    var isGrid = /display\s*:\s*grid/.test(style) ||
+      /\b(ba-grid|scale-grid|skills-grid|edu-grid|brand-grid|case-body|gallery-thumbs|imc-grid|kpi-grid)\b/.test(className);
+    if (isGrid) grids.push(el);
+  }
+  grids.forEach(function(el){
+    var cols = detectGridCols(el);
+    if (!cols) return;
+    var children = Array.from(el.children);
+    if (children.length === 0) return;
+    var table = document.createElement('table');
+    table.setAttribute('cellspacing', '0');
+    table.setAttribute('cellpadding', '4');
+    table.style.cssText = 'width:100%;border-collapse:collapse;margin:6px 0;table-layout:fixed;';
+    for (var i = 0; i < children.length; i += cols) {
+      var tr = document.createElement('tr');
+      for (var j = 0; j < cols; j++) {
+        var td = document.createElement('td');
+        td.style.cssText = 'vertical-align:top;width:' + (100/cols).toFixed(2) + '%;padding:4px;';
+        if (children[i+j]) td.appendChild(children[i+j]);
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+    el.parentNode.replaceChild(table, el);
+  });
+}
 function downloadAsWord(filename) {
   if (typeof htmlDocx === 'undefined') {
     alert('Word 변환 라이브러리 로드 실패. 새로고침 후 다시 시도해주세요.');
@@ -197,8 +249,9 @@ function downloadAsWord(filename) {
     if (href && href.charAt(0) === '#') a.removeAttribute('href');
     else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
   });
+  convertGridsToTables(bodyClone);
   var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
-  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
+  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
   try {
     var converted = htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
     var url = URL.createObjectURL(converted);

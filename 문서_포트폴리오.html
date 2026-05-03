@@ -326,6 +326,58 @@
 
 <script src="https://unpkg.com/html-docx-js@0.3.1/dist/html-docx.js"></script>
 <script>
+function detectGridCols(el) {
+  var style = el.getAttribute('style') || '';
+  var className = (typeof el.className === 'string') ? el.className : '';
+  var inlineMatch = style.match(/grid-template-columns\s*:\s*([^;]+)/);
+  if (inlineMatch) {
+    var cs = inlineMatch[1].trim();
+    var rep = cs.match(/repeat\s*\(\s*(\d+)/);
+    if (rep) return parseInt(rep[1]);
+    return cs.split(/\s+/).filter(Boolean).length;
+  }
+  var classMap = {
+    'ba-grid': 2, 'scale-grid': 4, 'skills-grid': 2, 'edu-grid': 3,
+    'brand-grid': 3, 'case-body': 2, 'gallery-thumbs': 4, 'imc-grid': 7, 'kpi-grid': 4
+  };
+  for (var cls in classMap) {
+    if (new RegExp('\\b' + cls + '\\b').test(className)) return classMap[cls];
+  }
+  return 0;
+}
+function convertGridsToTables(root) {
+  var grids = [];
+  var all = root.querySelectorAll('*');
+  for (var i = 0; i < all.length; i++) {
+    var el = all[i];
+    var style = el.getAttribute('style') || '';
+    var className = (typeof el.className === 'string') ? el.className : '';
+    var isGrid = /display\s*:\s*grid/.test(style) ||
+      /\b(ba-grid|scale-grid|skills-grid|edu-grid|brand-grid|case-body|gallery-thumbs|imc-grid|kpi-grid)\b/.test(className);
+    if (isGrid) grids.push(el);
+  }
+  grids.forEach(function(el){
+    var cols = detectGridCols(el);
+    if (!cols) return;
+    var children = Array.from(el.children);
+    if (children.length === 0) return;
+    var table = document.createElement('table');
+    table.setAttribute('cellspacing', '0');
+    table.setAttribute('cellpadding', '4');
+    table.style.cssText = 'width:100%;border-collapse:collapse;margin:6px 0;table-layout:fixed;';
+    for (var i = 0; i < children.length; i += cols) {
+      var tr = document.createElement('tr');
+      for (var j = 0; j < cols; j++) {
+        var td = document.createElement('td');
+        td.style.cssText = 'vertical-align:top;width:' + (100/cols).toFixed(2) + '%;padding:4px;';
+        if (children[i+j]) td.appendChild(children[i+j]);
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+    el.parentNode.replaceChild(table, el);
+  });
+}
 function downloadAsWord(filename) {
   if (typeof htmlDocx === 'undefined') {
     alert('Word 변환 라이브러리 로드 실패. 새로고침 후 다시 시도해주세요.');
@@ -344,8 +396,9 @@ function downloadAsWord(filename) {
     if (href && href.charAt(0) === '#') a.removeAttribute('href');
     else if (href && !/^(https?:|mailto:|tel:|\/\/)/.test(href)) a.setAttribute('href', baseURL + href);
   });
+  convertGridsToTables(bodyClone);
   var styles = Array.from(document.querySelectorAll('style')).map(function(s){ return s.textContent; }).join('\n');
-  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
+  var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + document.title + '</title><style>' + styles + '\nbody{background:white!important;font-family:"Malgun Gothic","맑은 고딕",sans-serif;}\n.page{box-shadow:none!important;margin:0 0 8mm 0!important;max-width:none!important;page-break-after:always;}\n.no-print{display:none!important;}\ntable{border-collapse:collapse;}\n</style></head><body>' + bodyClone.innerHTML + '</body></html>';
   try {
     var converted = htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
     var url = URL.createObjectURL(converted);
@@ -446,7 +499,7 @@ function downloadAsWord(filename) {
       <li><strong>닥터미라클 신규 브랜드·쇼핑몰 런칭</strong><span class="case-page">Page 2</span><br><span style="color:#6b7280;font-size:8.5pt;">더에이블랩 · 2020-05 · 메타 Advantage+ + 머신러닝 / 3개월차 7.7억 (목표 5억 초과)</span></li>
       <li><strong>시즈노프 IMC 7채널 통합 캠페인</strong><span class="case-page">Page 3</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2023-03 · 700+ 매장 + 무신사·29CM + 운동크루 + 메타</span></li>
       <li><strong>푸드케어 광고비 50% 절감 + AI 도구 통합 운영</strong><span class="case-page">Page 4</span><br><span style="color:#6b7280;font-size:8.5pt;">라이프앤바이오 · 2022-2023 · 메타 Advantage+ 직접운영 / 네이버 자동입찰·AI / GA4 AI 인사이트</span></li>
-      <li><strong>아이디플라코스메틱 — 24년 통합 마케팅 운영 (상시·SEO·이슈)</strong><span class="case-page">Page 5</span><br><span style="color:#6b7280;font-size:8.5pt;">id 더마 코스메틱 · 석고팩 누적 1,200만장 · 4채널 D2C+홈쇼핑 · 인플루언서 14.4만/6.7만 · 빅셀러 공동구매 1회 0.5-1억</span></li>
+      <li><strong>아이디플라코스메틱 — 연간 운영플랜 및 전략</strong><span class="case-page">Page 5</span><br><span style="color:#6b7280;font-size:8.5pt;">id 더마 코스메틱 · 석고팩 누적 1,200만장 · 4채널 D2C+홈쇼핑 · 인플루언서 14.4만/6.7만 · 빅셀러 공동구매 1회 0.5-1억</span></li>
     </ol>
   </div>
 
@@ -790,7 +843,7 @@ function downloadAsWord(filename) {
 
   <div class="case-header">
     <div class="case-cat">CASE STUDY · 04 · 뷰티 통합 마케팅 운영</div>
-    <div class="case-name">아이디플라코스메틱 — id 석고팩 4채널 × 3-레이어 IMC</div>
+    <div class="case-name">아이디플라코스메틱 — 연간 운영플랜 및 전략</div>
     <div class="case-summary"><strong>id (아이디) 더마 코스메틱 브랜드</strong> — ID.AZ Face Fit Plaster Mask 등 석고팩 라인 <strong>누적 1,200만장 판매</strong>. 네이버스토어·쿠팡·자사몰·홈쇼핑 <strong>4채널 D2C+홈쇼핑</strong>을 <strong>상시·SEO·이슈 3-레이어 IMC</strong>로 통합 운영. 인플루언서·빅셀러 공동구매·라이브커머스로 인지·매출 동시 견인.</div>
     <div class="case-tags">
       <span class="tag tag-period">2024</span>
